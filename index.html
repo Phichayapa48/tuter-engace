@@ -2960,6 +2960,8 @@
       pollTimerInterval: null,
       studentQuizTimeLeft: 285, // 4 minutes 45 seconds countdown timer for Quiz
       studentQuizInterval: null,
+      quizResults: {}, // เก็บผลคะแนนแต่ละ quiz: { 1: { score: 8, max: 10 }, ... }
+      activeQuizId: null, // quiz ที่กำลังทำอยู่
       myCustomText: '',
       currentHypothesis: {
         title: "อาจกำลังลังเลระหว่าง O2 กับ CO2",
@@ -3446,6 +3448,9 @@
       const title = document.getElementById('studentQuizHeaderTitle');
       if (title) title.textContent = '📄 ' + (quizTitles[quizId] || 'ควิซ');
 
+      // บันทึก quiz ที่กำลังทำ
+      state.activeQuizId = quizId;
+
       // Reset timer
       if (state.studentQuizInterval) clearInterval(state.studentQuizInterval);
       state.studentQuizTimeLeft = quizId === 2 ? 600 : 285;
@@ -3458,12 +3463,56 @@
 
       // Reset submit button and result box
       const submitBtn = document.getElementById('btnSubmitStudentQuiz');
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+        submitBtn.textContent = '🚀 ส่งคำตอบควิซนี้ทันที (Submit Quiz)';
+      }
       const resultBox = document.getElementById('studentQuizResultBox');
       if (resultBox) resultBox.style.display = 'none';
 
       switchViewMode('student-quiz-active');
       showToast(`🚀 เริ่มทำ: ${quizTitles[quizId] || 'ควิซ'}`);
+    }
+
+    // อัปเดตการ์ดใน lobby หลังส่งควิซ
+    function updateLobbyCardStatus(quizId, score, maxScore) {
+      const card = document.getElementById(`lobby-card-${quizId}`);
+      if (!card) return;
+
+      // เปลี่ยน border เป็นสีเขียว
+      card.style.borderColor = '#86efac';
+      card.style.background = '#f0fdf4';
+      card.style.cursor = 'default';
+      card.onmouseover = null;
+      card.onmouseout = null;
+
+      // หาปุ่ม "เริ่มทำ" แล้วเปลี่ยนเป็น badge คะแนน
+      const btn = card.querySelector('button');
+      if (btn) {
+        btn.disabled = true;
+        btn.style.background = '#dcfce7';
+        btn.style.color = '#15803d';
+        btn.style.boxShadow = 'none';
+        btn.style.cursor = 'default';
+        btn.style.border = '1.5px solid #86efac';
+        btn.style.padding = '10px 16px';
+        btn.style.whiteSpace = 'nowrap';
+        btn.style.fontWeight = '700';
+        btn.style.fontSize = '12px';
+        btn.onclick = null;
+        btn.innerHTML = `✅ ทำแล้ว<br><span style="font-size:13px;font-weight:800;color:#15803d;">${score}/${maxScore}</span>`;
+      }
+
+      // เปลี่ยน badge สถานะจาก "🟢 พร้อมทำ" เป็น "✅ ส่งแล้ว"
+      const statusBadge = card.querySelector('span[style*="dcfce7"]');
+      if (statusBadge) {
+        statusBadge.textContent = '✅ ส่งแล้ว';
+        statusBadge.style.background = '#dcfce7';
+        statusBadge.style.color = '#15803d';
+        statusBadge.style.borderColor = '#86efac';
+      }
     }
 
     // Switch demo student in the lobby
@@ -3592,6 +3641,12 @@
       let score = 0;
       if (q1Choice && q1Choice.value === 'CO2') score += 5;
       if (q2Answer.length > 5) score += 5;
+
+      // บันทึกผลลงใน state และอัปเดต lobby card
+      const qid = state.activeQuizId || 1;
+      const maxScore = qid === 2 ? 50 : 10;
+      state.quizResults[qid] = { score, max: maxScore };
+      updateLobbyCardStatus(qid, score, maxScore);
 
       // Reset Silence Timer -> Student Completed Quiz!
       state.idleSeconds = 0;
