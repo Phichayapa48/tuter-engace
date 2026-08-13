@@ -1372,7 +1372,8 @@
     <div class="view-switcher">
       <button class="view-btn active" id="btn-mode-student" data-mode="student">🎓 มุมนักเรียน</button>
       <button class="view-btn" id="btn-mode-teacher" data-mode="teacher">👩‍🏫 มุมครู</button>
-      <button class="view-btn" id="btn-mode-analytics" data-mode="analytics">📊 ข้อมูลวิเคราะห์ครู</button>
+      <button class="view-btn" id="btn-mode-progress" data-mode="progress">📋 ความคืบหน้า & รายชื่อนักเรียน</button>
+      <button class="view-btn" id="btn-mode-analytics" data-mode="analytics">📊 ข้อมูลวิเคราะห์พฤติกรรม</button>
       <button class="view-btn" id="btn-mode-quiz" data-mode="quiz">📁 คลังข้อสอบ & ใบงาน</button>
       <button class="view-btn" id="btn-mode-student-quiz" data-mode="student-quiz">📝 ควิซ</button>
     </div>
@@ -3527,10 +3528,23 @@
         if (teacherTasksBtn) teacherTasksBtn.style.display = 'flex';
         selectStudent('teacher');
         showToast("👩\u200d🏫 มุมมองครู: แสดงหน้าแชทหลัก (เลือก 'ครูวิภา' เป็นผู้พิมพ์ข้อความ)");
+      } else if (mode === 'progress') {
+        hideAll();
+        teacherSec.style.display = 'flex';
+        const overview = document.getElementById('analyticsOverviewSection');
+        const detail = document.getElementById('analyticsDetailSection');
+        if (overview) overview.style.display = 'block';
+        if (detail) detail.style.display = 'none';
+        showToast("📋 เปิดหน้าสรุปความคืบหน้าการทำงาน & รายชื่อนักเรียน (Live Task Progress Tracker)");
       } else if (mode === 'analytics') {
         hideAll();
         teacherSec.style.display = 'flex';
-        showToast("📊 เปิดแยกเข้าสู่หน้าข้อมูลวิเคราะห์ของครู (Full Analytics Page)");
+        const overview = document.getElementById('analyticsOverviewSection');
+        const detail = document.getElementById('analyticsDetailSection');
+        if (overview) overview.style.display = 'none';
+        if (detail) detail.style.display = 'block';
+        openStudentDetailAnalytics('narin');
+        showToast("📊 เปิดหน้าข้อมูลวิเคราะห์พฤติกรรมการเรียนรู้ของครู (Detailed Analytics)");
       } else if (mode === 'quiz') {
         hideAll();
         if (quizSec) quizSec.style.display = 'flex';
