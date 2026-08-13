@@ -4942,11 +4942,6 @@
       const stNarin = document.getElementById('st-narin');
       if (stNarin && currentKey === 'narin') stNarin.textContent = '✍️ กำลังพิมพ์…';
 
-      updateSilenceUI();
-      updateTeacherConsoleUI();
-      showToast(`↺ รีเซ็ตข้อมูลจำลองของ ${sig.name} เรียบร้อย`);
-    }
-
       const pinnedRecap = document.getElementById('pinnedRecapBar');
       if (pinnedRecap) pinnedRecap.style.display = 'flex';
 
@@ -4969,7 +4964,7 @@
       startPollTimer();
       updateSilenceUI();
       updateTeacherConsoleUI();
-      showToast("↺ รีเซ็ตข้อมูลการจำลองเรียบร้อย");
+      showToast(`↺ รีเซ็ตข้อมูลจำลองของ ${sig.name} เรียบร้อย`);
     }
 
     // Toggle Expand / Minimize Simulation Widget
