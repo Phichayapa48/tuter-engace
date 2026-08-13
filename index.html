@@ -1372,7 +1372,7 @@
     <div class="view-switcher">
       <button class="view-btn active" id="btn-mode-student" data-mode="student">🎓 มุมนักเรียน</button>
       <button class="view-btn" id="btn-mode-teacher" data-mode="teacher">👩‍🏫 มุมครู</button>
-      <button class="view-btn" id="btn-mode-progress" data-mode="progress">📋 ความคืบหน้า & รายชื่อนักเรียน</button>
+      <button class="view-btn" id="btn-mode-progress" data-mode="progress">📋 คะแนนนักเรียน</button>
       <button class="view-btn" id="btn-mode-analytics" data-mode="analytics">📊 ข้อมูลวิเคราะห์พฤติกรรม</button>
       <button class="view-btn" id="btn-mode-quiz" data-mode="quiz">📁 คลังข้อสอบ & ใบงาน</button>
       <button class="view-btn" id="btn-mode-student-quiz" data-mode="student-quiz">📝 ควิซ</button>
@@ -1767,7 +1767,8 @@
               <button class="back-to-chat-btn" onclick="switchViewMode('teacher')">
                 ⬅️ กลับสู่หน้าแชทหลัก
               </button>
-              <h2 style="font-size: 16px; margin:0; color: var(--navy-900);">📊 AI Tutor Analytics • ภาพรวมห้องเรียน & รายชื่อนักเรียน</h2>
+              <h2 style="font-size: 16px; margin:0; color: var(--navy-900);">📊 AI Tutor Analytics • ภาพรวมห้องเรียน &
+                รายชื่อนักเรียน</h2>
               <button class="saved-tasks-btn" onclick="toggleSavedTasksDrawer('teacher')"
                 style="background: #ffffff; color: #1e40af; border: 1.5px solid #93c5fd; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(30, 64, 175, 0.1); transition: all 0.2s ease;">
                 👩‍🏫 คลังสังเกตการณ์ครู <span class="badge"
@@ -1814,7 +1815,8 @@
                 🤖</div>
               <div>
                 <div style="font-size: 11px; color: #94a3b8; font-weight: 500;">สถานะ AI Tutor</div>
-                <div style="font-size: 13px; font-weight: 700; color: #60a5fa;" id="execAiAction">รออนุมัติส่งคำถามชวนคิด
+                <div style="font-size: 13px; font-weight: 700; color: #60a5fa;" id="execAiAction">
+                  รออนุมัติส่งคำถามชวนคิด
                   ⏳</div>
               </div>
             </div>
@@ -1823,7 +1825,8 @@
 
           <!-- Student Task Progress & Roster List Container (Vertical Table/List View) -->
           <div class="panel-card" style="background: #ffffff; border: 1.5px solid #bfdbfe; padding: 18px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
               <div>
                 <h3 style="margin: 0; font-size: 16px; color: #1e40af; display: flex; align-items: center; gap: 8px;">
                   📋 สรุปความคืบหน้าการทำงาน & รายชื่อนักเรียน <span>(Live Task Progress Tracker)</span>
@@ -1836,14 +1839,26 @@
               <!-- Search Box & Filter Chips -->
               <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <div style="position: relative;">
-                  <input type="text" id="analyticsStudentSearch" oninput="filterAnalyticsStudents(this.value)" placeholder="🔍 ค้นหาชื่อนักเรียน..." style="padding: 7px 14px 7px 32px; border-radius: 99px; border: 1.5px solid #93c5fd; font-size: 12px; width: 200px; outline: none; background: #f8fafc; transition: all 0.2s ease;" onfocus="this.style.borderColor='#2563eb'; this.style.background='#fff'" onblur="this.style.borderColor='#93c5fd'">
-                  <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; opacity: 0.5;">🔍</span>
+                  <input type="text" id="analyticsStudentSearch" oninput="filterAnalyticsStudents(this.value)"
+                    placeholder="🔍 ค้นหาชื่อนักเรียน..."
+                    style="padding: 7px 14px 7px 32px; border-radius: 99px; border: 1.5px solid #93c5fd; font-size: 12px; width: 200px; outline: none; background: #f8fafc; transition: all 0.2s ease;"
+                    onfocus="this.style.borderColor='#2563eb'; this.style.background='#fff'"
+                    onblur="this.style.borderColor='#93c5fd'">
+                  <span
+                    style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; opacity: 0.5;">🔍</span>
                 </div>
 
-                <div style="display: flex; gap: 4px; background: #f1f5f9; padding: 4px; border-radius: 99px; border: 1px solid #e2e8f0;">
-                  <button onclick="filterStudentByStatus('all')" class="status-filter-chip active" id="chip-filter-all" style="font-size: 11px; border: 0; background: #ffffff; color: #0f172a; padding: 4px 10px; border-radius: 99px; cursor: pointer; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">ทั้งหมด (4)</button>
-                  <button onclick="filterStudentByStatus('warning')" class="status-filter-chip" id="chip-filter-warning" style="font-size: 11px; border: 0; background: transparent; color: #b45309; padding: 4px 10px; border-radius: 99px; cursor: pointer; font-weight: 600;">🟡 ยังไม่เสร็จ (2)</button>
-                  <button onclick="filterStudentByStatus('success')" class="status-filter-chip" id="chip-filter-success" style="font-size: 11px; border: 0; background: transparent; color: #15803d; padding: 4px 10px; border-radius: 99px; cursor: pointer; font-weight: 600;">🟢 ทำเสร็จหมดแล้ว (2)</button>
+                <div
+                  style="display: flex; gap: 4px; background: #f1f5f9; padding: 4px; border-radius: 99px; border: 1px solid #e2e8f0;">
+                  <button onclick="filterStudentByStatus('all')" class="status-filter-chip active" id="chip-filter-all"
+                    style="font-size: 11px; border: 0; background: #ffffff; color: #0f172a; padding: 4px 10px; border-radius: 99px; cursor: pointer; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">ทั้งหมด
+                    (4)</button>
+                  <button onclick="filterStudentByStatus('warning')" class="status-filter-chip" id="chip-filter-warning"
+                    style="font-size: 11px; border: 0; background: transparent; color: #b45309; padding: 4px 10px; border-radius: 99px; cursor: pointer; font-weight: 600;">🟡
+                    ยังไม่เสร็จ (2)</button>
+                  <button onclick="filterStudentByStatus('success')" class="status-filter-chip" id="chip-filter-success"
+                    style="font-size: 11px; border: 0; background: transparent; color: #15803d; padding: 4px 10px; border-radius: 99px; cursor: pointer; font-weight: 600;">🟢
+                    ทำเสร็จหมดแล้ว (2)</button>
                 </div>
               </div>
             </div>
@@ -1852,117 +1867,165 @@
             <div id="analyticsStudentRosterContainer" style="display: flex; flex-direction: column; gap: 10px;">
 
               <!-- Student Row 1: Narin (50% Progress) -->
-              <div class="tab-btn student-card-item active" id="tab-narin" data-name="นรินทร์" data-status="warning" onclick="openStudentScores('narin')" style="background: #fffbebf5; border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;" onmouseover="this.style.borderColor='#f59e0b'; this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='#fde68a'; this.style.transform='translateY(0)'">
+              <div class="tab-btn student-card-item active" id="tab-narin" data-name="นรินทร์" data-status="warning"
+                onclick="openStudentScores('narin')"
+                style="background: #fffbebf5; border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;"
+                onmouseover="this.style.borderColor='#f59e0b'; this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.borderColor='#fde68a'; this.style.transform='translateY(0)'">
                 <!-- Col 1: Student Name -->
-                <div style="font-size: 14.5px; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                <div
+                  style="font-size: 14.5px; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 8px;">
                   🙂 นรินทร์
                 </div>
 
                 <!-- Col 2: Status Badge -->
                 <div>
-                  <span class="tab-badge warning" style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟡 ลังเล O2/CO2</span>
+                  <span class="tab-badge warning"
+                    style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟡 ลังเล
+                    O2/CO2</span>
                 </div>
 
                 <!-- Col 3: Animated Progress Bar Line -->
                 <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #b45309;">
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #b45309;">
                     <span>📝 ความคืบหน้าใบงาน:</span>
                     <span>50% (กำลังตอบข้อ 2)</span>
                   </div>
-                  <div style="width: 100%; height: 10px; background: #fef3c7; border-radius: 99px; overflow: hidden; border: 1px solid #fde68a;">
-                    <div style="width: 50%; height: 100%; background: #f59e0b; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);"></div>
+                  <div
+                    style="width: 100%; height: 10px; background: #fef3c7; border-radius: 99px; overflow: hidden; border: 1px solid #fde68a;">
+                    <div
+                      style="width: 50%; height: 100%; background: #f59e0b; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);">
+                    </div>
                   </div>
                 </div>
 
                 <!-- Col 4: Action Button -->
-                <button onclick="event.stopPropagation(); openStudentScores('narin')" style="background: #f59e0b; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);">
+                <button onclick="event.stopPropagation(); openStudentScores('narin')"
+                  style="background: #f59e0b; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);">
                   🏆 ดูคะแนนควิซ ➔
                 </button>
               </div>
 
               <!-- Student Row 2: Beam (100% Progress Finished) -->
-              <div class="tab-btn student-card-item" id="tab-beam" data-name="บีม" data-status="success" onclick="openStudentScores('beam')" style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;" onmouseover="this.style.borderColor='#22c55e'; this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='#bbf7d0'; this.style.transform='translateY(0)'">
+              <div class="tab-btn student-card-item" id="tab-beam" data-name="บีม" data-status="success"
+                onclick="openStudentScores('beam')"
+                style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;"
+                onmouseover="this.style.borderColor='#22c55e'; this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.borderColor='#bbf7d0'; this.style.transform='translateY(0)'">
                 <!-- Col 1: Student Name -->
-                <div style="font-size: 14.5px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 8px;">
+                <div
+                  style="font-size: 14.5px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 8px;">
                   🧢 บีม
                 </div>
 
                 <!-- Col 2: Status Badge -->
                 <div>
-                  <span class="tab-badge success" style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟢 มั่นใจ (10/10)</span>
+                  <span class="tab-badge success"
+                    style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟢 มั่นใจ
+                    (10/10)</span>
                 </div>
 
                 <!-- Col 3: Animated Progress Bar Line -->
                 <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #15803d;">
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #15803d;">
                     <span>🎉 ความคืบหน้าใบงาน:</span>
                     <span>100% (ส่งงานเสร็จสมบูรณ์ ✨)</span>
                   </div>
-                  <div style="width: 100%; height: 10px; background: #dcfce7; border-radius: 99px; overflow: hidden; border: 1px solid #bbf7d0;">
-                    <div style="width: 100%; height: 100%; background: #22c55e; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);"></div>
+                  <div
+                    style="width: 100%; height: 10px; background: #dcfce7; border-radius: 99px; overflow: hidden; border: 1px solid #bbf7d0;">
+                    <div
+                      style="width: 100%; height: 100%; background: #22c55e; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);">
+                    </div>
                   </div>
                 </div>
 
                 <!-- Col 4: Action Button -->
-                <button onclick="event.stopPropagation(); openStudentScores('beam')" style="background: #16a34a; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);">
+                <button onclick="event.stopPropagation(); openStudentScores('beam')"
+                  style="background: #16a34a; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);">
                   🏆 ดูคะแนนควิซ ➔
                 </button>
               </div>
 
               <!-- Student Row 3: Mali (100% Progress Finished) -->
-              <div class="tab-btn student-card-item" id="tab-mali" data-name="มะลิ" data-status="success" onclick="openStudentScores('mali')" style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;" onmouseover="this.style.borderColor='#22c55e'; this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='#bbf7d0'; this.style.transform='translateY(0)'">
+              <div class="tab-btn student-card-item" id="tab-mali" data-name="มะลิ" data-status="success"
+                onclick="openStudentScores('mali')"
+                style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;"
+                onmouseover="this.style.borderColor='#22c55e'; this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.borderColor='#bbf7d0'; this.style.transform='translateY(0)'">
                 <!-- Col 1: Student Name -->
-                <div style="font-size: 14.5px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 8px;">
+                <div
+                  style="font-size: 14.5px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 8px;">
                   🌼 มะลิ
                 </div>
 
                 <!-- Col 2: Status Badge -->
                 <div>
-                  <span class="tab-badge success" style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟢 ตอบแล้ว (10/10)</span>
+                  <span class="tab-badge success"
+                    style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟢 ตอบแล้ว
+                    (10/10)</span>
                 </div>
 
                 <!-- Col 3: Animated Progress Bar Line -->
                 <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #15803d;">
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #15803d;">
                     <span>🎉 ความคืบหน้าใบงาน:</span>
                     <span>100% (ส่งงานเสร็จสมบูรณ์ ✨)</span>
                   </div>
-                  <div style="width: 100%; height: 10px; background: #dcfce7; border-radius: 99px; overflow: hidden; border: 1px solid #bbf7d0;">
-                    <div style="width: 100%; height: 100%; background: #22c55e; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);"></div>
+                  <div
+                    style="width: 100%; height: 10px; background: #dcfce7; border-radius: 99px; overflow: hidden; border: 1px solid #bbf7d0;">
+                    <div
+                      style="width: 100%; height: 100%; background: #22c55e; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);">
+                    </div>
                   </div>
                 </div>
 
                 <!-- Col 4: Action Button -->
-                <button onclick="event.stopPropagation(); openStudentScores('mali')" style="background: #16a34a; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);">
+                <button onclick="event.stopPropagation(); openStudentScores('mali')"
+                  style="background: #16a34a; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);">
                   🏆 ดูคะแนนควิซ ➔
                 </button>
               </div>
 
               <!-- Student Row 4: Khaohom (25% Progress - Warning/Orange) -->
-              <div class="tab-btn student-card-item" id="tab-khaohom" data-name="ข้าวหอม" data-status="warning" onclick="openStudentScores('khaohom')" style="background: #fffbebf5; border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;" onmouseover="this.style.borderColor='#f59e0b'; this.style.transform='translateY(-1px)'" onmouseout="this.style.borderColor='#fde68a'; this.style.transform='translateY(0)'">
+              <div class="tab-btn student-card-item" id="tab-khaohom" data-name="ข้าวหอม" data-status="warning"
+                onclick="openStudentScores('khaohom')"
+                style="background: #fffbebf5; border: 1.5px solid #fde68a; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.2s ease; display: grid; grid-template-columns: 130px 150px 1fr 140px; gap: 14px; align-items: center;"
+                onmouseover="this.style.borderColor='#f59e0b'; this.style.transform='translateY(-1px)'"
+                onmouseout="this.style.borderColor='#fde68a'; this.style.transform='translateY(0)'">
                 <!-- Col 1: Student Name -->
-                <div style="font-size: 14.5px; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                <div
+                  style="font-size: 14.5px; font-weight: 700; color: #92400e; display: flex; align-items: center; gap: 8px;">
                   🌿 ข้าวหอม
                 </div>
 
                 <!-- Col 2: Status Badge -->
                 <div>
-                  <span class="tab-badge warning" style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟡 กำลังอ่านโจทย์</span>
+                  <span class="tab-badge warning"
+                    style="font-size: 11px; padding: 3px 10px; border-radius: 99px; display: inline-block;">🟡
+                    กำลังอ่านโจทย์</span>
                 </div>
 
                 <!-- Col 3: Animated Progress Bar Line -->
                 <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #b45309;">
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 11.5px; font-weight: 700; color: #b45309;">
                     <span>📖 ความคืบหน้าใบงาน:</span>
                     <span>25% (กำลังอ่านทำความเข้าใจ)</span>
                   </div>
-                  <div style="width: 100%; height: 10px; background: #fef3c7; border-radius: 99px; overflow: hidden; border: 1px solid #fde68a;">
-                    <div style="width: 25%; height: 100%; background: #f59e0b; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);"></div>
+                  <div
+                    style="width: 100%; height: 10px; background: #fef3c7; border-radius: 99px; overflow: hidden; border: 1px solid #fde68a;">
+                    <div
+                      style="width: 25%; height: 100%; background: #f59e0b; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);">
+                    </div>
                   </div>
                 </div>
 
                 <!-- Col 4: Action Button -->
-                <button onclick="event.stopPropagation(); openStudentScores('khaohom')" style="background: #f59e0b; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);">
+                <button onclick="event.stopPropagation(); openStudentScores('khaohom')"
+                  style="background: #f59e0b; color: white; border: 0; padding: 8px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);">
                   🏆 ดูคะแนนควิซ ➔
                 </button>
               </div>
@@ -1972,258 +2035,269 @@
         </div>
 
         <!-- Score Modal Popup for Live Task Progress Tracker -->
-        <div id="scoreModal" onclick="closeScoreModal()" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
-          <div onclick="event.stopPropagation()" style="background:white; border-radius:20px; padding:28px; max-width:520px; width:90%; box-shadow:0 20px 60px rgba(15,23,42,0.25); position:relative; max-height:85vh; overflow-y:auto;">
-            <button onclick="closeScoreModal()" style="position:absolute; top:14px; right:16px; background:#f1f5f9; border:0; border-radius:99px; padding:6px 12px; font-size:13px; cursor:pointer; color:#64748b; font-weight:700;">✕ ปิด</button>
+        <div id="scoreModal" onclick="closeScoreModal()"
+          style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+          <div onclick="event.stopPropagation()"
+            style="background:white; border-radius:20px; padding:28px; max-width:520px; width:90%; box-shadow:0 20px 60px rgba(15,23,42,0.25); position:relative; max-height:85vh; overflow-y:auto;">
+            <button onclick="closeScoreModal()"
+              style="position:absolute; top:14px; right:16px; background:#f1f5f9; border:0; border-radius:99px; padding:6px 12px; font-size:13px; cursor:pointer; color:#64748b; font-weight:700;">✕
+              ปิด</button>
             <div id="scoreModalContent"></div>
           </div>
         </div>
 
         <!-- LEVEL 2: DEDICATED STUDENT DETAIL ANALYTICS VIEW -->
         <div id="analyticsDetailSection" style="display: none;">
-          <div class="console-header" style="background: #ffffff; border: 1.5px solid #93c5fd; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%;">
+          <div class="console-header"
+            style="background: #ffffff; border: 1.5px solid #93c5fd; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; width: 100%;">
               <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <button class="back-to-chat-btn" onclick="closeStudentDetailAnalytics()" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;">
+                <button class="back-to-chat-btn" onclick="closeStudentDetailAnalytics()"
+                  style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;">
                   ⬅️ กลับสู่ภาพรวมรายชื่อนักเรียน
                 </button>
                 <h2 style="font-size: 16px; margin:0; color: #1e40af; display: flex; align-items: center; gap: 8px;">
-                  👤 ข้อมูลวิเคราะห์พฤติกรรมการเรียนรู้: <span id="detailStudentTitleName" style="color: #0f172a; font-weight: 800;">🙂 นรินทร์</span>
+                  👤 ข้อมูลวิเคราะห์พฤติกรรมการเรียนรู้: <span id="detailStudentTitleName"
+                    style="color: #0f172a; font-weight: 800;">🙂 นรินทร์</span>
                 </h2>
               </div>
 
               <!-- Quick Student Switcher Tabs -->
               <div class="student-selector-tabs" id="analyticsDetailTabs">
-                <button class="tab-btn active" id="tab-narin-detail" onclick="switchStudentTab('narin')">🙂 นรินทร์</button>
+                <button class="tab-btn active" id="tab-narin-detail" onclick="switchStudentTab('narin')">🙂
+                  นรินทร์</button>
                 <button class="tab-btn" id="tab-beam-detail" onclick="switchStudentTab('beam')">🧢 บีม</button>
                 <button class="tab-btn" id="tab-mali-detail" onclick="switchStudentTab('mali')">🌼 มะลิ</button>
-                <button class="tab-btn" id="tab-khaohom-detail" onclick="switchStudentTab('khaohom')">🌿 ข้าวหอม</button>
+                <button class="tab-btn" id="tab-khaohom-detail" onclick="switchStudentTab('khaohom')">🌿
+                  ข้าวหอม</button>
               </div>
             </div>
           </div>
 
           <div class="console-grid">
 
-          <!-- Card 1: Live Signals Tracker -->
-          <div class="panel-card">
-            <h4>📡 สัญญาณการมีส่วนร่วม (Signals) <span id="signalsStudentNameSpan" style="color: var(--primary); font-weight: 700;">🙂 นรินทร์</span></h4>
+            <!-- Card 1: Live Signals Tracker -->
+            <div class="panel-card">
+              <h4>📡 สัญญาณการมีส่วนร่วม (Signals) <span id="signalsStudentNameSpan"
+                  style="color: var(--primary); font-weight: 700;">🙂 นรินทร์</span></h4>
 
-            <div class="signal-row">
-              <span>จำนวนข้อความที่ส่ง</span>
-              <span class="signal-value" id="val-msgcount">2 ข้อความ</span>
+              <div class="signal-row">
+                <span>จำนวนข้อความที่ส่ง</span>
+                <span class="signal-value" id="val-msgcount">2 ข้อความ</span>
+              </div>
+
+              <div class="signal-row">
+                <span>ระยะเวลาที่ไม่พิมพ์ (Inactivity)</span>
+                <span class="signal-value" id="val-silence">00:34 นาที</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill" id="bar-silence" style="width: 35%;"></div>
+              </div>
+
+              <div class="signal-row">
+                <span>การกดอีโมจิ / Feedback</span>
+                <span class="signal-value" id="val-emoji">3 ครั้ง</span>
+              </div>
+
+              <div class="signal-row">
+                <span>การสลับออกจากหน้าเว็บ (Tab switch)</span>
+                <span class="signal-value" id="val-tabswitch">1 ครั้ง (28s)</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill warning" id="bar-tabswitch" style="width: 25%;"></div>
+              </div>
+
             </div>
 
-            <div class="signal-row">
-              <span>ระยะเวลาที่ไม่พิมพ์ (Inactivity)</span>
-              <span class="signal-value" id="val-silence">00:34 นาที</span>
-            </div>
-            <div class="meter-bar">
-              <div class="meter-fill" id="bar-silence" style="width: 35%;"></div>
-            </div>
+            <!-- Card 2: AI Hypothesis Engine -->
+            <div class="panel-card">
+              <h4>🧠 สมมติฐานเบื้องต้นของ AI <span>(Hypothesis)</span></h4>
 
-            <div class="signal-row">
-              <span>การกดอีโมจิ / Feedback</span>
-              <span class="signal-value" id="val-emoji">3 ครั้ง</span>
-            </div>
+              <div class="hypo-box">
+                <div class="hypo-statement" id="txt-hypo-title">อาจกำลังลังเลระหว่าง O2 กับ CO2</div>
+                <div class="hypo-rationale" id="txt-hypo-reason">ตรวจพบคำลังเล ("หรือเปล่า", "ยังไม่แน่ใจ") +
+                  เงียบพิมพ์เกิน 30s</div>
+                <div class="confidence-tag">
+                  <span>🎯 ความมั่นใจ AI:</span> <strong id="txt-confidence">68%</strong>
+                </div>
+              </div>
 
-            <div class="signal-row">
-              <span>การสลับออกจากหน้าเว็บ (Tab switch)</span>
-              <span class="signal-value" id="val-tabswitch">1 ครั้ง (28s)</span>
-            </div>
-            <div class="meter-bar">
-              <div class="meter-fill warning" id="bar-tabswitch" style="width: 25%;"></div>
-            </div>
-
-          </div>
-
-          <!-- Card 2: AI Hypothesis Engine -->
-          <div class="panel-card">
-            <h4>🧠 สมมติฐานเบื้องต้นของ AI <span>(Hypothesis)</span></h4>
-
-            <div class="hypo-box">
-              <div class="hypo-statement" id="txt-hypo-title">อาจกำลังลังเลระหว่าง O2 กับ CO2</div>
-              <div class="hypo-rationale" id="txt-hypo-reason">ตรวจพบคำลังเล ("หรือเปล่า", "ยังไม่แน่ใจ") +
-                เงียบพิมพ์เกิน 30s</div>
-              <div class="confidence-tag">
-                <span>🎯 ความมั่นใจ AI:</span> <strong id="txt-confidence">68%</strong>
+              <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+                *ระบบยึดหลัก <strong>Silence ≠ Disinterest</strong> ความเงียบไม่ถูกนำมาหักคะแนน
+                แต่ใช้เป็นบริบทในการยื่นมือช่วยเหลือ
               </div>
             </div>
 
-            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
-              *ระบบยึดหลัก <strong>Silence ≠ Disinterest</strong> ความเงียบไม่ถูกนำมาหักคะแนน
-              แต่ใช้เป็นบริบทในการยื่นมือช่วยเหลือ
-            </div>
-          </div>
-
-          <!-- Card 3: Gentle Support & Human-in-the-Loop Teacher Verification (Pedagogical Strategy Options) -->
-          <div class="panel-card" id="aiTeacherVerifyCard" style="border: 2px solid #60a5fa; background: #f0f9ff;">
-            <div
-              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
-              <h4 style="margin: 0; color: #1e40af;">🙋‍♂️ AI ถามยืนยันแนวทางดูแลนักเรียนกับครู <span>(Drop-In &
-                  Strategy Alignment)</span></h4>
-              <span id="aiVerifyStatusBadge"
-                style="font-size: 10px; background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; padding: 2px 8px; border-radius: 99px; font-weight: 600;">รอครูยืนยันแนวทาง
-                / Auto-Fallback ⏳</span>
-            </div>
-
-            <div
-              style="font-size: 11px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px; line-height: 1.4;">
-              ⚡ <b>ระบบ Human-in-the-Loop:</b> ครูเป็นผู้กำหนดแนวทางการสอน (Pedagogical Authority)
-              หากครูไม่อยู่หน้าจอภายใน 45 วินาที AI จะใช้แนวทาง A (ชวนคิดค้นพบเอง) ให้อัตโนมัติ
-            </div>
-
-            <!-- Pedagogical Strategy Selection -->
-            <div
-              style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 10px; margin-bottom: 10px;">
-              <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 6px;">
-                🎓 เลือกแนวทางการสอนที่คุณครูอยากให้ใช้กับนรินทร์ (Pedagogical Strategy):
+            <!-- Card 3: Gentle Support & Human-in-the-Loop Teacher Verification (Pedagogical Strategy Options) -->
+            <div class="panel-card" id="aiTeacherVerifyCard" style="border: 2px solid #60a5fa; background: #f0f9ff;">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+                <h4 style="margin: 0; color: #1e40af;">🙋‍♂️ AI ถามยืนยันแนวทางดูแลนักเรียนกับครู <span>(Drop-In &
+                    Strategy Alignment)</span></h4>
+                <span id="aiVerifyStatusBadge"
+                  style="font-size: 10px; background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; padding: 2px 8px; border-radius: 99px; font-weight: 600;">รอครูยืนยันแนวทาง
+                  / Auto-Fallback ⏳</span>
               </div>
-              <div style="display: flex; flex-direction: column; gap: 6px;">
+
+              <div
+                style="font-size: 11px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px; line-height: 1.4;">
+                ⚡ <b>ระบบ Human-in-the-Loop:</b> ครูเป็นผู้กำหนดแนวทางการสอน (Pedagogical Authority)
+                หากครูไม่อยู่หน้าจอภายใน 45 วินาที AI จะใช้แนวทาง A (ชวนคิดค้นพบเอง) ให้อัตโนมัติ
+              </div>
+
+              <!-- Pedagogical Strategy Selection -->
+              <div
+                style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 10px; margin-bottom: 10px;">
+                <div style="font-size: 11px; color: #1e40af; font-weight: 700; margin-bottom: 6px;">
+                  🎓 เลือกแนวทางการสอนที่คุณครูอยากให้ใช้กับนรินทร์ (Pedagogical Strategy):
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <button class="trigger-support-btn"
+                    style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; text-align: left; padding: 8px 12px;"
+                    onclick="selectPedagogicalStrategy('socratic')">
+                    🧠 <b>แนวทาง A (ชวนคิดค้นพบเอง - Socratic):</b> ให้ AI ส่งคำถามสะกิดใจ <i>"ออกซิเจน พืชรับเข้ามา
+                      หรือปล่อยออกมากันแน่?"</i>
+                  </button>
+                  <button class="trigger-support-btn"
+                    style="background: #ffffff; color: #1e40af; border: 1.5px solid #93c5fd; text-align: left; padding: 8px 12px;"
+                    onclick="selectPedagogicalStrategy('peer')">
+                    👥 <b>แนวทาง B (ดึงเพื่อนช่วยอภิปราย - Peer Scaffolding):</b> ให้ AI แท็กบีมและข้าวหอม
+                    ให้ช่วยอธิบายมุมมองเรื่องแก๊สพืช
+                  </button>
+                  <button class="trigger-support-btn"
+                    style="background: #ffffff; color: #7c3aed; border: 1.5px solid #c084fc; text-align: left; padding: 8px 12px;"
+                    onclick="selectPedagogicalStrategy('direct')">
+                    🎯 <b>แนวทาง C (อธิบายมโนทัศน์ตรง - Direct Concept):</b> ให้ AI ส่งสรุปสั้นเรื่องความต่าง CO2
+                    (ใช้สร้างอาหาร) vs O2 (ผลลัพธ์)
+                  </button>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                 <button class="trigger-support-btn"
-                  style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; text-align: left; padding: 8px 12px;"
-                  onclick="selectPedagogicalStrategy('socratic')">
-                  🧠 <b>แนวทาง A (ชวนคิดค้นพบเอง - Socratic):</b> ให้ AI ส่งคำถามสะกิดใจ <i>"ออกซิเจน พืชรับเข้ามา
-                    หรือปล่อยออกมากันแน่?"</i>
+                  style="background: #ffffff; color: #374151; border: 1px solid #d1d5db; flex: 1; min-width: 130px;"
+                  onclick="editAiPromptByTeacher(this)">
+                  ✏️ ปรับแก้ข้อความเอง
                 </button>
                 <button class="trigger-support-btn"
-                  style="background: #ffffff; color: #1e40af; border: 1.5px solid #93c5fd; text-align: left; padding: 8px 12px;"
-                  onclick="selectPedagogicalStrategy('peer')">
-                  👥 <b>แนวทาง B (ดึงเพื่อนช่วยอภิปราย - Peer Scaffolding):</b> ให้ AI แท็กบีมและข้าวหอม
-                  ให้ช่วยอธิบายมุมมองเรื่องแก๊สพืช
+                  style="background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; flex: 1; min-width: 130px;"
+                  onclick="rejectAiSuggestion(this)">
+                  ✋ ครูขอเข้าแนะนำเอง
                 </button>
                 <button class="trigger-support-btn"
-                  style="background: #ffffff; color: #7c3aed; border: 1.5px solid #c084fc; text-align: left; padding: 8px 12px;"
-                  onclick="selectPedagogicalStrategy('direct')">
-                  🎯 <b>แนวทาง C (อธิบายมโนทัศน์ตรง - Direct Concept):</b> ให้ AI ส่งสรุปสั้นเรื่องความต่าง CO2
-                  (ใช้สร้างอาหาร) vs O2 (ผลลัพธ์)
+                  style="background: #fdf4ff; color: #701a75; border: 1px solid #f0abfc; flex: 1; min-width: 130px;"
+                  onclick="toggleAutoFallback(this)">
+                  🤖 โหมด AI ดูแลอัตโนมัติ
                 </button>
               </div>
             </div>
 
-            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="trigger-support-btn"
-                style="background: #ffffff; color: #374151; border: 1px solid #d1d5db; flex: 1; min-width: 130px;"
-                onclick="editAiPromptByTeacher(this)">
-                ✏️ ปรับแก้ข้อความเอง
-              </button>
-              <button class="trigger-support-btn"
-                style="background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; flex: 1; min-width: 130px;"
-                onclick="rejectAiSuggestion(this)">
-                ✋ ครูขอเข้าแนะนำเอง
-              </button>
-              <button class="trigger-support-btn"
-                style="background: #fdf4ff; color: #701a75; border: 1px solid #f0abfc; flex: 1; min-width: 130px;"
-                onclick="toggleAutoFallback(this)">
-                🤖 โหมด AI ดูแลอัตโนมัติ
-              </button>
+
+
+            <!-- CARD: Group Consensus & Peer Check-In with Disagreements -->
+            <div class="panel-card">
+              <h4>✋ การเช็คความเห็น & ข้อแย้งในกลุ่ม <span>(Consensus & Debate)</span></h4>
+
+              <div class="signal-row">
+                <span>ยกมือเข้าใจภาพรวม</span>
+                <span class="signal-value" id="val-handraise-ratio">3 / 4 คน (75%)</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill" id="bar-handraise" style="width: 75%; background: var(--accent-purple);"></div>
+              </div>
+
+              <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px;">
+                ประวัติการพิมพ์โต้แย้ง / เห็นด้วย (อัปเดตทับอันเดิม):
+              </div>
+              <div id="peerAgreementList" style="display: flex; flex-direction: column; gap: 4px;">
+                <div class="log-item">
+                  <span>นรินทร์ ➔ ✍️ พิมพ์แย้ง: "พืชใช้ CO2 หายใจเอา O2 ออก"</span>
+                  <strong style="color: var(--accent-rose);">โต้แย้งด้วยเหตุผลตนเอง</strong>
+                </div>
+                <div class="log-item">
+                  <span>บีม ➔ ติ๊กเห็นด้วยกับมะลิ (น้ำ)</span>
+                  <strong style="color: var(--accent-green);">เห็นด้วย</strong>
+                </div>
+              </div>
+
+              <!-- Autonomous AI Indicator Box -->
+              <div
+                style="margin-top: 10px; background: #fdf4ff; border: 1.5px solid #f0abfc; padding: 10px 14px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="font-size: 11.5px; color: #701a75; line-height: 1.45;">
+                  🤖 <b>โหมด AI ดูแลอัตโนมัติ:</b> AI สรุปคำตอบกลุ่ม & เช็คความเห็น/ข้อแย้ง
+                  ส่งเข้าแชทเรียลไทม์ให้อัตโนมัติทันที (ไม่ต้องรอครูกด)
+                </div>
+                <span
+                  style="font-size: 10px; background: #fae8ff; color: #86198f; border: 1px solid #d8b4fe; padding: 3px 8px; border-radius: 99px; font-weight: 700; white-space: nowrap;">
+                  🟢 ทำงานอัตโนมัติ ⚡
+                </span>
+              </div>
             </div>
+
+            <!-- Card 4: Feedback & Hypothesis Accuracy -->
+            <div class="panel-card">
+              <h4>🎯 Hypothesis Accuracy <span>(ความแม่นยำ AI)</span></h4>
+
+              <div class="accuracy-score" id="txt-accuracy">
+                83% <span>(5/6 ยืนยันถูกต้อง)</span>
+              </div>
+
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                ประวัติการยืนยันจากนักเรียน:
+              </div>
+
+              <div class="feedback-log-list" id="feedbackLogList">
+                <div class="log-item">
+                  <span>AI สันนิษฐานว่าสับสน O2</span>
+                  <strong style="color: var(--accent-green);">✅ นักเรียนยืนยันว่าถูก</strong>
+                </div>
+                <div class="log-item">
+                  <span>AI สันนิษฐานว่าเงียบเพราะหลุดโฟกัส</span>
+                  <strong style="color: var(--accent-orange);">💡 นักเรียนบอกว่ากำลังคิด</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5: Engagement Trend -->
+            <div class="panel-card" style="grid-column: 1 / -1;">
+              <h4>📈 Engagement Trend รายบุคคล (ย้อนหลัง 15 นาที)</h4>
+              <div class="chart-container">
+                <svg width="100%" height="100%" viewBox="0 0 500 120" preserveAspectRatio="none">
+                  <!-- Grid lines -->
+                  <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" stroke-dasharray="4" />
+                  <line x1="0" y1="60" x2="500" y2="60" stroke="#f1f5f9" stroke-dasharray="4" />
+                  <line x1="0" y1="90" x2="500" y2="90" stroke="#f1f5f9" stroke-dasharray="4" />
+
+                  <!-- Area Gradient -->
+                  <defs>
+                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.2" />
+                      <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,80 Q75,40 150,60 T300,30 T450,50 L500,45 L500,120 L0,120 Z" fill="url(#chartGrad)" />
+
+                  <!-- Trend Line -->
+                  <path d="M0,80 Q75,40 150,60 T300,30 T450,50 L500,45" fill="none" stroke="#2563eb" stroke-width="3" />
+
+                  <!-- Data Points -->
+                  <circle cx="150" cy="60" r="4" fill="#2563eb" />
+                  <circle cx="300" cy="30" r="4" fill="#2563eb" />
+                  <circle cx="450" cy="50" r="4" fill="#2563eb" />
+                  <circle cx="500" cy="45" r="5" fill="#7c3aed" />
+                </svg>
+              </div>
+              <div
+                style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+                <span>15 นาทีก่อน</span>
+                <span>10 นาทีก่อน</span>
+                <span>5 นาทีก่อน</span>
+                <span>ปัจจุบัน (กำลังพัฒนาเชิงบวก)</span>
+              </div>
+            </div>
+
           </div>
-
-
-
-          <!-- CARD: Group Consensus & Peer Check-In with Disagreements -->
-          <div class="panel-card">
-            <h4>✋ การเช็คความเห็น & ข้อแย้งในกลุ่ม <span>(Consensus & Debate)</span></h4>
-
-            <div class="signal-row">
-              <span>ยกมือเข้าใจภาพรวม</span>
-              <span class="signal-value" id="val-handraise-ratio">3 / 4 คน (75%)</span>
-            </div>
-            <div class="meter-bar">
-              <div class="meter-fill" id="bar-handraise" style="width: 75%; background: var(--accent-purple);"></div>
-            </div>
-
-            <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px;">
-              ประวัติการพิมพ์โต้แย้ง / เห็นด้วย (อัปเดตทับอันเดิม):
-            </div>
-            <div id="peerAgreementList" style="display: flex; flex-direction: column; gap: 4px;">
-              <div class="log-item">
-                <span>นรินทร์ ➔ ✍️ พิมพ์แย้ง: "พืชใช้ CO2 หายใจเอา O2 ออก"</span>
-                <strong style="color: var(--accent-rose);">โต้แย้งด้วยเหตุผลตนเอง</strong>
-              </div>
-              <div class="log-item">
-                <span>บีม ➔ ติ๊กเห็นด้วยกับมะลิ (น้ำ)</span>
-                <strong style="color: var(--accent-green);">เห็นด้วย</strong>
-              </div>
-            </div>
-
-            <!-- Autonomous AI Indicator Box -->
-            <div
-              style="margin-top: 10px; background: #fdf4ff; border: 1.5px solid #f0abfc; padding: 10px 14px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-              <div style="font-size: 11.5px; color: #701a75; line-height: 1.45;">
-                🤖 <b>โหมด AI ดูแลอัตโนมัติ:</b> AI สรุปคำตอบกลุ่ม & เช็คความเห็น/ข้อแย้ง
-                ส่งเข้าแชทเรียลไทม์ให้อัตโนมัติทันที (ไม่ต้องรอครูกด)
-              </div>
-              <span
-                style="font-size: 10px; background: #fae8ff; color: #86198f; border: 1px solid #d8b4fe; padding: 3px 8px; border-radius: 99px; font-weight: 700; white-space: nowrap;">
-                🟢 ทำงานอัตโนมัติ ⚡
-              </span>
-            </div>
-          </div>
-
-          <!-- Card 4: Feedback & Hypothesis Accuracy -->
-          <div class="panel-card">
-            <h4>🎯 Hypothesis Accuracy <span>(ความแม่นยำ AI)</span></h4>
-
-            <div class="accuracy-score" id="txt-accuracy">
-              83% <span>(5/6 ยืนยันถูกต้อง)</span>
-            </div>
-
-            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              ประวัติการยืนยันจากนักเรียน:
-            </div>
-
-            <div class="feedback-log-list" id="feedbackLogList">
-              <div class="log-item">
-                <span>AI สันนิษฐานว่าสับสน O2</span>
-                <strong style="color: var(--accent-green);">✅ นักเรียนยืนยันว่าถูก</strong>
-              </div>
-              <div class="log-item">
-                <span>AI สันนิษฐานว่าเงียบเพราะหลุดโฟกัส</span>
-                <strong style="color: var(--accent-orange);">💡 นักเรียนบอกว่ากำลังคิด</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 5: Engagement Trend -->
-          <div class="panel-card" style="grid-column: 1 / -1;">
-            <h4>📈 Engagement Trend รายบุคคล (ย้อนหลัง 15 นาที)</h4>
-            <div class="chart-container">
-              <svg width="100%" height="100%" viewBox="0 0 500 120" preserveAspectRatio="none">
-                <!-- Grid lines -->
-                <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" stroke-dasharray="4" />
-                <line x1="0" y1="60" x2="500" y2="60" stroke="#f1f5f9" stroke-dasharray="4" />
-                <line x1="0" y1="90" x2="500" y2="90" stroke="#f1f5f9" stroke-dasharray="4" />
-
-                <!-- Area Gradient -->
-                <defs>
-                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#2563eb" stop-opacity="0.2" />
-                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <path d="M0,80 Q75,40 150,60 T300,30 T450,50 L500,45 L500,120 L0,120 Z" fill="url(#chartGrad)" />
-
-                <!-- Trend Line -->
-                <path d="M0,80 Q75,40 150,60 T300,30 T450,50 L500,45" fill="none" stroke="#2563eb" stroke-width="3" />
-
-                <!-- Data Points -->
-                <circle cx="150" cy="60" r="4" fill="#2563eb" />
-                <circle cx="300" cy="30" r="4" fill="#2563eb" />
-                <circle cx="450" cy="50" r="4" fill="#2563eb" />
-                <circle cx="500" cy="45" r="5" fill="#7c3aed" />
-              </svg>
-            </div>
-            <div
-              style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
-              <span>15 นาทีก่อน</span>
-              <span>10 นาทีก่อน</span>
-              <span>5 นาทีก่อน</span>
-              <span>ปัจจุบัน (กำลังพัฒนาเชิงบวก)</span>
-            </div>
-          </div>
-
-        </div>
 
       </section>
 
@@ -2290,13 +2364,12 @@
               </div>
               <input type="text" id="standaloneQuizTitle" class="chat-input"
                 style="background: white; border: 1px solid #d8b4fe; padding: 8px 12px; font-size: 12.5px; border-radius: 8px; margin-bottom: 8px; width: 100%;"
-                placeholder="ชื่อชุดควิซ เช่น: ควิซทบทวนเรื่องการสังเคราะห์ด้วยแสง (2 ข้อ)"
-                value="ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง (2 ข้อ)">
+                placeholder="พิมพ์หัวข้อควิซที่คุณต้องการสร้างที่นี่..."
+                value="">
 
               <textarea id="standaloneQuizText" class="disagree-textarea"
                 style="height: 75px; font-size: 12px; border-color: #d8b4fe; margin-bottom: 12px; width: 100%;"
-                placeholder="พิมพ์โจทย์ควิซเพิ่มเติม...">1. แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง?
-2. ผลลัพธ์ที่ได้จากการสังเคราะห์ด้วยแสงคืออะไรบ้าง?</textarea>
+                placeholder="พิมพ์โจทย์คำถามควิซของคุณที่นี่ (สามารถพิมพ์หลายข้อได้)..."></textarea>
 
               <div style="font-size: 12px; color: var(--navy-900); margin-bottom: 6px; font-weight: 600;">
                 3️⃣ เลือกกลุ่มเป้าหมายที่จะส่ง:
@@ -2322,7 +2395,8 @@
             <!-- Pre-made Quiz Library Templates -->
             <div class="panel-card">
               <h4 style="margin-top: 0; color: var(--navy-900); font-size: 13.5px;">📚 คลังชุดข้อสอบสำเร็จรูป
-                <span>(Quiz Templates)</span></h4>
+                <span>(Quiz Templates)</span>
+              </h4>
 
               <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div
@@ -2429,16 +2503,21 @@
             </button>
             <div>
               <h2 style="font-size: 16.5px; margin: 0; color: #701a75;">📝 เลือกควิซที่ครูมอบหมาย</h2>
-              <p style="font-size: 11.5px; color: var(--text-muted); margin: 2px 0 0 0;">กดการ์ดควิซที่ต้องการทำ แล้วกด "เริ่มทำ" เพื่อเข้าสู่หน้าทำข้อสอบ</p>
+              <p style="font-size: 11.5px; color: var(--text-muted); margin: 2px 0 0 0;">กดการ์ดควิซที่ต้องการทำ แล้วกด
+                "เริ่มทำ" เพื่อเข้าสู่หน้าทำข้อสอบ</p>
             </div>
           </div>
-          <span style="font-size: 11px; background: #fdf4ff; color: #7e22ce; border: 1px solid #e9d5ff; padding: 4px 12px; border-radius: 99px; font-weight: 700;">📚 ควิซที่ได้รับ: <span id="lobbyQuizCount">3</span> งาน</span>
+          <span
+            style="font-size: 11px; background: #fdf4ff; color: #7e22ce; border: 1px solid #e9d5ff; padding: 4px 12px; border-radius: 99px; font-weight: 700;">📚
+            ควิซที่ได้รับ: <span id="lobbyQuizCount">3</span> งาน</span>
         </div>
 
         <!-- Student Selector Tabs -->
-        <div style="background: white; border: 1px solid var(--border-color); padding: 10px 16px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <div
+          style="background: white; border: 1px solid var(--border-color); padding: 10px 16px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
           <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">ดูควิซของ:</span>
-          <button class="tab-btn active" id="lobby-tab-narin" onclick="switchLobbyTab('narin')">🙂 นรินทร์ (คุณ)</button>
+          <button class="tab-btn active" id="lobby-tab-narin" onclick="switchLobbyTab('narin')">🙂 นรินทร์
+            (คุณ)</button>
           <button class="tab-btn" id="lobby-tab-beam" onclick="switchLobbyTab('beam')">🧢 บีม</button>
           <button class="tab-btn" id="lobby-tab-mali" onclick="switchLobbyTab('mali')">🌼 มะลิ</button>
           <button class="tab-btn" id="lobby-tab-khaohom" onclick="switchLobbyTab('khaohom')">🌿 ข้าวหอม</button>
@@ -2455,14 +2534,24 @@
             <div style="font-size: 36px; flex-shrink: 0;">🌱</div>
             <div style="flex: 1; min-width: 0;">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
-                <span style="font-size: 14px; font-weight: 800; color: #701a75;">ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง</span>
-                <span style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢 พร้อมทำ</span>
+                <span
+                  style="font-size: 14px; font-weight: 800; color: #701a75;">ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง</span>
+                <span
+                  style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢
+                  พร้อมทำ</span>
               </div>
-              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา • มอบหมายเมื่อ 13 ส.ค. 2569</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา •
+                มอบหมายเมื่อ 13 ส.ค. 2569</div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <span style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ 5 นาที</span>
-                <span style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 2 ข้อ</span>
-                <span style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 20 คะแนน</span>
+                <span
+                  style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️
+                  5 นาที</span>
+                <span
+                  style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋
+                  2 ข้อ</span>
+                <span
+                  style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯
+                  20 คะแนน</span>
               </div>
             </div>
             <button onclick="startQuiz(1)"
@@ -2480,14 +2569,24 @@
             <div style="font-size: 36px; flex-shrink: 0;">⚗️</div>
             <div style="flex: 1; min-width: 0;">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
-                <span style="font-size: 14px; font-weight: 800; color: #701a75;">ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ</span>
-                <span style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢 พร้อมทำ</span>
+                <span style="font-size: 14px; font-weight: 800; color: #701a75;">ใบงานที่ 3:
+                  ห่วงโซ่อาหารและระบบนิเวศ</span>
+                <span
+                  style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢
+                  พร้อมทำ</span>
               </div>
-              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา • มอบหมายเมื่อ 12 ส.ค. 2569</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา •
+                มอบหมายเมื่อ 12 ส.ค. 2569</div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <span style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ 10 นาที</span>
-                <span style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 5 ข้อ</span>
-                <span style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 50 คะแนน</span>
+                <span
+                  style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️
+                  10 นาที</span>
+                <span
+                  style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋
+                  5 ข้อ</span>
+                <span
+                  style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯
+                  50 คะแนน</span>
               </div>
             </div>
             <button onclick="startQuiz(2)"
@@ -2504,13 +2603,22 @@
             <div style="flex: 1; min-width: 0;">
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
                 <span style="font-size: 14px; font-weight: 800; color: #475569;">ควิซท้ายบทคณิตศาสตร์: ฟังก์ชัน</span>
-                <span style="font-size: 10px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🔒 ยังไม่เปิด</span>
+                <span
+                  style="font-size: 10px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🔒
+                  ยังไม่เปิด</span>
               </div>
-              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาคณิตศาสตร์ • ครูวิภา • จะเปิดวันที่ 15 ส.ค. 2569</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาคณิตศาสตร์ • ครูวิภา •
+                จะเปิดวันที่ 15 ส.ค. 2569</div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <span style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ 15 นาที</span>
-                <span style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 10 ข้อ</span>
-                <span style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 100 คะแนน</span>
+                <span
+                  style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️
+                  15 นาที</span>
+                <span
+                  style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋
+                  10 ข้อ</span>
+                <span
+                  style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯
+                  100 คะแนน</span>
               </div>
             </div>
             <button disabled
@@ -2587,20 +2695,28 @@
 
             <!-- Choice Options -->
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;" id="quizQ1Choices">
-              <label class="quiz-choice-label" style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="O2" onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
+              <label class="quiz-choice-label"
+                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
+                <input type="radio" name="quizQ1" value="O2" onchange="updateQuizChoiceStyle(this)"
+                  style="accent-color: #a855f7;">
                 <span>ก. แก๊สออกซิเจน (O2)</span>
               </label>
-              <label class="quiz-choice-label" style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="CO2" onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
+              <label class="quiz-choice-label"
+                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
+                <input type="radio" name="quizQ1" value="CO2" onchange="updateQuizChoiceStyle(this)"
+                  style="accent-color: #a855f7;">
                 <span>ข. แก๊สคาร์บอนไดออกไซด์ (CO2)</span>
               </label>
-              <label class="quiz-choice-label" style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="N2" onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
+              <label class="quiz-choice-label"
+                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
+                <input type="radio" name="quizQ1" value="N2" onchange="updateQuizChoiceStyle(this)"
+                  style="accent-color: #a855f7;">
                 <span>ค. แก๊สไนโตรเจน (N2)</span>
               </label>
-              <label class="quiz-choice-label" style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="H2" onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
+              <label class="quiz-choice-label"
+                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
+                <input type="radio" name="quizQ1" value="H2" onchange="updateQuizChoiceStyle(this)"
+                  style="accent-color: #a855f7;">
                 <span>ง. แก๊สไฮโดรเจน (H2)</span>
               </label>
             </div>
@@ -2635,23 +2751,31 @@
           <div id="studentQuizResultBox"
             style="display: none; background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 16px; border-radius: 12px; margin-bottom: 16px; text-align: left; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <div style="font-size: 18px; font-weight: 800; color: #16a34a; display: flex; align-items: center; gap: 6px;">
+              <div
+                style="font-size: 18px; font-weight: 800; color: #16a34a; display: flex; align-items: center; gap: 6px;">
                 🎉 ส่งคำตอบและตรวจผลสอบสำเร็จ!
               </div>
-              <span style="font-size: 11px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 3px 10px; border-radius: 99px; font-weight: 700;">ผ่านเกณฑ์ 100% 🟢</span>
+              <span
+                style="font-size: 11px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 3px 10px; border-radius: 99px; font-weight: 700;">ผ่านเกณฑ์
+                100% 🟢</span>
             </div>
-            
-            <div style="font-size: 15px; color: #15803d; font-weight: 800; margin-bottom: 10px; background: #ffffff; border: 1px solid #bbf7d0; padding: 10px 14px; border-radius: 8px;" id="studentQuizScoreText">
+
+            <div
+              style="font-size: 15px; color: #15803d; font-weight: 800; margin-bottom: 10px; background: #ffffff; border: 1px solid #bbf7d0; padding: 10px 14px; border-radius: 8px;"
+              id="studentQuizScoreText">
               🏆 คะแนนรวม: 10 / 10 คะแนน (คะแนนเต็ม)
             </div>
 
             <!-- Detailed Explanation Breakdown -->
-            <div style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #1e293b; margin-bottom: 10px;">
+            <div
+              style="background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #1e293b; margin-bottom: 10px;">
               <div style="font-size: 11.5px; font-weight: 700; color: #166534; margin-bottom: 6px;">
                 🤖 เฉลยรายละเอียดและข้อเสนอแนะจาก AI Tutor:
               </div>
-              • <b>ข้อ 1 (ปรนัย):</b> ตอบ <u>ข. แก๊สคาร์บอนไดออกไซด์ (CO2)</u> ➔ <b style="color:#16a34a;">ถูกต้อง (5/5)</b> พืชรับ CO2 เข้าทางปากใบเพื่อใช้สังเคราะห์ด้วยแสง<br>
-              • <b>ข้อ 2 (อัตนัย):</b> ตอบ <u>ได้น้ำตาลกลูโคสและปล่อยแก๊สออกซิเจน</u> ➔ <b style="color:#16a34a;">ถูกต้องสมบูรณ์ (5/5)</b> ระบุผลลัพธ์หลักและผลพลอยได้ครบถ้วน
+              • <b>ข้อ 1 (ปรนัย):</b> ตอบ <u>ข. แก๊สคาร์บอนไดออกไซด์ (CO2)</u> ➔ <b style="color:#16a34a;">ถูกต้อง
+                (5/5)</b> พืชรับ CO2 เข้าทางปากใบเพื่อใช้สังเคราะห์ด้วยแสง<br>
+              • <b>ข้อ 2 (อัตนัย):</b> ตอบ <u>ได้น้ำตาลกลูโคสและปล่อยแก๊สออกซิเจน</u> ➔ <b
+                style="color:#16a34a;">ถูกต้องสมบูรณ์ (5/5)</b> ระบุผลลัพธ์หลักและผลพลอยได้ครบถ้วน
             </div>
 
             <div style="font-size: 11px; color: #15803d; font-weight: 600; text-align: center;">
@@ -2709,8 +2833,10 @@
           ถามยืนยันกับครู</button>
         <button class="sim-btn" style="border-color: #c084fc; color: #e9d5ff;" onclick="simTeacherAwayAuto()">🌙
           ครูแวะไปดูห้องอื่น (AI อัตโนมัติ)</button>
-        <button class="sim-btn" style="border-color: #4ade80; color: #4ade80;" onclick="simProactiveAiOutreach()">🤖 AI เริ่มทักเด็กที่เงียบ (Proactive Outreach)</button>
-        <button class="sim-btn" style="border-color: #f43f5e; color: #fb7185;" onclick="simMultipleQuietStudentsOutreach()">👥 เด็กเงียบพร้อมกัน 2 คน (นรินทร์ + ข้าวหอม)</button>
+        <button class="sim-btn" style="border-color: #4ade80; color: #4ade80;" onclick="simProactiveAiOutreach()">🤖 AI
+          เริ่มทักเด็กที่เงียบ (Proactive Outreach)</button>
+        <button class="sim-btn" style="border-color: #f43f5e; color: #fb7185;"
+          onclick="simMultipleQuietStudentsOutreach()">👥 เด็กเงียบพร้อมกัน 2 คน (นรินทร์ + ข้าวหอม)</button>
         <button class="sim-btn reset" onclick="resetSim()">↺ รีเซ็ต</button>
       </div>
     </div>
@@ -2731,19 +2857,25 @@
 
       <div class="saved-tasks-body">
         <!-- Personal Score & Growth Dashboard Badge (Private Score View for Student) -->
-        <div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border: 1.5px solid #f0abfc; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(192, 132, 252, 0.15);">
-          <div style="font-size: 12.5px; font-weight: 700; color: #701a75; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div
+          style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border: 1.5px solid #f0abfc; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(192, 132, 252, 0.15);">
+          <div
+            style="font-size: 12.5px; font-weight: 700; color: #701a75; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
             <span>🏆 <b>คะแนน & การเติบโตส่วนตัวของฉัน</b></span>
-            <span style="font-size: 10px; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; padding: 2px 8px; border-radius: 99px; font-weight: 700;">ส่วนบุคคล (Private View) 🔒</span>
+            <span
+              style="font-size: 10px; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; padding: 2px 8px; border-radius: 99px; font-weight: 700;">ส่วนบุคคล
+              (Private View) 🔒</span>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-            <div style="background: #ffffff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 8px; text-align: center;">
+            <div
+              style="background: #ffffff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 8px; text-align: center;">
               <div style="font-size: 10.5px; color: #6b21a8; font-weight: 600;">🎯 ควิซทางการครูวิภา</div>
               <div style="font-size: 17px; font-weight: 800; color: #7e22ce;" id="studentScoreQuiz">10 / 10</div>
               <div style="font-size: 9.5px; color: #16a34a; font-weight: 700;">🟢 ผ่านเกณฑ์ดีเยี่ยม</div>
             </div>
-            <div style="background: #ffffff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 8px; text-align: center;">
+            <div
+              style="background: #ffffff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 8px; text-align: center;">
               <div style="font-size: 10.5px; color: #6b21a8; font-weight: 600;">🧩 ควิซทบทวน AI</div>
               <div style="font-size: 17px; font-weight: 800; color: #2563eb;">2 / 2</div>
               <div style="font-size: 9.5px; color: #2563eb; font-weight: 700;">✅ ทำครบทุกชุด</div>
@@ -2751,11 +2883,18 @@
           </div>
 
           <!-- Earned Achievement Badges -->
-          <div style="font-size: 10.5px; color: #86198f; font-weight: 600; margin-bottom: 4px;">🌟 เหรียญเกียรติยศสะสม:</div>
+          <div style="font-size: 10.5px; color: #86198f; font-weight: 600; margin-bottom: 4px;">🌟 เหรียญเกียรติยศสะสม:
+          </div>
           <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-            <span style="font-size: 10px; background: #ffffff; color: #b45309; border: 1px solid #fde68a; padding: 2px 7px; border-radius: 99px; font-weight: 600;">💡 ผู้กล้าเสนอแนวคิดใหม่</span>
-            <span style="font-size: 10px; background: #ffffff; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 7px; border-radius: 99px; font-weight: 600;">⚡ เช็คอินว่องไว</span>
-            <span style="font-size: 10px; background: #ffffff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 99px; font-weight: 600;">🧠 ทบทวนสม่ำเสมอ</span>
+            <span
+              style="font-size: 10px; background: #ffffff; color: #b45309; border: 1px solid #fde68a; padding: 2px 7px; border-radius: 99px; font-weight: 600;">💡
+              ผู้กล้าเสนอแนวคิดใหม่</span>
+            <span
+              style="font-size: 10px; background: #ffffff; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 7px; border-radius: 99px; font-weight: 600;">⚡
+              เช็คอินว่องไว</span>
+            <span
+              style="font-size: 10px; background: #ffffff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 2px 7px; border-radius: 99px; font-weight: 600;">🧠
+              ทบทวนสม่ำเสมอ</span>
           </div>
         </div>
 
@@ -3167,14 +3306,14 @@
       if (!data) return;
 
       const statusLabel = { done: '✅ ส่งแล้ว', partial: '🟡 ส่งบางส่วน', pending: '⏳ ยังไม่ส่ง', locked: '🔒 ยังไม่เปิด' };
-      const statusBg   = { done: '#f0fdf4', partial: '#fffbeb', pending: '#f8fafc', locked: '#f8fafc' };
+      const statusBg = { done: '#f0fdf4', partial: '#fffbeb', pending: '#f8fafc', locked: '#f8fafc' };
       const statusBorder = { done: '#86efac', partial: '#fde68a', pending: '#e2e8f0', locked: '#e2e8f0' };
       const scoreColor = { done: '#15803d', partial: '#b45309', pending: '#94a3b8', locked: '#94a3b8' };
 
       const quizRows = data.quizzes.map(q => {
         const scoreText = q.status === 'locked' ? '—' :
-                          q.score !== null ? `<b style="font-size:16px;color:${scoreColor[q.status]};">${q.score}</b><span style="color:#94a3b8;">/${q.max}</span>` :
-                          `<span style="color:#94a3b8;">—/${q.max}</span>`;
+          q.score !== null ? `<b style="font-size:16px;color:${scoreColor[q.status]};">${q.score}</b><span style="color:#94a3b8;">/${q.max}</span>` :
+            `<span style="color:#94a3b8;">—/${q.max}</span>`;
         return `
           <div style="background:${statusBg[q.status]}; border:1.5px solid ${statusBorder[q.status]}; border-radius:12px; padding:14px 16px; display:flex; align-items:center; gap:14px;">
             <div style="font-size:28px; flex-shrink:0;">${q.icon}</div>
@@ -3247,7 +3386,11 @@
 
     function sendStandaloneQuizToGroup() {
       const titleInput = document.getElementById('standaloneQuizTitle');
-      const quizTitle = titleInput ? titleInput.value.trim() : "ควิซวัดความเข้าใจเรื่องการสังเคราะห์ด้วยแสง";
+      const textInput = document.getElementById('standaloneQuizText');
+
+      const quizTitle = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : "ควิซประจำบทเรียนจากครูผู้สอน";
+      const rawText = textInput ? textInput.value.trim() : "";
+      const quizText = rawText ? rawText.replace(/\n/g, '<br>') : "1. โปรดตอบคำถามทบทวนความรู้ตามเอกสารควิซที่ครูมอบหมาย";
 
       const msgArea = document.getElementById('messagesArea');
       if (!msgArea) return;
@@ -3265,7 +3408,7 @@
             </div>
 
             <div style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #e9d5ff; padding: 10px 12px; border-radius: 8px; margin: 8px 0; line-height: 1.5;">
-              ${document.getElementById('standaloneQuizText').value.replace(/\n/g, '<br>')}
+              ${quizText}
             </div>
 
             <button onclick="switchViewMode('student-quiz')" style="width: 100%; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.25); margin: 8px 0; transition: all 0.2s ease;">
@@ -4042,7 +4185,7 @@
         sig.emojiCount++;
         state.emojiCount++;
         markPollResponded(`กดอีโมจิ ${emoji}`);
-        
+
         sig.hypothesis.title = `มีส่วนร่วมผ่านอีโมจิ/ฟีดแบ็ก (Active Emoji Participant)`;
         sig.hypothesis.reason = `ตรวจพบการกดอีโมจิ ${emoji} (${sig.emojiCount} ครั้ง) ➔ ยืนยันว่ากำลังอ่านและติดตามแชทสดอยู่ ไม่ได้ไร้การตอบสนอง`;
         sig.hypothesis.confidence = 88;
