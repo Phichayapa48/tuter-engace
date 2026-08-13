@@ -1371,7 +1371,7 @@
 
     <div class="view-switcher">
       <button class="view-btn active" id="btn-mode-student" data-mode="student">🎓 มุมนักเรียน</button>
-      <button class="view-btn" id="btn-mode-teacher-dashboard" data-mode="teacher-dashboard">👩‍🏫 แดชบอร์ดครู</button>
+      <button class="view-btn" id="btn-mode-teacher-dashboard" data-mode="teacher">👩‍🏫 แดชบอร์ดครู</button>
       <button class="view-btn" id="btn-mode-quiz" data-mode="quiz">📁 คลังข้อสอบ & ใบงาน</button>
       <button class="view-btn" id="btn-mode-student-quiz" data-mode="student-quiz">📝 ควิซ</button>
     </div>
@@ -3468,6 +3468,7 @@
 
     // Global View Switcher Helper
     function switchViewMode(mode) {
+      if (mode === 'teacher-dashboard') mode = 'teacher';
       state.viewMode = mode;
 
       const grid = document.getElementById('workspaceGrid');
