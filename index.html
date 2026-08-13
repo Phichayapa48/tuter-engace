@@ -3582,6 +3582,10 @@
     }
 
     function submitStudentIndividualQuiz() {
+      const btn = document.getElementById('btnSubmitStudentQuiz');
+      if (btn && btn.disabled) return; // ป้องกันกดซ้ำ
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; btn.textContent = '✅ ส่งคำตอบแล้ว'; }
+
       const q1Choice = document.querySelector('input[name="quizQ1"]:checked');
       const q2Answer = document.getElementById('quizQ2Textarea').value.trim();
 
