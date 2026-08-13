@@ -2582,8 +2582,8 @@
                 <input type="radio" name="quizQ1" value="O2" onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
                 <span>ก. แก๊สออกซิเจน (O2)</span>
               </label>
-              <label class="quiz-choice-label active" style="display: flex; align-items: center; gap: 10px; background: #fdf4ff; border: 1.5px solid #a855f7; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; font-weight: 600; color: #701a75; box-shadow: 0 2px 6px rgba(168, 85, 247, 0.1);">
-                <input type="radio" name="quizQ1" value="CO2" checked onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
+              <label class="quiz-choice-label" style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
+                <input type="radio" name="quizQ1" value="CO2" onchange="updateQuizChoiceStyle(this)" style="accent-color: #a855f7;">
                 <span>ข. แก๊สคาร์บอนไดออกไซด์ (CO2)</span>
               </label>
               <label class="quiz-choice-label" style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
@@ -2619,7 +2619,7 @@
 
             <textarea id="quizQ2Textarea" class="disagree-textarea"
               style="height: 70px; font-size: 12px; border-color: #d8b4fe; width: 100%; margin-bottom: 8px;"
-              placeholder="พิมพ์อธิบายคำตอบของคุณที่นี่...">ได้น้ำตาลกลูโคส (C6H12O6) สำหรับเป็นอาหารของพืช และปล่อยแก๊สออกซิเจน (O2) ออกสู่บรรยากาศ</textarea>
+              placeholder="พิมพ์อธิบายคำตอบของคุณที่นี่..."></textarea>
           </div>
 
           <!-- Submit Button & Result Box -->
@@ -3471,6 +3471,22 @@
       }
       const resultBox = document.getElementById('studentQuizResultBox');
       if (resultBox) resultBox.style.display = 'none';
+
+      // Reset ตัวเลือกและคำตอบให้ว่างเปล่า
+      document.querySelectorAll('input[name="quizQ1"]').forEach(r => {
+        r.checked = false;
+        const lbl = r.closest('label');
+        if (lbl) {
+          lbl.classList.remove('active');
+          lbl.style.background = 'white';
+          lbl.style.borderColor = '#e9d5ff';
+          lbl.style.fontWeight = '';
+          lbl.style.color = '';
+          lbl.style.boxShadow = 'none';
+        }
+      });
+      const ta = document.getElementById('quizQ2Textarea');
+      if (ta) ta.value = '';
 
       switchViewMode('student-quiz-active');
       showToast(`🚀 เริ่มทำ: ${quizTitles[quizId] || 'ควิซ'}`);
