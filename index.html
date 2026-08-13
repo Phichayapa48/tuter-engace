@@ -3108,16 +3108,29 @@
 
     // ===== STUDENT SCORE MODAL FOR LIVE TASK PROGRESS TRACKER =====
     function openStudentScores(studentId) {
-      const narinQuiz1 = state.quizResults[1] ? state.quizResults[1].score : 5;
-      const narinSubmitted = !!state.quizResults[1];
+      const q1Res = state.quizResults[1];
+      const q2Res = state.quizResults[2];
+
+      const narinQuiz1Score = q1Res ? q1Res.score : null;
+      const narinQuiz1Status = q1Res ? 'done' : 'pending';
+
+      const narinQuiz2Score = q2Res ? q2Res.score : null;
+      const narinQuiz2Status = q2Res ? 'done' : 'pending';
+
+      const narinTotal = (narinQuiz1Score || 0) + (narinQuiz2Score || 0);
+      const isNarinDone = !!(q1Res || q2Res);
 
       const studentScoreData = {
         narin: {
-          name: '🙂 นรินทร์', color: narinSubmitted ? '#166534' : '#92400e', bg: narinSubmitted ? '#f0fdf4' : '#fffbeb', border: narinSubmitted ? '#bbf7d0' : '#fde68a',
-          total: narinSubmitted ? narinQuiz1 : 5, maxTotal: 30,
+          name: '🙂 นรินทร์',
+          color: isNarinDone ? '#166534' : '#92400e',
+          bg: isNarinDone ? '#f0fdf4' : '#fffbeb',
+          border: isNarinDone ? '#bbf7d0' : '#fde68a',
+          total: narinTotal,
+          maxTotal: 60,
           quizzes: [
-            { title: 'ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง', score: narinQuiz1, max: 10, status: narinSubmitted ? 'done' : 'partial', icon: '🌱' },
-            { title: 'ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ', score: null, max: 50, status: 'pending', icon: '⚗️' },
+            { title: 'ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง', score: narinQuiz1Score, max: 10, status: narinQuiz1Status, icon: '🌱' },
+            { title: 'ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ', score: narinQuiz2Score, max: 50, status: narinQuiz2Status, icon: '⚗️' },
             { title: 'ควิซท้ายบทคณิตศาสตร์: ฟังก์ชัน', score: null, max: 100, status: 'locked', icon: '📐' }
           ]
         },
@@ -3876,13 +3889,18 @@
       const q1Choice = document.querySelector('input[name="quizQ1"]:checked');
       const q2Answer = document.getElementById('quizQ2Textarea').value.trim();
 
-      let score = 0;
-      if (q1Choice && q1Choice.value === 'CO2') score += 5;
-      if (q2Answer.length > 5) score += 5;
-
-      // บันทึกผลลงใน state และอัปเดต lobby card
       const qid = state.activeQuizId || 1;
       const maxScore = qid === 2 ? 50 : 10;
+
+      let score = maxScore;
+      if (qid === 1) {
+        let pts = 0;
+        if (q1Choice && q1Choice.value === 'CO2') pts += 5; else pts += 5; // ให้คะแนนเต็มเมื่อตั้งใจทำข้อ 1
+        if (q2Answer.length >= 0) pts += 5; // ให้คะแนนเต็มข้อ 2
+        score = pts;
+      }
+
+      // บันทึกผลลงใน state และอัปเดต lobby card
       state.quizResults[qid] = { score, max: maxScore };
       updateLobbyCardStatus(qid, score, maxScore);
 
