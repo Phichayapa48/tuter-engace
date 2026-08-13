@@ -1,0 +1,3273 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tutor Dual View • Engagement Signal & Scaffolding System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-900: #0f172a;
+      --navy-800: #1e293b;
+      --navy-700: #334155;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --accent-purple: #7c3aed;
+      --accent-lavender: #f3e8ff;
+      --accent-orange: #ea580c;
+      --accent-amber: #fef3c7;
+      --accent-green: #16a34a;
+      --accent-green-bg: #f0fdf4;
+      --accent-rose: #e11d48;
+
+      --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0f9ff 100%);
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Prompt', 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    /* Top App Bar */
+    .app-header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.5);
+    }
+
+    .brand-text h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      color: #ffffff;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    /* Principle Pill Banner */
+    .ethic-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .ethic-badge strong {
+      color: #38bdf8;
+    }
+
+    /* Mode Switcher */
+    .view-switcher {
+      display: flex;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+
+    .view-btn {
+      border: 0;
+      background: transparent;
+      color: #94a3b8;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-btn:hover {
+      color: #fff;
+    }
+
+    .view-btn.active {
+      background: #ffffff;
+      color: var(--navy-900);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Main Container Layout */
+    .app-body {
+      max-width: 1440px;
+      width: 100%;
+      margin: 20px auto;
+      padding: 0 20px 80px 20px;
+      flex: 1;
+    }
+
+    /* Process Flow Bar (5 Steps Visualizer) */
+    .flow-bar {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 160px;
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+
+    .flow-step.active {
+      opacity: 1;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--navy-700);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .flow-step.active .step-num {
+      background: var(--primary);
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .step-info b {
+      display: block;
+      font-size: 12px;
+      color: var(--text-main);
+    }
+
+    .step-info span {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    .flow-arrow {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    /* Grid Views Layout */
+    .workspace-grid {
+      display: grid;
+      gap: 20px;
+      transition: all 0.3s ease;
+    }
+
+    /* Student View Mode */
+    .workspace-grid.mode-student {
+      grid-template-columns: 240px 1fr;
+    }
+
+    /* Teacher View Mode */
+    .workspace-grid.mode-teacher {
+      grid-template-columns: 240px 1fr;
+    }
+
+    /* Dedicated Analytics Page View Mode */
+    .workspace-grid.mode-analytics {
+      grid-template-columns: 1fr;
+    }
+
+    /* Left Navigation Rail / Roster */
+    .roster-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .class-info {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .class-info h3 {
+      font-size: 14px;
+      color: var(--navy-900);
+    }
+
+    .class-info p {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .student-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .student-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .student-item:hover {
+      background: #f8fafc;
+    }
+
+    .student-item.active {
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: #e2e8f0;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .student-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .student-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .student-status {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.2s ease;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+    }
+
+    .status-dot.idle {
+      background: #f59e0b;
+    }
+
+    .status-dot.away {
+      background: var(--accent-rose);
+    }
+
+    /* Student View: Group Chat Area */
+    .chat-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      height: 720px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .chat-header p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .toggle-console-btn {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #ffffff;
+      border: 0;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle-console-btn:hover {
+      background: linear-gradient(135deg, #6d28d9, #4338ca);
+      transform: translateY(-1px);
+    }
+
+    .back-to-chat-btn {
+      background: var(--navy-900);
+      color: #ffffff;
+      border: 0;
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+    }
+
+    .back-to-chat-btn:hover {
+      background: var(--primary);
+      transform: translateX(-2px);
+    }
+
+    .live-status-pill {
+      font-size: 11px;
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+      border: 1px solid #bbf7d0;
+      padding: 4px 10px;
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+
+    .messages-area {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message-group {
+      display: flex;
+      gap: 10px;
+      max-width: 85%;
+    }
+
+    .message-group.me {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: #e2e8f0;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .message-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message-sender {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .message-group.me .message-sender {
+      text-align: right;
+    }
+
+    .bubble {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px 16px 16px 4px;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text-main);
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .message-group.me .bubble {
+      background: var(--navy-900);
+      color: #ffffff;
+      border-radius: 16px 16px 4px 16px;
+      border-color: var(--navy-900);
+    }
+
+    .message-group.ai .bubble {
+      background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+      border-color: #cbd5e1;
+    }
+
+    .message-group.ai .message-avatar {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+    }
+
+    /* Emoji Reactions bar */
+    .reaction-bar {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .react-btn {
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .react-btn:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .react-btn.selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Verification Box embedded in AI message */
+    .hypothesis-verify-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .verify-title {
+      font-weight: 600;
+      color: var(--navy-900);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .verify-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    /* Pinned Group Recap Bar at Top of Chat */
+    .pinned-recap-bar {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-bottom: 1.5px solid #bfdbfe;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    }
+    .pinned-recap-bar:hover {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    }
+
+    /* Saved Tasks & Catch-up Drawer Modal */
+    .saved-tasks-modal {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      justify-content: flex-end;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .saved-tasks-modal.open {
+      opacity: 1; pointer-events: auto;
+    }
+    .saved-tasks-content {
+      width: 420px;
+      max-width: 90vw;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: -8px 0 32px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .saved-tasks-modal.open .saved-tasks-content {
+      transform: translateX(0);
+    }
+    .saved-tasks-header {
+      padding: 16px;
+      background: linear-gradient(135deg, #701a75, #4c1d95);
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .saved-tasks-body {
+      padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .verify-chip {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .verify-chip:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .verify-chip.confirmed {
+      background: var(--accent-green-bg);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .verify-chip.disagreed {
+      background: #fff1f2;
+      border-color: #f43f5e;
+      color: #e11d48;
+      font-weight: 600;
+    }
+
+    /* Group Recap & Hand Raise Button styling */
+    .hand-raise-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border: 1.5px solid #0284c7;
+      color: #0369a1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      margin-top: 6px;
+    }
+
+    .hand-raise-btn:hover {
+      background: #bae6fd;
+    }
+
+    .hand-raise-btn.raised {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      color: #ffffff;
+      border-color: #6366f1;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .hand-raise-btn.raised .badge {
+      background: #ffffff !important;
+      color: #7c3aed !important;
+    }
+
+    .edit-btn-pill {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .edit-btn-pill:hover {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    /* Custom Disagreement Text Area Box (SCOPED INSIDE EACH SPECIFIC MESSAGE BOX) */
+    .disagree-input-container {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .disagree-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #fda4af;
+      border-radius: 8px;
+      font-size: 12px;
+      resize: vertical;
+      min-height: 54px;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .disagree-textarea:focus {
+      border-color: #e11d48;
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
+    }
+
+    .submit-disagree-btn {
+      align-self: flex-end;
+      background: #e11d48;
+      color: #ffffff;
+      border: 0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .submit-disagree-btn:hover {
+      background: #be123c;
+    }
+
+    /* Chat Input Form */
+    .chat-input-wrapper {
+      padding: 16px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .send-btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: 0;
+      padding: 0 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .send-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .input-subtext {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      padding: 0 4px;
+    }
+
+    /* Teacher / Researcher Console (มุมครู/นักวิจัย) */
+    .teacher-console {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      max-height: 720px;
+      padding-right: 4px;
+    }
+
+    .console-header {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .console-header h2 {
+      font-size: 17px;
+      color: var(--navy-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .student-selector-tabs {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--navy-900);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Grid Panels */
+    .console-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-card h4 {
+      font-size: 13px;
+      color: var(--navy-900);
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Live Signals Card */
+    .signal-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      margin-bottom: 6px;
+    }
+
+    .signal-value {
+      font-weight: 600;
+      color: var(--navy-900);
+    }
+
+    .meter-bar {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    .meter-fill.warning {
+      background: #f59e0b;
+    }
+
+    .meter-fill.danger {
+      background: var(--accent-rose);
+    }
+
+    /* Hypothesis Card */
+    .hypo-box {
+      background: var(--accent-amber);
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .hypo-statement {
+      font-size: 13px;
+      font-weight: 700;
+      color: #92400e;
+      margin-bottom: 4px;
+    }
+
+    .hypo-rationale {
+      font-size: 11.5px;
+      color: #b45309;
+      line-height: 1.4;
+    }
+
+    .confidence-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #78350f;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    /* Support Strategy Panel */
+    .support-box {
+      background: var(--accent-green-bg);
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+
+    .support-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #15803d;
+      margin-bottom: 4px;
+    }
+
+    .support-prompt {
+      font-size: 12.5px;
+      color: #166534;
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .trigger-support-btn {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #86efac;
+      color: #15803d;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .trigger-support-btn:hover {
+      background: #dcfce7;
+    }
+
+    /* Feedback & Accuracy Panel */
+    .accuracy-score {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .accuracy-score span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .feedback-log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      font-size: 11px;
+      padding: 6px 8px;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Engagement Trend SVG Chart */
+    .chart-container {
+      width: 100%;
+      height: 140px;
+      margin-top: 8px;
+    }
+
+    /* Floating Draggable Simulation Widget */
+    .sim-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 440px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      user-select: none;
+      transition: width 0.3s ease, border-radius 0.3s ease;
+      overflow: hidden;
+    }
+
+    .sim-widget-header {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: grab;
+    }
+
+    .sim-widget-header:active {
+      cursor: grabbing;
+    }
+
+    .sim-widget-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .drag-grip {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .sim-badge {
+      font-size: 9.5px;
+      background: rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.4);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .sim-ctrl-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .sim-ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .sim-widget-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sim-category {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .cat-label {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+      min-width: 105px;
+    }
+
+    .sim-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sim-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: #60a5fa;
+      transform: translateY(-1px);
+    }
+
+    .sim-btn.reset {
+      background: rgba(225, 29, 72, 0.2);
+      border-color: rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+    }
+
+    .sim-btn.reset:hover {
+      background: rgba(225, 29, 72, 0.4);
+      border-color: #f43f5e;
+    }
+
+    /* Collapsed state */
+    .sim-widget.collapsed {
+      width: auto;
+      border-radius: 99px;
+    }
+
+    .sim-widget.collapsed .sim-widget-header {
+      border-bottom: 0;
+      padding: 8px 14px;
+    }
+
+    .sim-widget.collapsed .sim-widget-body {
+      display: none;
+    }
+
+    /* Notification Toast */
+    .toast {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: var(--navy-900);
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 300;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1024px) {
+
+      .workspace-grid.mode-student,
+      .workspace-grid.mode-teacher,
+      .workspace-grid.mode-analytics {
+        grid-template-columns: 1fr;
+      }
+
+      .sim-dock {
+        width: 92%;
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top App Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">✦</div>
+      <div class="brand-text">
+        <h1>AI Tutor Dual View • ห้องเรียนวิทยาศาสตร์ (ม.1/2)</h1>
+        <p>ผู้ช่วยชวนคิด ไม่ใช่ผู้ตัดสิน • Closed-Loop Engagement Observation & Scaffolding</p>
+      </div>
+    </div>
+
+    <div class="ethic-badge">
+      <span>🛡️ หลักการสำคัญ:</span>
+      <strong>"เงียบ ≠ ไม่สนใจ" (Silence ≠ Lack of Focus)</strong>
+    </div>
+
+    <div class="view-switcher">
+      <button class="view-btn active" id="btn-mode-student" data-mode="student">🎓 มุมนักเรียน</button>
+      <button class="view-btn" id="btn-mode-teacher" data-mode="teacher">👩‍🏫 มุมครู </button>
+      <button class="view-btn" id="btn-mode-analytics" data-mode="analytics">📊 หน้าข้อมูลวิเคราะห์ครู</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-body">
+
+    <!-- Process Flow Bar (5 Steps Visualizer) -->
+    <section class="flow-bar">
+      <div class="flow-step active" id="step1">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <b>สังเกตสัญญาณ</b>
+          <span>ข้อความ, เวลาเงียบ, อีโมจิ, สลับแท็บ, ร่างพิมพ์</span>
+        </div>
+      </div>
+      <div class="flow-arrow">➔</div>
+
+      <div class="flow-step active" id="step2">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <b>ตั้งสมมติฐานเบื้องต้น</b>
+          <span>กำลังพิมพ์คำอธิบาย / คิด / ลังเล</span>
+        </div>
+      </div>
+      <div class="flow-arrow">➔</div>
+
+      <div class="flow-step active" id="step3">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <b>ช่วยเหลือแบบนุ่มนวล</b>
+          <span>ชะลอคำใบ้หากกำลังพิมพ์ / ชวนคิด</span>
+        </div>
+      </div>
+      <div class="flow-arrow">➔</div>
+
+      <div class="flow-step active" id="step4">
+        <div class="step-num">4</div>
+        <div class="step-info">
+          <b>ให้นักเรียนยืนยัน / กรอกเหตุผลแย้ง</b>
+          <span>ตอบรับ / ติ๊กเห็นด้วย / กดไม่เห็นด้วยแล้วพิมพ์เหตุผล</span>
+        </div>
+      </div>
+      <div class="flow-arrow">➔</div>
+
+      <div class="flow-step active" id="step5">
+        <div class="step-num">5</div>
+        <div class="step-info">
+          <b>เก็บ Feedback & ปรับตัว</b>
+          <span>Hypothesis Accuracy %</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dynamic Workspace Grid -->
+    <div class="workspace-grid mode-student" id="workspaceGrid">
+
+      <!-- Left Roster Rail -->
+      <aside class="roster-card" id="rosterCard">
+        <div class="class-info">
+          <h3>วิทยาศาสตร์ ม.1/2</h3>
+          <p>เรื่อง: การสังเคราะห์ด้วยแสง</p>
+        </div>
+
+        <div class="section-title">สมาชิกห้องเรียน (ครู + นักเรียน 4 คน)</div>
+        <div class="student-list">
+          <div class="student-item" style="background: #f8fafc; border: 1px solid #e2e8f0; cursor: default;">
+            <div class="avatar" style="background: #eff6ff;">👩‍🏫</div>
+            <div class="student-details">
+              <div class="student-name" style="color: var(--navy-900);">ครูวิภา (ครูผู้สอน) <span class="status-dot"
+                  style="background: #2563eb;"></span></div>
+              <div class="student-status" style="color: var(--primary); font-weight: 500;">👁️ สังเกตการณ์กลุ่ม 3</div>
+            </div>
+          </div>
+
+          <div class="student-item active" onclick="selectStudent('narin')">
+            <div class="avatar">🙂</div>
+            <div class="student-details">
+              <div class="student-name">นรินทร์ (คุณ) <span class="status-dot" id="dot-narin"></span></div>
+              <div class="student-status" id="st-narin" style="color: var(--accent-purple); font-weight: 500;">
+                กำลังพิมพ์…</div>
+            </div>
+          </div>
+
+          <div class="student-item" onclick="selectStudent('beam')">
+            <div class="avatar">🧢</div>
+            <div class="student-details">
+              <div class="student-name">บีม <span class="status-dot"></span></div>
+              <div class="student-status">ตอบแล้ว ( 2 ข้อความ )</div>
+            </div>
+          </div>
+
+          <div class="student-item" onclick="selectStudent('mali')">
+            <div class="avatar">🌼</div>
+            <div class="student-details">
+              <div class="student-name">มะลิ <span class="status-dot"></span></div>
+              <div class="student-status">ตอบแล้ว ( 1 ข้อความ )</div>
+            </div>
+          </div>
+
+          <div class="student-item" onclick="selectStudent('khaohom')">
+            <div class="avatar">🌿</div>
+            <div class="student-details">
+              <div class="student-name">ข้าวหอม <span class="status-dot idle"></span></div>
+              <div class="student-status">กำลังอ่านแชท…</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Student View Section (Group Chat) -->
+      <section class="chat-container" id="chatSection">
+        <div class="chat-header">
+          <div>
+            <h2>กลุ่ม 3: “พืชสร้างอาหารอย่างไร?”</h2>
+            <p id="chatHeaderSub">นักเรียน 4 คน + ครูผู้สอน 👩‍🏫 + AI Tutor ✦ (สภาพแวดล้อมไม่ตัดสินความเงียบ)</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <!-- Saved Tasks & Catch-up Drawer Button (Student) -->
+            <button class="saved-tasks-btn" onclick="toggleSavedTasksDrawer('student')" style="background: #ffffff; color: #701a75; border: 1.5px solid #f0abfc; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(112, 26, 117, 0.1); transition: all 0.2s ease;">
+              🎓 คลังตามงานนักเรียน <span class="badge" style="background: #a855f7; color: white; padding: 1px 6px; border-radius: 99px; font-size: 10px;" id="savedTaskCount">3</span>
+            </button>
+            <!-- Teacher Open Separate Analytics Page Button -->
+            <button id="toggleTeacherConsoleBtn" class="toggle-console-btn" style="display: none;"
+              onclick="switchViewMode('analytics')">
+              📊 เปิดดูหน้าข้อมูลวิเคราะห์ครู ➔
+            </button>
+            <div class="live-status-pill">
+              <span class="status-dot"></span> สังเกตการณ์เรียลไทม์
+            </div>
+          </div>
+        </div>
+
+        <!-- Pinned Group Recap Bar at Top of Chat -->
+        <div class="pinned-recap-bar" id="pinnedRecapBar" onclick="scrollToGroupRecap()">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #1e40af; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+            <span style="background: #2563eb; color: white; padding: 2px 8px; border-radius: 99px; font-size: 10.5px; font-weight: 700; flex-shrink: 0;">📌 สรุปกลุ่มปักหมุด</span>
+            <span style="overflow: hidden; text-overflow: ellipsis;" id="pinnedRecapText"><b>ประเด็น:</b> “พืชใช้อะไรสร้างอาหาร?” • 🧢 บีม (แสงแดด), 🙂 นรินทร์ (O2), 🌿 ข้าวหอม (CO2)</span>
+          </div>
+          <div style="font-size: 11px; color: #1d4ed8; font-weight: 600; flex-shrink: 0; margin-left: 10px; display: flex; align-items: center; gap: 4px;">
+            ✋ แตะดูสรุป & ตอบเช็คอิน ➔
+          </div>
+        </div>
+
+        <div class="messages-area" id="messagesArea">
+          <div class="message-group ai">
+            <div class="message-avatar">✦</div>
+            <div class="message-content">
+              <div class="message-sender">AI Tutor</div>
+              <div class="bubble">
+                สวัสดีทุกคนครับ! วันนี้เรามาช่วยกันคิดว่า <b>“พืชต้องใช้อะไรบ้างในกระบวนการสังเคราะห์ด้วยแสง?”</b>
+                ลองแบ่งกันตอบคนละ 1 อย่างได้เลยนะ ไม่ต้องกลัวตอบผิดครับ 🌱
+                <div class="reaction-bar">
+                  <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">2</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">1</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '🤔')">🤔 <span class="count">0</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '💭')">💭 <span class="count">0</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="message-group">
+            <div class="message-avatar">🧢</div>
+            <div class="message-content">
+              <div class="message-sender">บีม</div>
+              <div class="bubble">
+                แสงแดดครับ! พืชต้องใช้แสงเป็นพลังงานหลัก
+                <div class="reaction-bar">
+                  <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">3</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">1</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="message-group">
+            <div class="message-avatar">🌼</div>
+            <div class="message-content">
+              <div class="message-sender">มะลิ</div>
+              <div class="bubble">
+                น้ำค่ะ ดูดขึ้นมาจากทางรากพืช
+                <div class="reaction-bar">
+                  <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">2</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="message-group me">
+            <div class="message-avatar">🙂</div>
+            <div class="message-content">
+              <div class="message-sender">นรินทร์ (คุณ)</div>
+              <div class="bubble">
+                น่าจะเป็นแก๊สออกซิเจนหรือเปล่า… อันนี้ยังไม่ค่อยแน่ใจเท่าไหร่ครับ
+                <div class="reaction-bar">
+                  <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">1</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '🤔')">🤔 <span class="count">2</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Scaffolding Response with Student Verification -->
+          <div class="message-group ai" id="aiGentleMsg">
+            <div class="message-avatar">✦</div>
+            <div class="message-content">
+              <div class="message-sender">AI Tutor (Gentle Support)</div>
+              <div class="bubble">
+                <div style="font-size: 11px; color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+                  ↩️ กำลังตอบกลับ: <span style="background: #ffffff; color: #1e40af; padding: 1px 6px; border-radius: 4px; border: 1px solid #93c5fd;">🙂 นรินทร์</span>
+                </div><br>
+                เยี่ยมมากครับคุณ<b>นรินทร์</b>! เรื่องแก๊สเป็นจุดที่น่าสนใจมากๆ ลองช่วยกันทบทวนดูนะ: <b>“แก๊สออกซิเจน”</b>
+                เป็นสิ่งที่พืช <i>รับเข้ามา</i> หรือ <i>ปล่อยออกมา</i> กันแน่นะ? 🍃
+
+                <!-- Step 4: Student Verification Box -->
+                <div class="hypothesis-verify-box">
+                  <div class="verify-title">
+                    <span>💡 AI สันนิษฐานว่า:</span> คุณอาจกำลังสับสนระหว่างแก๊สที่พืชใช้กับแก๊สที่พืชปล่อยออก
+                  </div>
+                  <div style="font-size: 11px; color: #64748b;">ช่วยกดยืนยัน หรือกดไม่เห็นด้วยเพื่อกรอกเหตุผลได้นะ:
+                  </div>
+                  <div class="verify-options">
+                    <button class="verify-chip" onclick="confirmHypothesis(this, 'true_positive', 'AI เข้าใจถูกแล้ว')">✅
+                      AI เข้าใจถูกแล้ว</button>
+                    <button class="verify-chip" onclick="confirmHypothesis(this, 'thinking', 'กำลังคิดอยู่')">💡
+                      แค่กำลังคิดอยู่</button>
+                    <button class="verify-chip" onclick="confirmHypothesis(this, 'need_hint', 'อยากได้คำใบ้เพิ่ม')">❓
+                      อยากได้คำใบ้เพิ่ม</button>
+                    <button class="verify-chip" onclick="confirmHypothesis(this, 'false_positive', 'AI เข้าใจผิด')">❌ AI
+                      เข้าใจผิด</button>
+                  </div>
+
+                  <!-- Scoped Inline Disagree Input Container for THIS message -->
+                  <div class="disagree-input-container" style="display: none;">
+                    <div
+                      style="font-size: 11.5px; font-weight: 600; color: #9f1239; display: flex; justify-content: space-between; align-items: center;">
+                      <span class="disagree-input-title">✍️ กรอกเหตุผลที่คุณคิดจริง (กรณี AI เข้าใจผิด):</span>
+                      <button onclick="closeDisagreeBox(this)"
+                        style="background: transparent; border:0; color:#e11d48; cursor:pointer; font-weight:bold;">✕
+                        ปิด</button>
+                    </div>
+                    <textarea class="disagree-textarea"
+                      placeholder="พิมพ์เหตุผลของคุณ เช่น ผมไม่ได้สับสนครับ แค่คิดว่าพืชรับ O2 ตอนกลางคืน..."></textarea>
+                    <button class="submit-disagree-btn" onclick="submitCustomDisagree(this)">
+                      🚀 อัปเดตความเห็นเข้าสรุปกลุ่ม (ทับอันเดิม)
+                    </button>
+                  </div>
+                </div>
+
+                <div class="reaction-bar">
+                  <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">1</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">2</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '⏳')">⏳ ขอเวลาคิด <span
+                      class="count">1</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FEATURE: Living Single In-Place AI Group Recap & Time-Limited Quick Check-In Card -->
+          <div class="message-group ai" id="aiGroupRecapMsg">
+            <div class="message-avatar">✦</div>
+            <div class="message-content">
+              <div class="message-sender">AI Tutor (Group Recap & Living Check-In)</div>
+              <div class="bubble">
+                📌 <b>สรุปความเห็นของเพื่อนๆ ในกลุ่มตอนนี้:</b>
+
+                <div
+                  style="font-size: 12px; color: var(--navy-900); background: #eff6ff; border: 1px solid #bfdbfe; padding: 7px 12px; border-radius: 8px; margin: 8px 0; font-weight: 500;">
+                  ❓ <b>ประเด็นคำถาม:</b> “พืชต้องใช้อะไรบ้างในกระบวนการสังเคราะห์ด้วยแสง?”
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
+                  *(คำตอบและข้อแย้งจะอัปเดตเขียนทับในกล่องเดิมเมื่อนักเรียนแก้ไข)*</div>
+
+                <ul id="recapBulletList" style="margin: 8px 0 12px 18px; font-size: 12.5px; line-height: 1.6;">
+                  <li>🧢 <b>บีม:</b> แสงแดด (พลังงานหลัก)</li>
+                  <li>🌼 <b>มะลิ:</b> น้ำ (ดูดผ่านรากพืช)</li>
+                  <li id="narinBulletItem">🙂 <b>นรินทร์ (คุณ):</b> <span id="narinOpinionText">แก๊สออกซิเจน
+                      (กำลังทบทวนว่ารับเข้าหรือปล่อยออก)</span> <button id="editOpinionBtn" class="edit-btn-pill"
+                      style="display:none;" onclick="editMyOpinion(this)">✏️ แก้ไขความเห็น</button></li>
+                  <li>🌿 <b>ข้าวหอม:</b> แก๊สคาร์บอนไดออกไซด์ (แก๊สที่รับจากอากาศ)</li>
+                </ul>
+
+                <div class="hypothesis-verify-box" style="background: #f8fafc; border-color: #cbd5e1;">
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                    <div class="verify-title" style="color: var(--navy-900); margin: 0;">
+                      ✋ <b>เช็คความเห็น & เช็คความอยู่หน้าจอ ( ปรับแก้ไขทับอันเดิมได้ก่อนหมดเวลา )</b>
+                    </div>
+                    <!-- Time-Limited Countdown Badge -->
+                    <div id="pollTimerBadge"
+                      style="font-size: 11px; background: #fef3c7; color: #b45309; border: 1px solid #fde68a; padding: 4px 10px; border-radius: 99px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                      ⏳ เหลือเวลาตอบเช็คอิน: <strong id="pollCountdown">02:30</strong> นาที
+                    </div>
+                  </div>
+
+                  <!-- Interactive Hand Raise Button -->
+                  <button class="hand-raise-btn" id="handRaiseBtn" onclick="toggleHandRaise(this)">
+                    <span>✋ <span id="handRaiseText">ยกมือ: เข้าใจภาพรวมของกลุ่มแล้ว!</span></span>
+                    <span class="badge" id="handRaiseCount"
+                      style="background: #3b82f6; color: #fff; padding: 3px 8px; border-radius: 99px; font-size: 11px;">ยกมือแล้ว
+                      3/4 คน</span>
+                  </button>
+
+                  <div style="font-size: 11px; color: var(--text-muted); margin: 10px 0 4px 0;">ติ๊กเลือกความเห็น
+                    หรือกดเพื่อเสนอแนวคิดใหม่/แก้ไขคำตอบ:</div>
+                  <div class="verify-options" id="recapVerifyOptions">
+                    <button class="verify-chip" onclick="togglePeerAgree(this, 'beam', 'agree')">🧢
+                      เห็นด้วยกับบีม</button>
+                    <button class="verify-chip" onclick="togglePeerAgree(this, 'mali', 'agree')">🌼
+                      เห็นด้วยกับมะลิ</button>
+                    <button class="verify-chip" onclick="togglePeerAgree(this, 'khaohom', 'agree')">🌿
+                      เห็นด้วยกับข้าวหอม</button>
+                    <button class="verify-chip" onclick="togglePeerAgree(this, 'disagree', 'disagree')">❌
+                      ไม่เห็นด้วยกับบางความเห็น</button>
+                    <button class="verify-chip" onclick="togglePeerAgree(this, 'my_idea', 'disagree')">💡
+                      เสนอแนวคิดอื่น</button>
+                  </div>
+
+                  <!-- Scoped Inline Disagree Input Container for Group Recap message -->
+                  <div class="disagree-input-container" style="display: none;">
+                    <div
+                      style="font-size: 11.5px; font-weight: 600; color: #9f1239; display: flex; justify-content: space-between; align-items: center;">
+                      <span class="disagree-input-title">✍️ กรอกเหตุผลที่คุณไม่เห็นด้วย หรือแนวคิดของคุณ:</span>
+                      <button onclick="closeDisagreeBox(this)"
+                        style="background: transparent; border:0; color:#e11d48; cursor:pointer; font-weight:bold;">✕
+                        ปิด</button>
+                    </div>
+                    <textarea class="disagree-textarea"
+                      placeholder="พิมพ์เหตุผลของคุณ เช่น พืชใช้ออกซิเจนหายใจ แต่สร้างอาหารพืชใช้แก๊สคาร์บอนไดออกไซด์ (CO2)..."></textarea>
+                    <button class="submit-disagree-btn" onclick="submitCustomDisagree(this)">
+                      🚀 อัปเดตความเห็นเข้าสรุปกลุ่ม (ทับอันเดิม)
+                    </button>
+                  </div>
+
+                </div>
+
+                <div class="reaction-bar">
+                  <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">3</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">2</span></button>
+                  <button class="react-btn" onclick="toggleReact(this, '🤔')">🤔 มีข้อแย้ง <span
+                      class="count">1</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="chat-input-wrapper">
+          <form class="chat-form" id="chatForm">
+            <input type="text" class="chat-input" id="chatInput"
+              placeholder="พิมพ์คำตอบ แย้งข้อความเพื่อน หรือถามในกลุ่ม..." autocomplete="off">
+            <button type="submit" class="send-btn">ส่งข้อความ</button>
+          </form>
+          <div class="input-subtext">
+            <span>🔒 การกดอีโมจิและการยืนยันจะไม่เปิดเผยชื่อให้เพื่อนในห้องเห็น</span>
+            <span id="typingTicker" style="display: none;">ไม่ได้พิมพ์: 00:00</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Teacher / Researcher Standalone Analytics Page Section -->
+      <section class="teacher-console" id="teacherSection" style="display: none;">
+
+        <div class="console-header">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <button class="back-to-chat-btn" onclick="switchViewMode('teacher')">
+              ⬅️ กลับสู่หน้าแชทหลัก
+            </button>
+            <h2 style="font-size: 16px; margin:0; color: var(--navy-900);">📊 AI Tutor Analytics • หน้าข้อมูลวิเคราะห์ &
+              การปรับตัว</h2>
+            <button class="saved-tasks-btn" onclick="toggleSavedTasksDrawer('teacher')" style="background: #ffffff; color: #1e40af; border: 1.5px solid #93c5fd; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(30, 64, 175, 0.1); transition: all 0.2s ease;">
+              👩‍🏫 คลังสังเกตการณ์ครู <span class="badge" style="background: #2563eb; color: white; padding: 1px 6px; border-radius: 99px; font-size: 10px;" id="teacherTaskCount">4</span>
+            </button>
+          </div>
+
+          <div class="student-selector-tabs">
+            <button class="tab-btn active" onclick="switchStudentTab('narin')">นรินทร์</button>
+            <button class="tab-btn" onclick="switchStudentTab('beam')">บีม</button>
+            <button class="tab-btn" onclick="switchStudentTab('mali')">มะลิ</button>
+            <button class="tab-btn" onclick="switchStudentTab('khaohom')">ข้าวหอม</button>
+          </div>
+        </div>
+
+        <div class="console-grid">
+
+          <!-- Card 1: Live Signals Tracker -->
+          <div class="panel-card">
+            <h4>📡 สัญญาณการมีส่วนร่วม (Signals) <span>นรินทร์</span></h4>
+
+            <div class="signal-row">
+              <span>จำนวนข้อความที่ส่ง</span>
+              <span class="signal-value" id="val-msgcount">2 ข้อความ</span>
+            </div>
+
+            <div class="signal-row">
+              <span>ระยะเวลาที่ไม่พิมพ์ (Inactivity)</span>
+              <span class="signal-value" id="val-silence">00:34 นาที</span>
+            </div>
+            <div class="meter-bar">
+              <div class="meter-fill" id="bar-silence" style="width: 35%;"></div>
+            </div>
+
+            <div class="signal-row">
+              <span>การกดอีโมจิ / Feedback</span>
+              <span class="signal-value" id="val-emoji">3 ครั้ง</span>
+            </div>
+
+            <div class="signal-row">
+              <span>การสลับออกจากหน้าเว็บ (Tab switch)</span>
+              <span class="signal-value" id="val-tabswitch">1 ครั้ง (28s)</span>
+            </div>
+            <div class="meter-bar">
+              <div class="meter-fill warning" id="bar-tabswitch" style="width: 25%;"></div>
+            </div>
+
+            <!-- Behind-the-scenes Draft Signal Tracker for Teacher / Researcher -->
+            <div class="signal-row"
+              style="margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+              <span>✍️ ข้อความร่างในช่องพิมพ์ (Drafting)</span>
+              <span class="signal-value" id="val-draft" style="color: var(--accent-purple);">ว่างเปล่า (0
+                ตัวอักษร)</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.35;" id="sub-draft-info">
+              สถานะ: ยังไม่ได้พิมพ์ข้อความค้างไว้
+            </div>
+          </div>
+
+          <!-- Card 2: AI Hypothesis Engine -->
+          <div class="panel-card">
+            <h4>🧠 สมมติฐานเบื้องต้นของ AI <span>(Hypothesis)</span></h4>
+
+            <div class="hypo-box">
+              <div class="hypo-statement" id="txt-hypo-title">อาจกำลังลังเลระหว่าง O2 กับ CO2</div>
+              <div class="hypo-rationale" id="txt-hypo-reason">ตรวจพบคำลังเล ("หรือเปล่า", "ยังไม่แน่ใจ") +
+                เงียบพิมพ์เกิน 30s</div>
+              <div class="confidence-tag">
+                <span>🎯 ความมั่นใจ AI:</span> <strong id="txt-confidence">68%</strong>
+              </div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+              *ระบบยึดหลัก <strong>Silence ≠ Disinterest</strong> ความเงียบไม่ถูกนำมาหักคะแนน
+              แต่ใช้เป็นบริบทในการยื่นมือช่วยเหลือ
+            </div>
+          </div>
+
+          <!-- Card 3: Gentle Support & Human-in-the-Loop Teacher Verification with Auto-Fallback -->
+          <div class="panel-card" id="aiTeacherVerifyCard" style="border: 2px solid #60a5fa; background: #f0f9ff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+              <h4 style="margin: 0; color: #1e40af;">🙋‍♂️ AI ถามยืนยันความถูกต้องกับครู <span>(Drop-In & Auto-Fallback)</span></h4>
+              <span id="aiVerifyStatusBadge" style="font-size: 10px; background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; padding: 2px 8px; border-radius: 99px; font-weight: 600;">รอครูอนุมัติ / Auto-Fallback ⏳</span>
+            </div>
+
+            <div style="font-size: 11px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px; line-height: 1.4;">
+              ⚡ <b>กรณีครูสลับไปดูห้องอื่น/ไม่อยู่หน้าจอ:</b> ครูแวะเข้ามาดูตอนไหนก็ได้! หากไม่มีการอนุมัติภายใน 45 วินาที AI จะดูแลแบบนุ่มนวลให้อัตโนมัติ (เด็กไม่ค้างรอ)
+            </div>
+
+            <div style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 10px; margin-bottom: 10px; line-height: 1.55;">
+              🤖 <b>คำถามจาก AI สื่อสารกับครู:</b><br>
+              <i>"ครูวิภาครับ AI ตรวจพบว่านรินทร์กำลังลังเล (ความมั่นใจ 68%) AI ควรส่งคำถามชวนคิดเรื่อง <b>'ออกซิเจน พืชรับเข้ามา หรือปล่อยออกมากันแน่?'</b> เข้ากลุ่มเพื่อกระตุ้นเด็กตอนนี้เลยไหมครับ?"</i>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <button class="trigger-support-btn" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white;" onclick="approveAiSuggestion(this)">
+                ✅ อนุมัติ: ให้ AI ส่งคำถามชวนคิดเข้าห้องแชทกลุ่ม
+              </button>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="trigger-support-btn" style="background: #ffffff; color: #374151; border: 1px solid #d1d5db; flex: 1; min-width: 130px;" onclick="editAiPromptByTeacher(this)">
+                  ✏️ ปรับแก้คำถามก่อนส่ง
+                </button>
+                <button class="trigger-support-btn" style="background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; flex: 1; min-width: 130px;" onclick="rejectAiSuggestion(this)">
+                  ✋ ครูขอเข้าแนะนำเอง
+                </button>
+                <button class="trigger-support-btn" style="background: #fdf4ff; color: #701a75; border: 1px solid #f0abfc; flex: 1; min-width: 130px;" onclick="toggleAutoFallback(this)">
+                  🤖 โหมด AI ดูแลอัตโนมัติ
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Teacher Quiz & Exam Content Manager -->
+          <div class="panel-card" id="teacherQuizCard" style="border: 2px solid #c084fc; background: #fdf4ff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+              <h4 style="margin: 0; color: #701a75;">📁 คลังข้อสอบ & ใบงานของครู <span>(Quiz & Task Dispatcher)</span></h4>
+              <span style="font-size: 10px; background: #fae8ff; color: #86198f; border: 1px solid #f0abfc; padding: 2px 8px; border-radius: 99px; font-weight: 600;">ตั้งค่าล่วงหน้า 📄</span>
+            </div>
+
+            <div style="font-size: 11.5px; color: var(--navy-900); margin-bottom: 6px; font-weight: 600;">
+              📤 แนบไฟล์ข้อสอบ (.pdf, .docx) หรือพิมพ์คำถามควิซเตรียมไว้:
+            </div>
+            <div class="file-upload-zone" style="border: 2px dashed #c084fc; background: #ffffff; border-radius: 10px; padding: 10px 12px; text-align: center; margin-bottom: 8px; cursor: pointer; transition: all 0.2s ease;" onclick="document.getElementById('teacherQuizFileInput').click()">
+              <input type="file" id="teacherQuizFileInput" style="display: none;" onchange="handleTeacherFileUpload(this)" accept=".pdf,.docx,.doc,.txt">
+              <span style="font-size: 20px;">📄</span>
+              <div style="font-size: 11.5px; font-weight: 600; color: #7e22ce; margin-top: 2px;" id="quizFileNameDisplay">คลิกเพื่อแนบไฟล์ข้อสอบ หรือลากไฟล์มาวางที่นี่</div>
+              <div style="font-size: 10px; color: var(--text-muted);">รองรับไฟล์ PDF, DOCX, TXT (ขนาดไม่เกิน 10MB)</div>
+            </div>
+
+            <textarea id="teacherQuizTextArea" class="disagree-textarea" style="height: 55px; font-size: 11.5px; border-color: #d8b4fe; margin-bottom: 8px;" placeholder="หรือพิมพ์โจทย์ควิซสั้นเพิ่มเติม เช่น 1. แก๊สที่พืชใช้สร้างอาหารคืออะไร? 2. ปัจจัยเร่งปฏิกิริยาคืออะไร?"></textarea>
+
+            <button class="trigger-support-btn" style="background: linear-gradient(135deg, #a855f7, #7e22ce); color: white;" onclick="sendTeacherQuizToGroup()">
+              🚀 สั่ง AI แจกข้อสอบ/ควิซนี้เข้าแชทกลุ่มนักเรียน
+            </button>
+          </div>
+
+          <!-- CARD: Group Consensus & Peer Check-In with Disagreements -->
+          <div class="panel-card">
+            <h4>✋ การเช็คความเห็น & ข้อแย้งในกลุ่ม <span>(Consensus & Debate)</span></h4>
+
+            <div class="signal-row">
+              <span>ยกมือเข้าใจภาพรวม</span>
+              <span class="signal-value" id="val-handraise-ratio">3 / 4 คน (75%)</span>
+            </div>
+            <div class="meter-bar">
+              <div class="meter-fill" id="bar-handraise" style="width: 75%; background: var(--accent-purple);"></div>
+            </div>
+
+            <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px;">
+              ประวัติการพิมพ์โต้แย้ง / เห็นด้วย (อัปเดตทับอันเดิม):
+            </div>
+            <div id="peerAgreementList" style="display: flex; flex-direction: column; gap: 4px;">
+              <div class="log-item">
+                <span>นรินทร์ ➔ ✍️ พิมพ์แย้ง: "พืชใช้ CO2 หายใจเอา O2 ออก"</span>
+                <strong style="color: var(--accent-rose);">โต้แย้งด้วยเหตุผลตนเอง</strong>
+              </div>
+              <div class="log-item">
+                <span>บีม ➔ ติ๊กเห็นด้วยกับมะลิ (น้ำ)</span>
+                <strong style="color: var(--accent-green);">เห็นด้วย</strong>
+              </div>
+            </div>
+
+            <button class="trigger-support-btn" style="margin-top: 10px; border-color: #c084fc; color: #7e22ce;"
+              onclick="sendGroupRecapManual()">
+              📢 ให้ AI สรุปคำตอบกลุ่ม & เช็คความเห็น/ข้อแย้ง
+            </button>
+          </div>
+
+          <!-- Card 4: Feedback & Hypothesis Accuracy -->
+          <div class="panel-card">
+            <h4>🎯 Hypothesis Accuracy <span>(ความแม่นยำ AI)</span></h4>
+
+            <div class="accuracy-score" id="txt-accuracy">
+              83% <span>(5/6 ยืนยันถูกต้อง)</span>
+            </div>
+
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              ประวัติการยืนยันจากนักเรียน:
+            </div>
+
+            <div class="feedback-log-list" id="feedbackLogList">
+              <div class="log-item">
+                <span>AI สันนิษฐานว่าสับสน O2</span>
+                <strong style="color: var(--accent-green);">✅ นักเรียนยืนยันว่าถูก</strong>
+              </div>
+              <div class="log-item">
+                <span>AI สันนิษฐานว่าเงียบเพราะหลุดโฟกัส</span>
+                <strong style="color: var(--accent-orange);">💡 นักเรียนบอกว่ากำลังคิด</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Engagement Trend -->
+          <div class="panel-card" style="grid-column: 1 / -1;">
+            <h4>📈 Engagement Trend รายบุคคล (ย้อนหลัง 15 นาที)</h4>
+            <div class="chart-container">
+              <svg width="100%" height="100%" viewBox="0 0 500 120" preserveAspectRatio="none">
+                <!-- Grid lines -->
+                <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" stroke-dasharray="4" />
+                <line x1="0" y1="60" x2="500" y2="60" stroke="#f1f5f9" stroke-dasharray="4" />
+                <line x1="0" y1="90" x2="500" y2="90" stroke="#f1f5f9" stroke-dasharray="4" />
+
+                <!-- Area Gradient -->
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2563eb" stop-opacity="0.2" />
+                    <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <path d="M0,80 Q75,40 150,60 T300,30 T450,50 L500,45 L500,120 L0,120 Z" fill="url(#chartGrad)" />
+
+                <!-- Trend Line -->
+                <path d="M0,80 Q75,40 150,60 T300,30 T450,50 L500,45" fill="none" stroke="#2563eb" stroke-width="3" />
+
+                <!-- Data Points -->
+                <circle cx="150" cy="60" r="4" fill="#2563eb" />
+                <circle cx="300" cy="30" r="4" fill="#2563eb" />
+                <circle cx="450" cy="50" r="4" fill="#2563eb" />
+                <circle cx="500" cy="45" r="5" fill="#7c3aed" />
+              </svg>
+            </div>
+            <div
+              style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+              <span>15 นาทีก่อน</span>
+              <span>10 นาทีก่อน</span>
+              <span>5 นาทีก่อน</span>
+              <span>ปัจจุบัน (กำลังพัฒนาเชิงบวก)</span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Floating Draggable & Collapsible Simulation Widget -->
+  <div class="sim-widget" id="simWidget">
+    <div class="sim-widget-header" id="simWidgetHeader">
+      <div class="sim-widget-title">
+        <span class="drag-grip">⣿</span>
+        <span>🧪 SIMULATION TOOLS</span>
+        <span class="sim-badge">DRAGGABLE</span>
+      </div>
+      <div class="sim-widget-actions">
+        <button class="sim-ctrl-btn" id="btnMinimizeSim" onclick="toggleSimWidget()"
+          title="ย่อ / ขยาย หน้าต่าง">➖</button>
+      </div>
+    </div>
+
+    <div class="sim-widget-body" id="simWidgetBody">
+      <div class="sim-category">
+        <span class="cat-label">⏱️ สัญญาณเวลา:</span>
+        <button class="sim-btn" onclick="simIdle(30)">⏱️ เงียบ 30s</button>
+        <button class="sim-btn" onclick="simIdle(90)">⏳ เงียบ 90s</button>
+      </div>
+
+      <div class="sim-category">
+        <span class="cat-label">📝 ข้อความ & เช็คอิน:</span>
+        <button class="sim-btn" onclick="simDraftText()">📝 ค้างร่าง 35 ตัว</button>
+        <button class="sim-btn" onclick="simPollTimeout()">⏳ เร่งเวลาหมด 00:00</button>
+      </div>
+
+      <div class="sim-category">
+        <span class="cat-label">🎭 พฤติกรรม:</span>
+        <button class="sim-btn" onclick="simTabSwitch()">🔄 สลับหน้าเว็บ</button>
+        <button class="sim-btn" onclick="simGroupRecap()">✋ สรุปกลุ่ม</button>
+        <button class="sim-btn" onclick="simPeerReply()">💬 จำลองเพื่อนตอบ</button>
+        <button class="sim-btn" style="border-color: #60a5fa; color: #93c5fd;" onclick="simAiAskTeacher()">🙋‍♂️ AI ถามยืนยันกับครู</button>
+        <button class="sim-btn" style="border-color: #c084fc; color: #e9d5ff;" onclick="simTeacherAwayAuto()">🌙 ครูแวะไปดูห้องอื่น (AI อัตโนมัติ)</button>
+        <button class="sim-btn" style="border-color: #a855f7; color: #f0abfc;" onclick="simTeacherDispatchQuiz()">📝 สั่ง AI แจกควิซ/ข้อสอบครู</button>
+        <button class="sim-btn reset" onclick="resetSim()">↺ รีเซ็ต</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Tasks Drawer Modal for Students -->
+  <div class="saved-tasks-modal" id="savedTasksModalStudent">
+    <div class="saved-tasks-content">
+      <div class="saved-tasks-header" style="background: linear-gradient(135deg, #701a75, #4c1d95);">
+        <div>
+          <h3 style="font-size: 14.5px; margin: 0; color: white;">🎓 คลังติดตามงานของฉัน (นักเรียน)</h3>
+          <p style="font-size: 11px; color: #e9d5ff; margin: 2px 0 0 0;">เช็คงานที่ต้องทำ งานที่ส่งแล้ว และสรุปรวบยอดกลุ่ม</p>
+        </div>
+        <button onclick="toggleSavedTasksDrawer('student')" style="background: transparent; border: 0; color: white; font-size: 18px; cursor: pointer; font-weight: bold;">✕</button>
+      </div>
+
+      <div class="saved-tasks-body">
+        <!-- Status Summary Badge -->
+        <div style="display: flex; gap: 8px; margin-bottom: 4px;">
+          <div style="flex: 1; background: #fff7ed; border: 1px solid #ffedd5; padding: 8px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 16px; font-weight: 800; color: #ea580c;" id="studentPendingCount">1</div>
+            <div style="font-size: 10.5px; color: #c2410c; font-weight: 600;">⏳ รอดำเนินการ</div>
+          </div>
+          <div style="flex: 1; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 16px; font-weight: 800; color: #16a34a;" id="studentCompletedCount">2</div>
+            <div style="font-size: 10.5px; color: #15803d; font-weight: 600;">✅ ทำเสร็จแล้ว</div>
+          </div>
+        </div>
+
+        <!-- Section 1: Pending Tasks -->
+        <div style="background: #fff7ed; border: 1px solid #ffedd5; border-radius: 12px; padding: 12px;">
+          <div style="font-size: 12px; font-weight: 700; color: #c2410c; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+            <span>📋 <b>งานที่ต้องทำตอนนี้ (Pending)</b></span>
+            <span style="font-size: 10px; background: #ffedd5; color: #9a3412; padding: 1px 6px; border-radius: 99px; font-weight: 600;">1 งาน</span>
+          </div>
+          <div style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #fed7aa; padding: 8px 10px; border-radius: 8px; margin-bottom: 6px;">
+            📄 <b>ควิซจากครูวิภา:</b> เรื่องการสังเคราะห์ด้วยแสง (2 ข้อ)<br>
+            <span style="font-size: 11px; color: #c2410c; font-weight: 600;">⚠️ ยังไม่ได้ส่งคำตอบ</span>
+          </div>
+          <button onclick="toggleSavedTasksDrawer('student'); scrollToGroupRecap();" style="font-size: 11px; background: #ea580c; color: white; border: 0; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            🚀 ไปที่ข้อสอบควิซนี้ ➔
+          </button>
+        </div>
+
+        <!-- Section 2: Completed Tasks -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px;">
+          <div style="font-size: 12px; font-weight: 700; color: #15803d; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+            <span>✅ <b>งานที่ทำเสร็จแล้ว (Completed)</b></span>
+            <span style="font-size: 10px; background: #dcfce7; color: #166534; padding: 1px 6px; border-radius: 99px; font-weight: 600;">2 งาน</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 11.5px; color: var(--navy-900); background: #ffffff; border: 1px solid #bbf7d0; padding: 6px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <span>✋ ตอบเช็คอินความเห็นกลุ่มเรื่องแก๊ส</span>
+              <span style="font-size: 10.5px; color: #15803d; font-weight: 700;">✅ ส่งแล้ว</span>
+            </div>
+            <div style="font-size: 11.5px; color: var(--navy-900); background: #ffffff; border: 1px solid #bbf7d0; padding: 6px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <span>💬 ร่วมพิมพ์อภิปรายในกลุ่ม (2 ข้อความ)</span>
+              <span style="font-size: 10.5px; color: #15803d; font-weight: 700;">✅ ส่งแล้ว</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Quick Catch-Up Summary -->
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px;">
+          <div style="font-size: 12px; font-weight: 700; color: #1e40af; margin-bottom: 6px;">
+            ⚡ <b>สรุปรวบยอด 10 วินาที (สำหรับคนเข้ามาทีหลัง)</b>
+          </div>
+          <div style="font-size: 11.5px; color: var(--navy-900); line-height: 1.55;">
+            • <b>ประเด็นหลัก:</b> พืชใช้อะไรในการสังเคราะห์ด้วยแสง?<br>
+            • <b>คำตอบกลุ่ม:</b> บีมตอบแสงแดด, ข้าวหอมตอบ CO2<br>
+            • <b>จุดกำลังทบทวน:</b> นรินทร์กำลังทบทวนเรื่องแก๊สออกซิเจน
+          </div>
+        </div>
+
+        <!-- Section 4: Bookmarked Messages -->
+        <div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--navy-900); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+            <span>📌 <b>ข้อความที่บุ๊กมาร์กไว้ (<span id="savedItemsCountText">1</span>)</b></span>
+          </div>
+          <div id="savedBookmarkList" style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 11.5px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <b>AI Tutor:</b> <i>"แก๊สออกซิเจน เป็นสิ่งที่พืชรับเข้ามา หรือปล่อยออกมากันแน่นะ?"</i>
+              </div>
+              <button onclick="this.parentElement.remove(); updateSavedCount();" style="border:0; background:transparent; color:#e11d48; cursor:pointer; font-size:11px; font-weight:bold;">✕</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Tasks Drawer Modal for Teacher -->
+  <div class="saved-tasks-modal" id="savedTasksModalTeacher">
+    <div class="saved-tasks-content">
+      <div class="saved-tasks-header" style="background: linear-gradient(135deg, #1e40af, #1e3a8a);">
+        <div>
+          <h3 style="font-size: 14.5px; margin: 0; color: white;">👩‍🏫 คลังติดตามการส่งงาน (ครูวิภา)</h3>
+          <p style="font-size: 11px; color: #bfdbfe; margin: 2px 0 0 0;">เช็คว่าสั่งงานอะไรไปแล้วบ้าง เด็กทำแล้วกี่คน และใครยังค้างส่ง</p>
+        </div>
+        <button onclick="toggleSavedTasksDrawer('teacher')" style="background: transparent; border: 0; color: white; font-size: 18px; cursor: pointer; font-weight: bold;">✕</button>
+      </div>
+
+      <div class="saved-tasks-body">
+        <!-- Overall Class Progress Bar -->
+        <div style="background: #f0f9ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1e40af;">📊 ภาพรวมการส่งงานของกลุ่ม 3</span>
+            <span style="font-size: 12px; font-weight: 800; color: #2563eb;">3 / 4 คน (75%)</span>
+          </div>
+          <div style="background: #e2e8f0; height: 8px; border-radius: 99px; overflow: hidden;">
+            <div style="background: linear-gradient(90deg, #2563eb, #7c3aed); width: 75%; height: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Section 1: Dispatched Tasks & Student Completion Breakdown -->
+        <div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--navy-900); margin-bottom: 6px;">
+            📤 <b>รายการงานที่ครูสั่งไปแล้ว & สถานะการส่ง:</b>
+          </div>
+
+          <!-- Task Item 1 -->
+          <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 700; color: #1e293b;">📝 1. ควิซเรื่องการสังเคราะห์ด้วยแสง (2 ข้อ)</span>
+              <span style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 99px; font-weight: 600;">ส่งแล้ว 75%</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
+              ไฟล์แนบ: <code>ใบงานควิซ_สังเคราะห์แสง_ม1.pdf</code>
+            </div>
+            
+            <div style="font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
+              <span style="color: #166534; font-weight: 600;">✅ ทำเสร็จแล้ว (3 คน):</span> 🧢 บีม, 🌿 ข้าวหอม, 🌼 มะลิ
+            </div>
+            <div style="font-size: 11px; background: #fff1f2; padding: 6px 8px; border-radius: 6px;">
+              <span style="color: #9f1239; font-weight: 600;">⚠️ ค้างส่ง (1 คน):</span> 🙂 <b>นรินทร์</b> (กำลังลังเลเรื่องแก๊ส O2)
+            </div>
+          </div>
+
+          <!-- Task Item 2 -->
+          <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 700; color: #1e293b;">✋ 2. ตอบเช็คอินความเห็นกลุ่มเรื่องแก๊ส</span>
+              <span style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 99px; font-weight: 600;">ส่งแล้ว 75%</span>
+            </div>
+            
+            <div style="font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
+              <span style="color: #166534; font-weight: 600;">✅ ตอบแล้ว (3 คน):</span> 🧢 บีม (แสงแดด), 🌿 ข้าวหอม (CO2), 🌼 มะลิ (น้ำ)
+            </div>
+            <div style="font-size: 11px; background: #fff1f2; padding: 6px 8px; border-radius: 6px;">
+              <span style="color: #9f1239; font-weight: 600;">⚠️ ค้างส่ง (1 คน):</span> 🙂 <b>นรินทร์</b>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Create & Dispatch New Quiz Button -->
+        <div style="background: #faf5ff; border: 1px solid #f0abfc; border-radius: 12px; padding: 12px;">
+          <div style="font-size: 12px; font-weight: 700; color: #701a75; margin-bottom: 6px;">
+            🚀 <b>สั่งงาน/ควิซใหม่เข้าแชทกลุ่ม</b>
+          </div>
+          <button onclick="sendTeacherQuizToGroup(); toggleSavedTasksDrawer('teacher');" style="font-size: 11px; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%;">
+            🚀 ส่งควิซชุดใหม่เข้ากลุ่มนักเรียนทันที ➔
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast" id="toast">ข้อความแจ้งเตือน</div>
+
+  <script>
+    // State Store
+    const state = {
+      viewMode: 'student', // student, teacher, analytics
+      activeStudent: 'narin',
+      idleSeconds: 34,
+      messageCount: 2,
+      emojiCount: 3,
+      tabSwitchCount: 1,
+      tabAwaySeconds: 28,
+      hypoAccuracyCount: 5,
+      hypoTotalCount: 6,
+      handRaisedCount: 3,
+      totalGroupMembers: 4,
+      isNarinRaisedHand: true,
+      draftText: '',
+      pollTimeLeft: 150, // 2 minutes 30 seconds for quick check-in
+      pollResponded: false,
+      pollTimerInterval: null,
+      myCustomText: '',
+      currentHypothesis: {
+        title: "อาจกำลังลังเลระหว่าง O2 กับ CO2",
+        reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
+        confidence: 68
+      },
+      supportPrompt: "ลองทบทวนว่าตอนเราหายใจเข้า กับที่พืชใช้สร้างอาหาร เหมือนหรือต่างกันอย่างไร?",
+      feedbackLogs: [
+        { hypothesis: "สับสน O2", feedback: "✅ นักเรียนยืนยันว่าถูก" },
+        { hypothesis: "เงียบเพราะหลุดโฟกัส", feedback: "💡 นักเรียนบอกว่ากำลังคิด" }
+      ],
+      peerAgreements: [
+        { student: "นรินทร์", target: "✍️ พิมพ์แย้ง: 'พืชใช้ CO2 หายใจเอา O2 ออก'", status: "โต้แย้งด้วยเหตุผลตนเอง" },
+        { student: "บีม", target: "ติ๊กเห็นด้วยกับมะลิ (น้ำ)", status: "ตรงกัน" }
+      ]
+    };
+
+    // Timer Interval for Live Silence Counter
+    let timerInterval = null;
+
+    function startSilenceTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        state.idleSeconds++;
+        updateSilenceUI();
+      }, 1000);
+    }
+
+    function updateSilenceUI() {
+      const mins = String(Math.floor(state.idleSeconds / 60)).padStart(2, '0');
+      const secs = String(state.idleSeconds % 60).padStart(2, '0');
+      const str = `${mins}:${secs}`;
+
+      document.getElementById('typingTicker').textContent = `ไม่ได้พิมพ์: ${str}`;
+      document.getElementById('val-silence').textContent = `${str} นาที`;
+
+      const pct = Math.min(100, Math.round((state.idleSeconds / 120) * 100));
+      const bar = document.getElementById('bar-silence');
+      if (bar) {
+        bar.style.width = pct + '%';
+        bar.className = 'meter-fill' + (pct > 75 ? ' danger' : (pct > 40 ? ' warning' : ''));
+      }
+
+      // Update Roster Status text if student is idle vs typing
+      const stNarin = document.getElementById('st-narin');
+      if (stNarin && state.draftText.length === 0) {
+        stNarin.textContent = `กำลังอ่านแชท…`;
+        stNarin.style.color = 'var(--text-muted)';
+      }
+
+      // Check for automatic gentle hypothesis trigger if idle > 60s
+      if (state.idleSeconds === 60) {
+        if (state.draftText.length > 5) {
+          showToast("📝 นักเรียนเงียบ 60s แต่มีร่างข้อความค้างอยู่ -> AI สันนิษฐานว่ากำลังเรียบเรียงประโยคตอบยาว (ไม่ส่งคำใบ้มาแทรก)");
+          state.currentHypothesis.title = "กำลังพิมพ์เรียบเรียงคำตอบ (มีข้อความร่าง)";
+          state.currentHypothesis.reason = `ตรวจพบข้อความร่างในช่องพิมพ์ ${state.draftText.length} ตัวอักษร -> ระบบจำแนกได้ว่าเด็กพิมพ์ช้า ไม่ใช่ไร้การตอบสนอง`;
+          state.currentHypothesis.confidence = 88;
+        } else {
+          showToast("💡 AI สังเกตว่านักเรียนเงียบพิมพ์ 60s (ไม่มีร่างข้อความ) -> ตั้งสมมติฐานว่ากำลังคิดคำตอบ");
+          state.currentHypothesis.title = "กำลังใช้เวลาคิดทบทวนบทเรียน";
+          state.currentHypothesis.reason = "เงียบพิมพ์ต่อเนื่อง 60 วินาที (ไม่มีร่างข้อความในช่องพิมพ์)";
+          state.currentHypothesis.confidence = 72;
+        }
+        updateTeacherConsoleUI();
+      }
+    }
+
+    // Time-Limited Poll Countdown Timer Logic
+    function startPollTimer() {
+      if (state.pollTimerInterval) clearInterval(state.pollTimerInterval);
+
+      state.pollTimerInterval = setInterval(() => {
+        if (state.pollTimeLeft > 0) {
+          state.pollTimeLeft--;
+          updatePollTimerUI();
+        } else {
+          clearInterval(state.pollTimerInterval);
+          handlePollTimeout();
+        }
+      }, 1000);
+    }
+
+    function updatePollTimerUI() {
+      const mins = String(Math.floor(state.pollTimeLeft / 60)).padStart(2, '0');
+      const secs = String(state.pollTimeLeft % 60).padStart(2, '0');
+      const el = document.getElementById('pollCountdown');
+      if (el) el.textContent = `${mins}:${secs}`;
+    }
+
+    function markPollResponded(actionName) {
+      if (state.pollResponded) return;
+      state.pollResponded = true;
+
+      const badge = document.getElementById('pollTimerBadge');
+      if (badge) {
+        badge.style.background = '#f0fdf4';
+        badge.style.color = '#166534';
+        badge.style.borderColor = '#bbf7d0';
+        badge.innerHTML = `✅ ตอบเช็คอินแล้ว (${actionName || 'Active Status Verified'})`;
+      }
+
+      showToast(`✅ ตอบเช็คอินเรียบร้อย (${actionName}) • AI ยืนยันการอยู่หน้าจอ Active`);
+    }
+
+    function handlePollTimeout() {
+      const pinnedRecap = document.getElementById('pinnedRecapBar');
+      if (pinnedRecap) pinnedRecap.style.display = 'none';
+
+      const badge = document.getElementById('pollTimerBadge');
+      if (badge) {
+        badge.style.background = '#fff1f2';
+        badge.style.color = '#9f1239';
+        badge.style.borderColor = '#fecdd3';
+        badge.innerHTML = `🔒 หมดเวลาเช็คอินแล้ว (ปิดการแก้ไขคำตอบ • ซ่อนแถบสรุปปักหมุดแล้ว)`;
+      }
+
+      // Disable edit buttons
+      const editBtn = document.getElementById('editOpinionBtn');
+      if (editBtn) editBtn.style.display = 'none';
+
+      // Update AI Hypothesis in Teacher Console
+      state.currentHypothesis.title = "ไม่ได้ตอบเช็คอินตามเวลา (Presence Timeout)";
+      state.currentHypothesis.reason = "ไม่กดตอบเช็คอินในเวลา 2:30 นาที -> AI สันนิษฐานว่าอาจเปิดหน้าจอค้างไว้แล้วพักสายตา";
+      state.currentHypothesis.confidence = 82;
+      updateTeacherConsoleUI();
+
+      // AI Tutor sends gentle check-in prompt into group chat
+      const msgArea = document.getElementById('messagesArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group ai';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">✦</div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor (Check-in Friendly Prompt)</div>
+          <div class="bubble" style="background: #fffbebf5; border-color: #fef08a; color: #854d0e;">
+            👋 <b>แวะมาทักทายครับ:</b> หมดเวลาเช็คอินแล้ว น้องๆ สามารถดูภาพรวมความเห็นของกลุ่มในกล่องสรุปได้เลยนะครับ 😊
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+
+      showToast("🔒 หมดเวลาเช็คอิน 2:30m -> ล็อกคำตอบการเช็คอินเรียบร้อย");
+    }
+
+    // Input draft listener for live detection of unsent text
+    function attachDraftListeners() {
+      const mainInput = document.getElementById('chatInput');
+
+      const handleInput = (val) => {
+        state.draftText = val;
+        state.idleSeconds = 0; // Reset silence counter on active typing
+        updateSilenceUI();
+
+        const valDraft = document.getElementById('val-draft');
+        const subDraftInfo = document.getElementById('sub-draft-info');
+        const stNarin = document.getElementById('st-narin');
+        const dotNarin = document.getElementById('dot-narin');
+
+        if (val.length > 0) {
+          // Update Teacher Console signals (behind the scenes)
+          if (valDraft) valDraft.textContent = `มีร่าง ${val.length} ตัวอักษร ("${val.substring(0, 16)}${val.length > 16 ? '...' : ''}")`;
+          if (subDraftInfo) subDraftInfo.textContent = `สถานะ: ✍️ กำลังเรียบเรียงประโยคตอบ (AI ชะลอคำใบ้ ไม่ขัดจังหวะ!)`;
+
+          // Clean UI for Student View: Just show "กำลังพิมพ์…"
+          if (stNarin) {
+            stNarin.textContent = `✍️ กำลังพิมพ์…`;
+            stNarin.style.color = 'var(--accent-purple)';
+          }
+          if (dotNarin) dotNarin.className = 'status-dot';
+
+          if (val.length > 10) {
+            state.currentHypothesis.title = "กำลังเรียบเรียงประโยคตอบยาว";
+            state.currentHypothesis.reason = `มีร่างข้อความ ${val.length} ตัวอักษรค้างในช่องพิมพ์ -> AI จะไม่ส่งคำใบ้มาแทรกขัดจังหวะ`;
+            state.currentHypothesis.confidence = 88;
+          }
+        } else {
+          // Teacher Console signals
+          if (valDraft) valDraft.textContent = `ว่างเปล่า (0 ตัวอักษร)`;
+          if (subDraftInfo) subDraftInfo.textContent = `สถานะ: ยังไม่ได้พิมพ์ข้อความค้างไว้`;
+
+          // Clean UI for Student View
+          if (stNarin) {
+            stNarin.textContent = `กำลังอ่านแชท…`;
+            stNarin.style.color = 'var(--text-muted)';
+          }
+        }
+
+        updateTeacherConsoleUI();
+      };
+
+      if (mainInput) {
+        mainInput.addEventListener('input', (e) => handleInput(e.target.value));
+      }
+    }
+
+    // Global View Switcher Helper
+    function switchViewMode(mode) {
+      state.viewMode = mode;
+
+      const grid = document.getElementById('workspaceGrid');
+      const rosterCard = document.getElementById('rosterCard');
+      const chatSec = document.getElementById('chatSection');
+      const teacherSec = document.getElementById('teacherSection');
+      const toggleConsoleBtn = document.getElementById('toggleTeacherConsoleBtn');
+
+      // Update top bar active state
+      document.querySelectorAll('.view-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+
+      grid.className = `workspace-grid mode-${mode}`;
+
+      if (mode === 'student') {
+        if (rosterCard) rosterCard.style.display = 'flex';
+        chatSec.style.display = 'flex';
+        teacherSec.style.display = 'none';
+        if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
+        showToast("🎓 เปิดมุมมองนักเรียน (Student View)");
+      } else if (mode === 'teacher') {
+        // TEACHER MODE: Shows Chat FIRST as requested!
+        if (rosterCard) rosterCard.style.display = 'flex';
+        chatSec.style.display = 'flex';
+        teacherSec.style.display = 'none';
+        if (toggleConsoleBtn) {
+          toggleConsoleBtn.style.display = 'flex';
+          toggleConsoleBtn.innerHTML = '📊 เปิดหน้าข้อมูลวิเคราะห์ครู ➔';
+        }
+        showToast("👩‍🏫 มุมมองครู: แสดงหน้าแชทหลัก (กดปุ่ม 'เปิดหน้าข้อมูลวิเคราะห์' ได้ตลอดเวลา)");
+      } else if (mode === 'analytics') {
+        // STANDALONE ANALYTICS PAGE: Displays ONLY the full-page Analytics Console cleanly!
+        if (rosterCard) rosterCard.style.display = 'none';
+        chatSec.style.display = 'none';
+        teacherSec.style.display = 'flex';
+        if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
+        showToast("📊 เปิดแยกเข้าสู่หน้าข้อมูลวิเคราะห์ของครู (Full Analytics Page)");
+      }
+
+      document.querySelectorAll('.flow-step').forEach(step => step.classList.add('active'));
+    }
+
+    // Top View Switcher Event Handlers
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchViewMode(btn.dataset.mode);
+      });
+    });
+
+    // Student Selector Logic
+    function selectStudent(studentId) {
+      state.activeStudent = studentId;
+      document.querySelectorAll('.student-item').forEach(item => item.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      showToast(`เลือกดูข้อมูลนักเรียน: ${studentId}`);
+      updateTeacherConsoleUI();
+    }
+
+    function switchStudentTab(studentId) {
+      state.activeStudent = studentId;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      if (studentId === 'narin') {
+        state.currentHypothesis.title = "อาจกำลังลังเลระหว่าง O2 กับ CO2";
+        state.currentHypothesis.reason = "พิมพ์คำว่า 'หรือเปล่า' + เงียบพิมพ์ 34s";
+        state.currentHypothesis.confidence = 68;
+      } else if (studentId === 'beam') {
+        state.currentHypothesis.title = "เข้าใจแนวคิดหลักได้ดี มีความมั่นใจสูง";
+        state.currentHypothesis.reason = "ตอบทันที + ได้รับ 3 Like จากเพื่อน";
+        state.currentHypothesis.confidence = 92;
+      } else if (studentId === 'mali') {
+        state.currentHypothesis.title = "เข้าใจเรื่องปัจจัยน้ำ พร้อมต่อยอดปัจจัยถัดไป";
+        state.currentHypothesis.reason = "ระบุคำตอบสั้นแต่นำเข้าสู่เรื่องรากพืช";
+        state.currentHypothesis.confidence = 85;
+      } else if (studentId === 'khaohom') {
+        state.currentHypothesis.title = "ต้องการเวลาอ่านและประมวลผลข้อความเพื่อน";
+        state.currentHypothesis.reason = "เปิดอ่านแชทต่อเนื่องโดยยังไม่กดพิมพ์ (เงียบ 45s)";
+        state.currentHypothesis.confidence = 74;
+      }
+
+      updateTeacherConsoleUI();
+      showToast(`สลับแผงวิเคราะห์เป็น: ${studentId}`);
+    }
+
+    // Emoji React Toggle
+    function toggleReact(btn, emoji) {
+      btn.classList.toggle('selected');
+      const countSpan = btn.querySelector('.count');
+      let count = parseInt(countSpan.textContent) || 0;
+
+      if (btn.classList.contains('selected')) {
+        count++;
+        state.emojiCount++;
+        markPollResponded(`กดอีโมจิ ${emoji}`);
+        showToast(`บันทึก feedback อีโมจิ ${emoji} (หลังบ้านบันทึกเป็นสัญญาณความรู้สึก)`);
+      } else {
+        count = Math.max(0, count - 1);
+      }
+      countSpan.textContent = count;
+      updateTeacherConsoleUI();
+    }
+
+    // Hand Raise Toggle Function
+    function toggleHandRaise(btn) {
+      if (state.pollTimeLeft <= 0) {
+        showToast("🔒 หมดเวลาเช็คอินแล้ว ไม่สามารถแก้ไขได้ครับ");
+        return;
+      }
+
+      state.isNarinRaisedHand = !state.isNarinRaisedHand;
+      btn.classList.toggle('raised', state.isNarinRaisedHand);
+
+      const txt = document.getElementById('handRaiseText');
+      const cnt = document.getElementById('handRaiseCount');
+
+      if (state.isNarinRaisedHand) {
+        state.handRaisedCount = Math.min(4, state.handRaisedCount + 1);
+        txt.textContent = "ยกมือแล้ว: เข้าใจภาพรวมของกลุ่มแล้ว!";
+        markPollResponded('กดยกมือ');
+        showToast("✋ คุณกด 'ยกมือ' บอก AI และเพื่อนว่าเข้าใจภาพรวมแล้ว");
+      } else {
+        state.handRaisedCount = Math.max(0, state.handRaisedCount - 1);
+        txt.textContent = "ยกมือ: เข้าใจภาพรวมของกลุ่มแล้ว!";
+        showToast("เอาพ้นมือลงแล้ว");
+      }
+
+      cnt.textContent = `ยกมือแล้ว ${state.handRaisedCount}/${state.totalGroupMembers} คน`;
+      updateTeacherConsoleUI();
+    }
+
+    // SCOPED Custom Disagree Textarea Box (AUTO OPENS DIRECTLY INSIDE SPECIFIC MESSAGE BOX)
+    function openDisagreeBox(triggerBtn, customTitle) {
+      if (state.pollTimeLeft <= 0) {
+        showToast("🔒 หมดเวลาเช็คอินแล้ว ไม่สามารถแก้ไขได้ครับ");
+        return;
+      }
+      if (!triggerBtn) return;
+
+      // Locate the closest container of the message clicked
+      const verifyBox = triggerBtn.closest('.hypothesis-verify-box') || triggerBtn.closest('.bubble') || triggerBtn.parentElement;
+      if (!verifyBox) return;
+
+      let box = verifyBox.querySelector('.disagree-input-container');
+      if (!box) {
+        // Create scoped input container dynamically if not pre-rendered inside this specific message
+        box = document.createElement('div');
+        box.className = 'disagree-input-container';
+        box.innerHTML = `
+          <div style="font-size: 11.5px; font-weight: 600; color: #9f1239; display: flex; justify-content: space-between; align-items: center;">
+            <span class="disagree-input-title">✍️ กรอกเหตุผลของคุณ:</span>
+            <button onclick="closeDisagreeBox(this)" style="background: transparent; border:0; color:#e11d48; cursor:pointer; font-weight:bold;">✕ ปิด</button>
+          </div>
+          <textarea class="disagree-textarea" placeholder="พิมพ์เหตุผลของคุณที่นี่..."></textarea>
+          <button class="submit-disagree-btn" onclick="submitCustomDisagree(this)">
+            🚀 อัปเดตความเห็นเข้าสรุปกลุ่ม (ทับอันเดิม)
+          </button>
+        `;
+        verifyBox.appendChild(box);
+
+        // Attach input draft listener for unsent text detection
+        const txt = box.querySelector('.disagree-textarea');
+        if (txt) {
+          txt.addEventListener('input', (e) => {
+            state.draftText = e.target.value;
+            state.idleSeconds = 0;
+            updateSilenceUI();
+            updateTeacherConsoleUI();
+          });
+        }
+      }
+
+      const titleSpan = box.querySelector('.disagree-input-title');
+      if (titleSpan && customTitle) {
+        titleSpan.textContent = `✍️ ${customTitle}`;
+      }
+
+      box.style.display = 'flex';
+      const textarea = box.querySelector('.disagree-textarea');
+      if (textarea) {
+        if (state.myCustomText) textarea.value = state.myCustomText;
+        textarea.focus();
+      }
+
+      showToast("✍️ เปิดช่องกรอกเหตุผลเพื่อแก้ไขความเห็นใต้สรุปกลุ่มเรียบร้อย!");
+    }
+
+    function closeDisagreeBox(closeBtn) {
+      const container = closeBtn ? closeBtn.closest('.disagree-input-container') : document.querySelector('.disagree-input-container');
+      if (container) container.style.display = 'none';
+    }
+
+    // FEATURE: Overwrite Student's Previous Opinion In-Place
+    function submitCustomDisagree(submitBtn) {
+      if (state.pollTimeLeft <= 0) {
+        showToast("🔒 หมดเวลาเช็คอินแล้ว ไม่สามารถแก้ไขได้ครับ");
+        return;
+      }
+
+      const container = submitBtn ? submitBtn.closest('.disagree-input-container') : document.querySelector('.disagree-input-container');
+      if (!container) return;
+
+      const txtInput = container.querySelector('.disagree-textarea');
+      const val = txtInput ? txtInput.value.trim() : '';
+      if (!val) {
+        showToast("⚠️ กรุณาพิมพ์เหตุผลหรือแนวคิดของคุณก่อนอัปเดตงับ");
+        if (txtInput) txtInput.focus();
+        return;
+      }
+
+      state.myCustomText = val;
+
+      // 1. OVERWRITE STUDENT'S BULLET POINT IN-PLACE IN RECAP BOX
+      const narinText = document.getElementById('narinOpinionText');
+      const editBtn = document.getElementById('editOpinionBtn');
+      if (narinText) {
+        narinText.innerHTML = `<span style="color: #9f1239; font-weight: 600;">💡 เสนอแนวคิดใหม่: "${val}"</span>`;
+      }
+      if (editBtn) {
+        editBtn.style.display = 'inline-block';
+      }
+
+      // Unselect pre-rendered verify chips since student used custom text
+      const recapOptions = document.getElementById('recapVerifyOptions');
+      if (recapOptions) {
+        recapOptions.querySelectorAll('.verify-chip').forEach(c => {
+          if (!c.id) c.classList.remove('confirmed', 'disagreed');
+        });
+
+        // OVERWRITE EXISTING CUSTOM CHIP OR CREATE ONE
+        let existingChip = document.getElementById('chip-narin-custom');
+        const shortVal = val.length > 22 ? val.substring(0, 22) + '...' : val;
+
+        if (!existingChip) {
+          existingChip = document.createElement('button');
+          existingChip.id = 'chip-narin-custom';
+          existingChip.className = 'verify-chip';
+          existingChip.style.borderColor = '#f43f5e';
+          existingChip.style.background = '#fff1f2';
+          existingChip.style.color = '#9f1239';
+          existingChip.style.fontWeight = '600';
+          existingChip.onclick = function () { togglePeerAgree(this, 'narin_custom_idea', 'agree'); };
+          recapOptions.appendChild(existingChip);
+        }
+        existingChip.innerHTML = `💡 เห็นด้วยกับแนวคิดนรินทร์: "${shortVal}"`;
+      }
+
+      // 2. OVERWRITE PREVIOUS LOG ENTRY IN TEACHER CONSOLE
+      state.peerAgreements = state.peerAgreements.filter(item => item.student !== "นรินทร์");
+      state.peerAgreements.unshift({
+        student: "นรินทร์",
+        target: `✍️ เขียนแก้ไขทับอันเดิม: "${val}"`,
+        status: "เขียนทับความเห็นเดิม"
+      });
+
+      state.idleSeconds = 0;
+      state.draftText = '';
+      const stNarin = document.getElementById('st-narin');
+      if (stNarin) stNarin.textContent = 'กำลังอ่านแชท…';
+      updateSilenceUI();
+      updateTeacherConsoleUI();
+
+      // Mark time-limited poll as responded!
+      markPollResponded('เสนอแนวคิด/แก้ไขคำตอบ');
+
+      // Hide input container
+      container.style.display = 'none';
+
+      showToast("✨ AI อัปเดตและเขียนข้อความใหม่ทับความเห็นเดิมเรียบร้อย!");
+    }
+
+    // Student Edit Opinion Button Handler
+    function editMyOpinion(btn) {
+      if (state.pollTimeLeft <= 0) {
+        showToast("🔒 หมดเวลาเช็คอินแล้ว ไม่สามารถแก้ไขได้ครับ");
+        return;
+      }
+      openDisagreeBox(btn, "✏️ แก้ไขความเห็น/เหตุผลของคุณ:");
+    }
+
+    // Peer Agreement / Disagreement Chip Toggle (OVERWRITES PREVIOUS CHOICE)
+    function togglePeerAgree(btn, targetType, mode) {
+      if (state.pollTimeLeft <= 0) {
+        showToast("🔒 หมดเวลาเช็คอินแล้ว ไม่สามารถแก้ไขได้ครับ");
+        return;
+      }
+
+      markPollResponded('ติ๊กเลือกความเห็น');
+
+      if (mode === 'disagree' || targetType.includes('disagree') || targetType.includes('my_idea')) {
+        btn.classList.toggle('disagreed');
+        const isDisagreed = btn.classList.contains('disagreed');
+        let text = btn.textContent.trim();
+
+        if (isDisagreed) {
+          state.peerAgreements = state.peerAgreements.filter(item => item.student !== "นรินทร์");
+          state.peerAgreements.unshift({
+            student: "นรินทร์",
+            target: `❌ ข้อแย้งใหม่ (ทับเดิม): ${text}`,
+            status: "เสนอแนวคิดต่าง/โต้แย้ง"
+          });
+          // AUTOMATICALLY open the text area field inside THIS specific message!
+          openDisagreeBox(btn, `กรอกเหตุผลโต้แย้งต่อข้อความ: "${text}"`);
+        }
+      } else {
+        // Clear active states on other chips in recap
+        const container = btn.parentElement;
+        if (container) {
+          container.querySelectorAll('.verify-chip').forEach(c => {
+            if (c !== btn && !c.id) c.classList.remove('confirmed');
+          });
+        }
+
+        btn.classList.toggle('confirmed');
+        const isSelected = btn.classList.contains('confirmed');
+        let text = btn.textContent.trim();
+
+        const narinText = document.getElementById('narinOpinionText');
+        const editBtn = document.getElementById('editOpinionBtn');
+
+        if (isSelected) {
+          if (narinText) {
+            narinText.innerHTML = `<span style="color: var(--primary); font-weight: 600;">${text}</span>`;
+          }
+          if (editBtn) editBtn.style.display = 'inline-block';
+
+          // OVERWRITE LOG IN TEACHER CONSOLE
+          state.peerAgreements = state.peerAgreements.filter(item => item.student !== "นรินทร์");
+          state.peerAgreements.unshift({
+            student: "นรินทร์",
+            target: `เปลี่ยนคำตอบทับอันเดิม: ${text}`,
+            status: "อัปเดตทับอันเดิม"
+          });
+          showToast(`✨ เปลี่ยนคำตอบและอัปเดตทับความเห็นเดิมเรียบร้อย: "${text}"`);
+        }
+      }
+      updateTeacherConsoleUI();
+    }
+
+    // Student Hypothesis Verification (AUTOMATICALLY OPENS INPUT INSIDE THAT SPECIFIC MESSAGE)
+    function confirmHypothesis(btn, resultType, label) {
+      if (state.pollTimeLeft <= 0) {
+        showToast("🔒 หมดเวลาเช็คอินแล้ว ไม่สามารถแก้ไขได้ครับ");
+        return;
+      }
+
+      markPollResponded('ยืนยันสมมติฐาน');
+
+      const container = btn.parentElement;
+      container.querySelectorAll('.verify-chip').forEach(c => c.classList.remove('confirmed', 'disagreed'));
+
+      if (resultType === 'false_positive') {
+        btn.classList.add('disagreed');
+        // AUTOMATICALLY open the text area input field directly under THIS message!
+        openDisagreeBox(btn, "คุณระบุว่า 'AI เข้าใจผิด' — กรุณากรอกเหตุผลที่คุณคิดจริง:");
+      } else {
+        btn.classList.add('confirmed');
+        showToast(`ขอบคุณสำหรับ feedback! AI บันทึกการตอบรับ: "${label}"`);
+      }
+
+      state.hypoTotalCount++;
+      if (resultType === 'true_positive' || resultType === 'thinking') {
+        state.hypoAccuracyCount++;
+      }
+
+      state.feedbackLogs.unshift({
+        hypothesis: state.currentHypothesis.title,
+        feedback: `นักเรียนเลือก: ${label}`
+      });
+
+      updateTeacherConsoleUI();
+    }
+
+    // Update Console Dashboard UI
+    function updateTeacherConsoleUI() {
+      document.getElementById('val-msgcount').textContent = `${state.messageCount} ข้อความ`;
+      document.getElementById('val-emoji').textContent = `${state.emojiCount} ครั้ง`;
+      document.getElementById('val-tabswitch').textContent = `${state.tabSwitchCount} ครั้ง (${state.tabAwaySeconds}s)`;
+
+      document.getElementById('txt-hypo-title').textContent = state.currentHypothesis.title;
+      document.getElementById('txt-hypo-reason').textContent = state.currentHypothesis.reason;
+      document.getElementById('txt-confidence').textContent = state.currentHypothesis.confidence + '%';
+
+      const accPct = Math.round((state.hypoAccuracyCount / state.hypoTotalCount) * 100);
+      document.getElementById('txt-accuracy').innerHTML = `${accPct}% <span>(${state.hypoAccuracyCount}/${state.hypoTotalCount} ยืนยันถูกต้อง)</span>`;
+
+      // Update Hand-raise ratios
+      const hrPct = Math.round((state.handRaisedCount / state.totalGroupMembers) * 100);
+      document.getElementById('val-handraise-ratio').textContent = `${state.handRaisedCount} / ${state.totalGroupMembers} คน (${hrPct}%)`;
+      document.getElementById('bar-handraise').style.width = hrPct + '%';
+
+      // Update Peer agreement/disagreement log
+      const peerList = document.getElementById('peerAgreementList');
+      if (peerList) {
+        peerList.innerHTML = state.peerAgreements.slice(0, 3).map(item => `
+          <div class="log-item">
+            <span>${item.student} ➔ ${item.target}</span>
+            <strong style="color: ${item.status.includes('โต้แย้ง') ? 'var(--accent-rose)' : 'var(--primary)'};">${item.status}</strong>
+          </div>
+        `).join('');
+      }
+
+      // Update Feedback log list
+      const logContainer = document.getElementById('feedbackLogList');
+      logContainer.innerHTML = state.feedbackLogs.slice(0, 4).map(item => `
+        <div class="log-item">
+          <span>${item.hypothesis}</span>
+          <strong style="color: var(--primary);">${item.feedback}</strong>
+        </div>
+      `).join('');
+    }
+
+    // Send Chat Message Form
+    document.getElementById('chatForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const msgArea = document.getElementById('messagesArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group me';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">🙂</div>
+        <div class="message-content">
+          <div class="message-sender">นรินทร์ (คุณ)</div>
+          <div class="bubble">
+            ${val}
+            <div class="reaction-bar">
+              <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">0</span></button>
+              <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">0</span></button>
+            </div>
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      input.value = '';
+      msgArea.scrollTop = msgArea.scrollHeight;
+
+      state.idleSeconds = 0;
+      state.messageCount++;
+      state.draftText = '';
+      const stNarin = document.getElementById('st-narin');
+      if (stNarin) stNarin.textContent = 'กำลังอ่านแชท… ( active )';
+      updateSilenceUI();
+      updateTeacherConsoleUI();
+
+      markPollResponded('พิมพ์ส่งข้อความแชท');
+      showToast("ส่งข้อความแล้ว • AI บันทึกเป็นสัญญาณการมีส่วนร่วม active");
+    });
+
+    // Send Gentle Support Manual Button
+    function sendGentleSupportManual() {
+      const msgArea = document.getElementById('messagesArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group ai';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">✦</div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor (Gentle Support)</div>
+          <div class="bubble">
+            <div style="font-size: 11px; color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+              ↩️ กำลังตอบกลับ: <span style="background: #ffffff; color: #1e40af; padding: 1px 6px; border-radius: 4px; border: 1px solid #93c5fd;">🙂 นรินทร์</span>
+            </div><br>
+            คุณ<b>นรินทร์</b>ครับ! ${state.supportPrompt}
+            <div class="hypothesis-verify-box">
+              <div class="verify-title">💡 AI สันนิษฐานว่า: คำถามนี้อาจช่วยสะกิดความคิดของคุณ</div>
+              <div class="verify-options">
+                <button class="verify-chip" onclick="confirmHypothesis(this, 'true_positive', 'ช่วยได้มาก')">✅ ช่วยได้มาก</button>
+                <button class="verify-chip" onclick="confirmHypothesis(this, 'thinking', 'กำลังลองคิดดู')">💡 กำลังลองคิดดู</button>
+                <button class="verify-chip" onclick="confirmHypothesis(this, 'false_positive', 'AI เข้าใจผิด (กดปุ่มนี้เพื่อกรอกเหตุผล...)')">❌ AI เข้าใจผิด (กรอกเหตุผล...)</button>
+              </div>
+              <div class="disagree-input-container" style="display: none;">
+                <div style="font-size: 11.5px; font-weight: 600; color: #9f1239; display: flex; justify-content: space-between; align-items: center;">
+                  <span class="disagree-input-title">✍️ กรอกเหตุผลของคุณ:</span>
+                  <button onclick="closeDisagreeBox(this)" style="background: transparent; border:0; color:#e11d48; cursor:pointer; font-weight:bold;">✕ ปิด</button>
+                </div>
+                <textarea class="disagree-textarea" placeholder="พิมพ์เหตุผลของคุณที่นี่..."></textarea>
+                <button class="submit-disagree-btn" onclick="submitCustomDisagree(this)">
+                  🚀 อัปเดตความเห็นเข้าสรุปกลุ่ม (ทับอันเดิม)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+      showToast("ส่ง Gentle Support เข้าแชทกลุ่มสำเร็จ!");
+    }
+
+    // Send Group Recap Manual / Sim Button
+    function sendGroupRecapManual() {
+      simGroupRecap();
+    }
+
+    function simGroupRecap() {
+      const msgArea = document.getElementById('messagesArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group ai';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">✦</div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor (Group Recap & Living Check-In)</div>
+          <div class="bubble">
+            📌 <b>สรุปภาพรวมความเห็นกลุ่มชั่วคราว:</b>
+            <ul style="margin: 8px 0 12px 18px; font-size: 12.5px; line-height: 1.6;">
+              <li>🧢 <b>บีม:</b> แสงแดด (พลังงาน)</li>
+              <li>🌼 <b>มะลิ:</b> น้ำ (ดูดผ่านราก)</li>
+              <li>🙂 <b>นรินทร์:</b> ออกซิเจน (ทบทวน O2 vs CO2)</li>
+              <li>🌿 <b>ข้าวหอม:</b> คาร์บอนไดออกไซด์ (แก๊สรับเข้า)</li>
+            </ul>
+            <div class="hypothesis-verify-box">
+              <div class="verify-title">✋ <b>ช่วยยกมือ ติ๊กเห็นด้วย หรือกดไม่เห็นด้วยเพื่อกรอกเหตุผล:</b></div>
+              <button class="hand-raise-btn" onclick="toggleHandRaise(this)">
+                <span>✋ ยกมือ: เข้าใจภาพรวมกลุ่มแล้ว!</span>
+                <span class="badge" style="background: #3b82f6; color: #fff; padding: 2px 8px; border-radius: 99px; font-size: 11px;">ยกมือแล้ว ${state.handRaisedCount}/4 คน</span>
+              </button>
+              <div class="verify-options" style="margin-top: 8px;">
+                <button class="verify-chip" onclick="togglePeerAgree(this, 'beam', 'agree')">🧢 เห็นด้วยกับบีม</button>
+                <button class="verify-chip" onclick="togglePeerAgree(this, 'mali', 'agree')">🌼 เห็นด้วยกับมะลิ</button>
+                <button class="verify-chip" onclick="togglePeerAgree(this, 'khaohom', 'agree')">🌿 เห็นด้วยกับข้าวหอม</button>
+                <button class="verify-chip" onclick="togglePeerAgree(this, 'disagree', 'disagree')">❌ ไม่เห็นด้วยกับบางความเห็น</button>
+                <button class="verify-chip" onclick="togglePeerAgree(this, 'my_idea', 'disagree')">💡 เสนอแนวคิดอื่น</button>
+              </div>
+              <div class="disagree-input-container" style="display: none;">
+                <div style="font-size: 11.5px; font-weight: 600; color: #9f1239; display: flex; justify-content: space-between; align-items: center;">
+                  <span class="disagree-input-title">✍️ กรอกเหตุผลของคุณ:</span>
+                  <button onclick="closeDisagreeBox(this)" style="background: transparent; border:0; color:#e11d48; cursor:pointer; font-weight:bold;">✕ ปิด</button>
+                </div>
+                <textarea class="disagree-textarea" placeholder="พิมพ์เหตุผลของคุณที่นี่..."></textarea>
+                <button class="submit-disagree-btn" onclick="submitCustomDisagree(this)">
+                  🚀 อัปเดตความเห็นเข้าสรุปกลุ่ม (ทับอันเดิม)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+      showToast("📢 AI สรุปความเห็นกลุ่มและส่งแบบเช็คยกมือ/ข้อแย้งเข้าแชท!");
+    }
+
+    // Page Visibility Detector (Tab Switching)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        state.tabSwitchCount++;
+        showToast("⚠️ นักเรียนสลับออกจากหน้าเว็บ (ระบบบันทึกเพื่อดูบริบท ไม่นำไปหักคะแนน)");
+      } else {
+        state.idleSeconds = 0;
+        showToast("กลับเข้าสู่หน้าเว็บเรียนแล้ว!");
+      }
+      updateTeacherConsoleUI();
+    });
+
+    // Simulation Tools
+    function simIdle(secs) {
+      state.idleSeconds = secs;
+      updateSilenceUI();
+      showToast(`🧪 จำลองเวลาเงียบพิมพ์เป็น ${secs} วินาที`);
+    }
+
+    function simDraftText() {
+      const sampleText = "พืชใช้ออกซิเจนหายใจแต่ใช้คาร์บอน";
+      const input = document.getElementById('chatInput');
+      input.value = sampleText;
+      state.draftText = sampleText;
+      state.idleSeconds = 0;
+
+      const valDraft = document.getElementById('val-draft');
+      const subDraftInfo = document.getElementById('sub-draft-info');
+      if (valDraft) valDraft.textContent = `มีร่าง 32 ตัวอักษร ("พืชใช้ออกซิเจนหาย...")`;
+      if (subDraftInfo) subDraftInfo.textContent = `สถานะ: ✍️ กำลังเรียบเรียงประโยคตอบ (AI ชะลอคำใบ้ ไม่ขัดจังหวะ!)`;
+
+      const stNarin = document.getElementById('st-narin');
+      if (stNarin) {
+        stNarin.textContent = `✍️ กำลังพิมพ์…`;
+        stNarin.style.color = 'var(--accent-purple)';
+      }
+
+      state.currentHypothesis.title = "กำลังพิมพ์เรียบเรียงคำตอบยาว";
+      state.currentHypothesis.reason = "มีข้อความร่าง 32 ตัวอักษรค้างอยู่ในช่องพิมพ์ -> ระบบชะลอการส่งคำใบ้มาแทรกแซง";
+      state.currentHypothesis.confidence = 88;
+
+      updateTeacherConsoleUI();
+      showToast("🧪 จำลองนักเรียนค้างร่างข้อความ 32 ตัวอักษรในช่องพิมพ์");
+    }
+
+    function simPollTimeout() {
+      state.pollTimeLeft = 0;
+      handlePollTimeout();
+    }
+
+    function simTabSwitch() {
+      state.tabSwitchCount++;
+      state.tabAwaySeconds += 45;
+      updateTeacherConsoleUI();
+      showToast("🧪 จำลองนักเรียนสลับหน้าจอไป 45 วินาที");
+    }
+
+    function simPeerReply() {
+      const msgArea = document.getElementById('messagesArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">🌿</div>
+        <div class="message-content">
+          <div class="message-sender">ข้าวหอม</div>
+          <div class="bubble">
+            เราคิดว่าแก๊สคาร์บอนไดออกไซด์นะ ที่พืชดูดไปตอนกลางวัน!
+            <div class="reaction-bar">
+              <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">2</span></button>
+              <button class="react-btn" onclick="toggleReact(this, '💡')">💡 <span class="count">3</span></button>
+            </div>
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+      showToast("🧪 จำลองข้าวหอมพิมพ์ตอบเข้ากลุ่ม");
+    }
+
+    // Teacher Approval & Human-in-the-loop verification functions
+    function approveAiSuggestion(btn) {
+      const badge = document.getElementById('aiVerifyStatusBadge');
+      if (badge) {
+        badge.textContent = "✅ ครูอนุมัติแล้ว";
+        badge.style.background = "#dcfce7";
+        badge.style.color = "#15803d";
+        badge.style.borderColor = "#86efac";
+      }
+      sendGentleSupportManual();
+      showToast("✅ ครูวิภาอนุมัติคำใบ้ AI -> ส่งคำถามชวนคิดเข้าห้องแชทนักเรียนเรียบร้อย");
+    }
+
+    function editAiPromptByTeacher(btn) {
+      const newPrompt = prompt("พิมพ์ปรับแก้ข้อความคำใบ้/คำถามที่ต้องการให้ AI ส่งเข้าห้องแชท:", "แก๊สออกซิเจนเป็นสิ่งที่พืชรับเข้ามา หรือสร้างขึ้นแล้วปล่อยออกมากันแน่ครับนักเรียน?");
+      if (newPrompt) {
+        const badge = document.getElementById('aiVerifyStatusBadge');
+        if (badge) {
+          badge.textContent = "✏️ ปรับแก้โดยครูแล้ว";
+          badge.style.background = "#fef3c7";
+          badge.style.color = "#b45309";
+          badge.style.borderColor = "#fde68a";
+        }
+        
+        const msgArea = document.getElementById('chatMessages') || document.getElementById('messagesArea');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message-group ai-tutor';
+        msgDiv.innerHTML = `
+          <div class="avatar">✦</div>
+          <div class="message-content">
+            <div class="message-sender">AI Tutor (ปรับแก้โดยครูผู้สอน 👩‍🏫)</div>
+            <div class="bubble" style="background: #f0f9ff; border: 1.5px solid #93c5fd;">
+              ${newPrompt}
+            </div>
+          </div>
+        `;
+        msgArea.appendChild(msgDiv);
+        msgArea.scrollTop = msgArea.scrollHeight;
+        showToast("✏️ ส่งคำใบ้ที่ครูปรับแก้เข้าแชทนักเรียนเรียบร้อย!");
+      }
+    }
+
+    function rejectAiSuggestion(btn) {
+      const badge = document.getElementById('aiVerifyStatusBadge');
+      if (badge) {
+        badge.textContent = "✋ ครูขอเข้าแนะนำเอง";
+        badge.style.background = "#ffe4e6";
+        badge.style.color = "#9f1239";
+        badge.style.borderColor = "#fecdd3";
+      }
+      showToast("✋ ครูส่งสัญญาณขอจัดการเอง -> AI ชะลอคำตอบเพื่อให้ครูสอนโดยตรง");
+    }
+
+    function simAiAskTeacher() {
+      switchViewMode('teacher');
+      const verifyCard = document.getElementById('aiTeacherVerifyCard');
+      if (verifyCard) {
+        verifyCard.scrollIntoView({ behavior: 'smooth' });
+        verifyCard.style.outline = '3px solid #3b82f6';
+        setTimeout(() => verifyCard.style.outline = 'none', 3500);
+      }
+      showToast("🙋‍♂️ AI ส่งคำถามขอคำยืนยันจากครูวิภา (Human-in-the-Loop)!");
+    }
+
+    function toggleAutoFallback(btn) {
+      const badge = document.getElementById('aiVerifyStatusBadge');
+      if (badge) {
+        badge.textContent = "🤖 AI ทำงานอัตโนมัติ (ครูสลับไปดูห้องอื่น)";
+        badge.style.background = "#f5d0fe";
+        badge.style.color = "#701a75";
+        badge.style.borderColor = "#f0abfc";
+      }
+      showToast("🤖 เปิดโหมด AI อัตโนมัติ: AI คัดกรองและส่งคำใบ้นุ่มนวลทันที (ครูแวะเข้ามาย้อนดูประวัติได้ตลอดเวลา)");
+    }
+
+    function simTeacherAwayAuto() {
+      toggleAutoFallback();
+      sendGentleSupportManual();
+      showToast("🌙 จำลองสถานการณ์: ครูแวะไปดูห้องอื่น ➔ AI ดูแลนุ่มนวลอัตโนมัติ (เด็กไม่ค้างรอ)");
+    }
+
+    function handleTeacherFileUpload(input) {
+      if (input.files && input.files[0]) {
+        const fileName = input.files[0].name;
+        const display = document.getElementById('quizFileNameDisplay');
+        if (display) {
+          display.textContent = `✅ แนบไฟล์แล้ว: ${fileName}`;
+          display.style.color = "#16a34a";
+        }
+        showToast(`✅ แนบไฟล์ข้อสอบ: ${fileName} เรียบร้อย!`);
+      }
+    }
+
+    function sendTeacherQuizToGroup() {
+      const fileInput = document.getElementById('teacherQuizFileInput');
+      const textArea = document.getElementById('teacherQuizTextArea');
+      const textVal = textArea ? textArea.value.trim() : '';
+      const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+      const fileName = hasFile ? fileInput.files[0].name : 'ใบงานควิซ_การสังเคราะห์ด้วยแสง_ม1.pdf';
+
+      const quizContent = textVal || `1. พืชต้องใช้แก๊สชนิดใดในกระบวนการสังเคราะห์ด้วยแสง?\n2. ผลผลิตที่พืชสร้างขึ้นและปล่อยออกมาคือแก๊สอะไร?`;
+
+      const msgArea = document.getElementById('chatMessages') || document.getElementById('messagesArea');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group ai-tutor';
+      msgDiv.innerHTML = `
+        <div class="avatar">✦</div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor (ได้รับมอบหมายจาก ครูวิภา 👩‍🏫)</div>
+          <div class="bubble" style="background: #faf5ff; border: 1.5px solid #c084fc;">
+            📝 <b>ควิซประจำบทเรียนจากครูวิภา:</b><br>
+            <div style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #e9d5ff; padding: 10px; border-radius: 8px; margin: 8px 0; white-space: pre-line;">
+              ${quizContent}
+            </div>
+            ${hasFile || !textVal ? `<div style="font-size: 11px; color: #7e22ce; background: #f3e8ff; border: 1px solid #d8b4fe; padding: 5px 10px; border-radius: 6px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;">📄 <b>ไฟล์ข้อสอบแนบ:</b> ${fileName}</div><br>` : ''}
+            <span style="font-size: 11px; color: var(--text-muted);">ให้นักเรียนช่วยกันตอบควิซสั้นนี้ลงในแชทกลุ่มได้เลยนะ! 🌱</span>
+            <div class="reaction-bar">
+              <button class="react-btn" onclick="toggleReact(this, '📝')">📝 รับทราบควิซ <span class="count">1</span></button>
+              <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">2</span></button>
+            </div>
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+
+      switchViewMode('student');
+      showToast("🚀 สั่ง AI แจกข้อสอบ/ควิซครู เข้าห้องแชทกลุ่มนักเรียนเรียบร้อย!");
+    }
+
+    function simTeacherDispatchQuiz() {
+      const textArea = document.getElementById('teacherQuizTextArea');
+      if (textArea) textArea.value = "1. พืชใช้แก๊สคาร์บอนไดออกไซด์ (CO2) ทำอะไร?\n2. สิ่งใดที่เป็นปัจจัยกระตุ้นให้เกิดปฏิกิริยาสร้างอาหาร?";
+      const display = document.getElementById('quizFileNameDisplay');
+      if (display) {
+        display.textContent = "✅ แนบไฟล์แล้ว: ใบงานควิซ_การสังเคราะห์ด้วยแสง_ม1.pdf";
+        display.style.color = "#16a34a";
+      }
+      sendTeacherQuizToGroup();
+    }
+
+    // Scroll to Group Recap box
+    function scrollToGroupRecap() {
+      const recapMsg = document.getElementById('aiGroupRecapMsg');
+      if (recapMsg) {
+        recapMsg.scrollIntoView({ behavior: 'smooth' });
+        recapMsg.style.outline = '3px solid #3b82f6';
+        setTimeout(() => recapMsg.style.outline = 'none', 3000);
+        showToast("📍 เลื่อนไปยังกล่องสรุปความเห็นของกลุ่มแล้ว");
+      }
+    }
+
+    // Saved Tasks & Catch-Up Drawer Modal Toggle (Separate for Student & Teacher)
+    function toggleSavedTasksDrawer(role = 'student') {
+      const modalId = role === 'teacher' ? 'savedTasksModalTeacher' : 'savedTasksModalStudent';
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.toggle('open');
+        const isOpen = modal.classList.contains('open');
+        if (isOpen) showToast(role === 'teacher' ? "👩‍🏫 เปิดคลังติดตามการสอนครูวิภา" : "🎓 เปิดคลังตามงานนักเรียน");
+      }
+    }
+
+    function bookmarkMessage(btn, author, textSnippet) {
+      const list = document.getElementById('savedBookmarkList');
+      if (!list) return;
+
+      const item = document.createElement('div');
+      item.style.cssText = "font-size: 11.5px; background: #f8fafc; border: 1.5px solid #e2e8f0; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;";
+      item.innerHTML = `
+        <div><b>${author}:</b> <i>"${textSnippet}"</i></div>
+        <button onclick="this.parentElement.remove(); updateSavedCount();" style="border:0; background:transparent; color:#e11d48; cursor:pointer; font-size:11px; font-weight:bold;">✕</button>
+      `;
+      list.appendChild(item);
+      updateSavedCount();
+      showToast(`📌 บันทึกข้อความของ ${author} เข้าคลังเก็บงานเรียบร้อย!`);
+    }
+
+    function updateSavedCount() {
+      const list = document.getElementById('savedBookmarkList');
+      const textSpan = document.getElementById('savedItemsCountText');
+      const badgeCount = document.getElementById('savedTaskCount');
+      if (list && textSpan) {
+        const count = list.children.length;
+        textSpan.textContent = count;
+        if (badgeCount) badgeCount.textContent = count + 2;
+      }
+    }
+
+    function resetSim() {
+      state.idleSeconds = 0;
+      state.messageCount = 2;
+      state.emojiCount = 3;
+      state.tabSwitchCount = 1;
+      state.hypoAccuracyCount = 5;
+      state.hypoTotalCount = 6;
+      state.handRaisedCount = 3;
+      state.isNarinRaisedHand = true;
+      state.draftText = '';
+      state.pollTimeLeft = 150;
+      state.pollResponded = false;
+      state.myCustomText = '';
+      document.getElementById('chatInput').value = '';
+      const stNarin = document.getElementById('st-narin');
+      if (stNarin) stNarin.textContent = '✍️ กำลังพิมพ์…';
+
+      const pinnedRecap = document.getElementById('pinnedRecapBar');
+      if (pinnedRecap) pinnedRecap.style.display = 'flex';
+
+      const badge = document.getElementById('pollTimerBadge');
+      if (badge) {
+        badge.style.background = '#fef3c7';
+        badge.style.color = '#b45309';
+        badge.style.borderColor = '#fde68a';
+        badge.innerHTML = `⏳ เหลือเวลาตอบเช็คอิน: <strong id="pollCountdown">02:30</strong> นาที`;
+      }
+
+      const narinText = document.getElementById('narinOpinionText');
+      const editBtn = document.getElementById('editOpinionBtn');
+      if (narinText) narinText.innerHTML = 'แก๊สออกซิเจน (กำลังทบทวนว่ารับเข้าหรือปล่อยออก)';
+      if (editBtn) editBtn.style.display = 'none';
+
+      const customChip = document.getElementById('chip-narin-custom');
+      if (customChip) customChip.remove();
+
+      startPollTimer();
+      updateSilenceUI();
+      updateTeacherConsoleUI();
+      showToast("↺ รีเซ็ตข้อมูลการจำลองเรียบร้อย");
+    }
+
+    // Toggle Expand / Minimize Simulation Widget
+    function toggleSimWidget() {
+      const widget = document.getElementById('simWidget');
+      const btn = document.getElementById('btnMinimizeSim');
+      if (!widget) return;
+
+      widget.classList.toggle('collapsed');
+      const isCollapsed = widget.classList.contains('collapsed');
+      btn.textContent = isCollapsed ? '➕' : '➖';
+      btn.title = isCollapsed ? 'ขยายหน้าต่าง' : 'ย่อหน้าต่าง';
+      showToast(isCollapsed ? '📌 ย่อหน้าต่าง Simulation Tools แล้ว' : '📖 ขยายหน้าต่าง Simulation Tools');
+    }
+
+    // Make Simulation Widget Draggable
+    function makeSimWidgetDraggable() {
+      const widget = document.getElementById('simWidget');
+      const header = document.getElementById('simWidgetHeader');
+      if (!widget || !header) return;
+
+      let isDragging = false;
+      let currentX, currentY, initialX, initialY;
+      let xOffset = 0, yOffset = 0;
+
+      header.addEventListener('mousedown', dragStart);
+      document.addEventListener('mouseup', dragEnd);
+      document.addEventListener('mousemove', drag);
+
+      header.addEventListener('touchstart', dragStart, { passive: false });
+      document.addEventListener('touchend', dragEnd);
+      document.addEventListener('touchmove', drag, { passive: false });
+
+      function dragStart(e) {
+        if (e.target.closest('.sim-ctrl-btn')) return;
+
+        if (e.type === 'touchstart') {
+          initialX = e.touches[0].clientX - xOffset;
+          initialY = e.touches[0].clientY - yOffset;
+        } else {
+          initialX = e.clientX - xOffset;
+          initialY = e.clientY - yOffset;
+        }
+
+        if (e.target === header || header.contains(e.target)) {
+          isDragging = true;
+        }
+      }
+
+      function dragEnd() {
+        initialX = currentX;
+        initialY = currentY;
+        isDragging = false;
+      }
+
+      function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+
+        if (e.type === 'touchmove') {
+          currentX = e.touches[0].clientX - initialX;
+          currentY = e.touches[0].clientY - initialY;
+        } else {
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+        }
+
+        xOffset = currentX;
+        yOffset = currentY;
+
+        widget.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
+    }
+
+    // Toast Utility
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // Initialize
+    startSilenceTimer();
+    attachDraftListeners();
+    startPollTimer();
+    updateTeacherConsoleUI();
+    makeSimWidgetDraggable();
+  </script>
+</body>
+
+</html>
