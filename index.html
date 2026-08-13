@@ -3267,10 +3267,14 @@
       if (el) el.textContent = `${mins}:${secs}`;
     }
 
-    // Real-Time Countdown Timer Logic for Student Individual Quiz (04:45)
-    function startStudentQuizTimer() {
+    // Real-Time Countdown Timer Logic for Student Individual Quiz
+    function startStudentQuizTimer(duration) {
       if (state.studentQuizInterval) clearInterval(state.studentQuizInterval);
-      state.studentQuizTimeLeft = 285; // 04:45
+      if (typeof duration === 'number') {
+        state.studentQuizTimeLeft = duration;
+      } else if (!state.studentQuizTimeLeft) {
+        state.studentQuizTimeLeft = 285;
+      }
       updateStudentQuizTimerUI();
 
       state.studentQuizInterval = setInterval(() => {
@@ -3558,8 +3562,6 @@
         // Actually start the selected quiz
         hideAll();
         if (studentQuizSec) studentQuizSec.style.display = 'flex';
-        startStudentQuizTimer();
-        showToast("📝 เปิดหน้าทำควิซ — เริ่มตัวจับเวลา!");
       }
 
       document.querySelectorAll('.flow-step').forEach(step => step.classList.add('active'));
@@ -3577,15 +3579,8 @@
       // บันทึก quiz ที่กำลังทำ
       state.activeQuizId = quizId;
 
-      // Reset timer
-      if (state.studentQuizInterval) clearInterval(state.studentQuizInterval);
-      state.studentQuizTimeLeft = quizId === 2 ? 600 : 285;
-      const timerEl = document.getElementById('studentQuizTimer');
-      if (timerEl) {
-        const m = Math.floor(state.studentQuizTimeLeft / 60).toString().padStart(2, '0');
-        const s = (state.studentQuizTimeLeft % 60).toString().padStart(2, '0');
-        timerEl.textContent = `${m}:${s}`;
-      }
+      // ตั้งเวลาถอยหลังตามชุดควิซ (ควิซ 1 = 285s / 4:45 นาที, ควิซ 2 = 600s / 10 นาที)
+      const duration = quizId === 2 ? 600 : 285;
 
       // Reset submit button and result box
       const submitBtn = document.getElementById('btnSubmitStudentQuiz');
@@ -3615,7 +3610,8 @@
       if (ta) ta.value = '';
 
       switchViewMode('student-quiz-active');
-      showToast(`🚀 เริ่มทำ: ${quizTitles[quizId] || 'ควิซ'}`);
+      startStudentQuizTimer(duration); // ⏱️ เริ่มนับถอยหลังเมื่อกดทำควิซ
+      showToast(`🚀 เริ่มทำ: ${quizTitles[quizId] || 'ควิซ'} (เริ่มจับเวลาถอยหลัง!)`);
     }
 
     // อัปเดตการ์ดใน lobby หลังส่งควิซ
@@ -3776,6 +3772,12 @@
       const btn = document.getElementById('btnSubmitStudentQuiz');
       if (btn && btn.disabled) return; // ป้องกันกดซ้ำ
       if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; btn.textContent = '✅ ส่งคำตอบแล้ว'; }
+
+      // หยุดตัวจับเวลาควิซเมื่อส่งข้อสอบเรียบร้อย
+      if (state.studentQuizInterval) {
+        clearInterval(state.studentQuizInterval);
+        state.studentQuizInterval = null;
+      }
 
       const q1Choice = document.querySelector('input[name="quizQ1"]:checked');
       const q2Answer = document.getElementById('quizQ2Textarea').value.trim();
@@ -4893,7 +4895,6 @@
     startSilenceTimer();
     attachDraftListeners();
     startPollTimer();
-    startStudentQuizTimer();
     updateTeacherConsoleUI();
     makeSimWidgetDraggable();
   </script>
