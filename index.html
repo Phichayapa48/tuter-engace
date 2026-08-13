@@ -3277,20 +3277,29 @@
     function startSilenceTimer() {
       if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
-        state.idleSeconds++;
+        const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+        const sig = getStudentSignal(currentKey);
+        sig.idleSeconds++;
+        state.idleSeconds = sig.idleSeconds;
         updateSilenceUI();
       }, 1000);
     }
 
     function updateSilenceUI() {
-      const mins = String(Math.floor(state.idleSeconds / 60)).padStart(2, '0');
-      const secs = String(state.idleSeconds % 60).padStart(2, '0');
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const sig = getStudentSignal(currentKey);
+
+      const mins = String(Math.floor(sig.idleSeconds / 60)).padStart(2, '0');
+      const secs = String(sig.idleSeconds % 60).padStart(2, '0');
       const str = `${mins}:${secs}`;
 
-      document.getElementById('typingTicker').textContent = `ไม่ได้พิมพ์: ${str}`;
-      document.getElementById('val-silence').textContent = `${str} นาที`;
+      const ticker = document.getElementById('typingTicker');
+      if (ticker) ticker.textContent = `ไม่ได้พิมพ์: ${str}`;
 
-      const pct = Math.min(100, Math.round((state.idleSeconds / 120) * 100));
+      const valSil = document.getElementById('val-silence');
+      if (valSil) valSil.textContent = `${str} นาที`;
+
+      const pct = Math.min(100, Math.round((sig.idleSeconds / 120) * 100));
       const bar = document.getElementById('bar-silence');
       if (bar) {
         bar.style.width = pct + '%';
@@ -3299,29 +3308,29 @@
 
       // Update Roster Status text if student is idle vs typing
       const stNarin = document.getElementById('st-narin');
-      if (stNarin && state.draftText.length === 0) {
+      if (stNarin && currentKey === 'narin' && state.draftText.length === 0) {
         stNarin.textContent = `กำลังอ่านแชท…`;
         stNarin.style.color = 'var(--text-muted)';
       }
 
       // Check for automatic gentle hypothesis trigger & real-time Proactive AI Outreach if idle >= 90s (1.5 mins)
-      if (state.idleSeconds >= 90 && !state.proactiveTriggered && state.draftText.length === 0) {
+      if (sig.idleSeconds >= 90 && !state.proactiveTriggered && state.draftText.length === 0) {
         state.proactiveTriggered = true;
-        showToast("🤖 ตรวจพบความเงียบต่อเนื่อง 90s (1.5 นาที) -> AI เริ่มทักเปิดบทสนทนาเชิงรุกอัตโนมัติ!");
+        showToast(`🤖 ตรวจพบความเงียบต่อเนื่อง 90s (1.5 นาที) ของ ${sig.name} ➔ AI เริ่มทักเปิดบทสนทนาเชิงรุกอัตโนมัติ!`);
         simProactiveAiOutreach();
       }
 
-      if (state.idleSeconds === 60) {
+      if (sig.idleSeconds === 60) {
         if (state.draftText.length > 5) {
-          showToast("📝 นักเรียนเงียบ 60s แต่มีร่างข้อความค้างอยู่ -> AI สันนิษฐานว่ากำลังเรียบเรียงประโยคตอบยาว (ไม่ส่งคำใบ้มาแทรก)");
-          state.currentHypothesis.title = "กำลังพิมพ์เรียบเรียงคำตอบ (มีข้อความร่าง)";
-          state.currentHypothesis.reason = `ตรวจพบข้อความร่างในช่องพิมพ์ ${state.draftText.length} ตัวอักษร -> ระบบจำแนกได้ว่าเด็กพิมพ์ช้า ไม่ใช่ไร้การตอบสนอง`;
-          state.currentHypothesis.confidence = 88;
+          showToast(`📝 ${sig.name} เงียบ 60s แต่มีร่างข้อความค้างอยู่ ➔ AI สันนิษฐานว่ากำลังเรียบเรียงประโยคตอบยาว`);
+          sig.hypothesis.title = "กำลังพิมพ์เรียบเรียงคำตอบ (มีข้อความร่าง)";
+          sig.hypothesis.reason = `ตรวจพบข้อความร่างในช่องพิมพ์ ${state.draftText.length} ตัวอักษร ➔ ระบบจำแนกได้ว่าพิมพ์ช้า ไม่ใช่ไร้การตอบสนอง`;
+          sig.hypothesis.confidence = 88;
         } else {
-          showToast("💡 AI สังเกตว่านักเรียนเงียบพิมพ์ 60s (ไม่มีร่างข้อความ) -> ตั้งสมมติฐานว่ากำลังคิดคำตอบ");
-          state.currentHypothesis.title = "กำลังใช้เวลาคิดทบทวนบทเรียน";
-          state.currentHypothesis.reason = "เงียบพิมพ์ต่อเนื่อง 60 วินาที (ไม่มีร่างข้อความในช่องพิมพ์)";
-          state.currentHypothesis.confidence = 72;
+          showToast(`💡 AI สังเกตว่า ${sig.name} เงียบพิมพ์ 60s ➔ ตั้งสมมติฐานว่ากำลังคิดคำตอบ`);
+          sig.hypothesis.title = "กำลังใช้เวลาคิดทบทวนบทเรียน";
+          sig.hypothesis.reason = "เงียบพิมพ์ต่อเนื่อง 60 วินาที (ไม่มีร่างข้อความในช่องพิมพ์)";
+          sig.hypothesis.confidence = 72;
         }
         updateTeacherConsoleUI();
       }
@@ -4629,16 +4638,42 @@
 
     // Simulation Tools
     function simIdle(secs) {
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const sig = getStudentSignal(currentKey);
+
+      sig.idleSeconds = secs;
       state.idleSeconds = secs;
+
+      if (secs >= 60) {
+        if (state.draftText.length > 5) {
+          sig.hypothesis = {
+            title: "กำลังพิมพ์เรียบเรียงคำตอบ (มีข้อความร่าง)",
+            reason: `ตรวจพบข้อความร่าง ${state.draftText.length} ตัวอักษร + เงียบพิมพ์ ${secs}s ➔ ชะลอการส่งคำใบ้มาขัดจังหวะ`,
+            confidence: 88
+          };
+        } else {
+          sig.hypothesis = {
+            title: "กำลังใช้เวลาคิดทบทวนบทเรียน",
+            reason: `เงียบพิมพ์ต่อเนื่อง ${secs} วินาที (ไม่มีร่างข้อความในช่องพิมพ์)`,
+            confidence: 72
+          };
+        }
+      }
+
       updateSilenceUI();
-      showToast(`🧪 จำลองเวลาเงียบพิมพ์เป็น ${secs} วินาที`);
+      updateTeacherConsoleUI();
+      showToast(`🧪 จำลองเวลาเงียบพิมพ์ของ ${sig.name} เป็น ${secs} วินาที`);
     }
 
     function simDraftText() {
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const sig = getStudentSignal(currentKey);
+
       const sampleText = "พืชใช้ออกซิเจนหายใจแต่ใช้คาร์บอน";
       const input = document.getElementById('chatInput');
-      input.value = sampleText;
+      if (input) input.value = sampleText;
       state.draftText = sampleText;
+      sig.idleSeconds = 0;
       state.idleSeconds = 0;
 
       const valDraft = document.getElementById('val-draft');
@@ -4647,17 +4682,20 @@
       if (subDraftInfo) subDraftInfo.textContent = `สถานะ: ✍️ กำลังเรียบเรียงประโยคตอบ (AI ชะลอคำใบ้ ไม่ขัดจังหวะ!)`;
 
       const stNarin = document.getElementById('st-narin');
-      if (stNarin) {
+      if (stNarin && currentKey === 'narin') {
         stNarin.textContent = `✍️ กำลังพิมพ์…`;
         stNarin.style.color = 'var(--accent-purple)';
       }
 
-      state.currentHypothesis.title = "กำลังพิมพ์เรียบเรียงคำตอบยาว";
-      state.currentHypothesis.reason = "มีข้อความร่าง 32 ตัวอักษรค้างอยู่ในช่องพิมพ์ -> ระบบชะลอการส่งคำใบ้มาแทรกแซง";
-      state.currentHypothesis.confidence = 88;
+      sig.hypothesis = {
+        title: "กำลังพิมพ์เรียบเรียงคำตอบยาว",
+        reason: "มีข้อความร่าง 32 ตัวอักษรค้างอยู่ในช่องพิมพ์ ➔ ระบบชะลอการส่งคำใบ้มาแทรกแซง",
+        confidence: 88
+      };
 
+      updateSilenceUI();
       updateTeacherConsoleUI();
-      showToast("🧪 จำลองนักเรียนค้างร่างข้อความ 32 ตัวอักษรในช่องพิมพ์");
+      showToast(`🧪 จำลอง ${sig.name} ค้างร่างข้อความ 32 ตัวอักษรในช่องพิมพ์`);
     }
 
     function simPollTimeout() {
@@ -4666,10 +4704,20 @@
     }
 
     function simTabSwitch() {
-      state.tabSwitchCount++;
-      state.tabAwaySeconds += 45;
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const sig = getStudentSignal(currentKey);
+
+      sig.tabSwitchCount++;
+      sig.tabAwaySeconds += 45;
+
+      sig.hypothesis = {
+        title: "สลับไปค้นคว้าความรู้ภายนอก / พักเบรก",
+        reason: `ตรวจพบการสลับแท็บออกจากแชท (${sig.tabSwitchCount} ครั้ง, รวม ${sig.tabAwaySeconds}s) ➔ AI สังเกตการณ์โดยไม่ขัดจังหวะ`,
+        confidence: 82
+      };
+
       updateTeacherConsoleUI();
-      showToast("🧪 จำลองนักเรียนสลับหน้าจอไป 45 วินาที");
+      showToast(`🧪 จำลอง ${sig.name} สลับหน้าจอไป 45 วินาที`);
     }
 
     function simPeerReply() {
@@ -4872,21 +4920,32 @@
     }
 
     function resetSim() {
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const sig = getStudentSignal(currentKey);
+
+      sig.idleSeconds = 0;
+      sig.messageCount = 2;
+      sig.emojiCount = 3;
+      sig.tabSwitchCount = 1;
+      sig.tabAwaySeconds = 28;
+      sig.isHandRaised = true;
+      sig.hypothesis = {
+        title: "กำลังติดตามบทเรียนในห้องเรียน",
+        reason: "กำลังอ่านข้อความของเพื่อนและบทเรียนอย่างต่อเนื่อง",
+        confidence: 80
+      };
+
       state.idleSeconds = 0;
-      state.messageCount = 2;
-      state.emojiCount = 3;
-      state.tabSwitchCount = 1;
-      state.hypoAccuracyCount = 5;
-      state.hypoTotalCount = 6;
-      state.handRaisedCount = 3;
-      state.isNarinRaisedHand = true;
       state.draftText = '';
-      state.pollTimeLeft = 150;
-      state.pollResponded = false;
-      state.myCustomText = '';
-      document.getElementById('chatInput').value = '';
+      const input = document.getElementById('chatInput');
+      if (input) input.value = '';
       const stNarin = document.getElementById('st-narin');
-      if (stNarin) stNarin.textContent = '✍️ กำลังพิมพ์…';
+      if (stNarin && currentKey === 'narin') stNarin.textContent = '✍️ กำลังพิมพ์…';
+
+      updateSilenceUI();
+      updateTeacherConsoleUI();
+      showToast(`↺ รีเซ็ตข้อมูลจำลองของ ${sig.name} เรียบร้อย`);
+    }
 
       const pinnedRecap = document.getElementById('pinnedRecapBar');
       if (pinnedRecap) pinnedRecap.style.display = 'flex';
