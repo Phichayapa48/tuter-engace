@@ -2006,7 +2006,7 @@
 
           <!-- Card 1: Live Signals Tracker -->
           <div class="panel-card">
-            <h4>📡 สัญญาณการมีส่วนร่วม (Signals) <span>นรินทร์</span></h4>
+            <h4>📡 สัญญาณการมีส่วนร่วม (Signals) <span id="signalsStudentNameSpan" style="color: var(--primary); font-weight: 700;">🙂 นรินทร์</span></h4>
 
             <div class="signal-row">
               <span>จำนวนข้อความที่ส่ง</span>
@@ -2948,8 +2948,9 @@
   <script>
     // State Store
     const state = {
-      viewMode: 'student', // student, teacher, analytics
+      viewMode: 'student', // student, teacher, analytics, progress
       activeStudent: 'narin',
+      activeSender: 'narin',
       idleSeconds: 0,
       messageCount: 2,
       emojiCount: 3,
@@ -2977,6 +2978,65 @@
         reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
         confidence: 68
       },
+      // ✅ Per-Student Signals Tracking Store
+      studentSignals: {
+        narin: {
+          name: '🙂 นรินทร์',
+          messageCount: 2,
+          emojiCount: 3,
+          tabSwitchCount: 1,
+          tabAwaySeconds: 28,
+          idleSeconds: 34,
+          isHandRaised: true,
+          hypothesis: {
+            title: "อาจกำลังลังเลระหว่าง O2 กับ CO2",
+            reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
+            confidence: 68
+          }
+        },
+        beam: {
+          name: '🧢 บีม',
+          messageCount: 5,
+          emojiCount: 8,
+          tabSwitchCount: 0,
+          tabAwaySeconds: 0,
+          idleSeconds: 5,
+          isHandRaised: false,
+          hypothesis: {
+            title: "เข้าใจแนวคิดหลักได้ดี มีความมั่นใจสูง",
+            reason: "ตอบทันที + ได้รับ 3 Like จากเพื่อน",
+            confidence: 92
+          }
+        },
+        mali: {
+          name: '🌼 มะลิ',
+          messageCount: 4,
+          emojiCount: 6,
+          tabSwitchCount: 0,
+          tabAwaySeconds: 0,
+          idleSeconds: 12,
+          isHandRaised: false,
+          hypothesis: {
+            title: "เข้าใจเรื่องปัจจัยน้ำ พร้อมต่อยอดปัจจัยถัดไป",
+            reason: "ระบุคำตอบสั้นแต่นำเข้าสู่เรื่องรากพืช",
+            confidence: 85
+          }
+        },
+        khaohom: {
+          name: '🌿 ข้าวหอม',
+          messageCount: 1,
+          emojiCount: 1,
+          tabSwitchCount: 2,
+          tabAwaySeconds: 45,
+          idleSeconds: 45,
+          isHandRaised: false,
+          hypothesis: {
+            title: "ต้องการเวลาอ่านและประมวลผลข้อความเพื่อน",
+            reason: "เปิดอ่านแชทต่อเนื่องโดยยังไม่กดพิมพ์ (เงียบ 45s)",
+            confidence: 74
+          }
+        }
+      },
       supportPrompt: "ลองทบทวนว่าตอนเราหายใจเข้า กับที่พืชใช้สร้างอาหาร เหมือนหรือต่างกันอย่างไร?",
       feedbackLogs: [
         { hypothesis: "สับสน O2", feedback: "✅ นักเรียนยืนยันว่าถูก" },
@@ -2987,6 +3047,28 @@
         { student: "บีม", target: "ติ๊กเห็นด้วยกับมะลิ (น้ำ)", status: "ตรงกัน" }
       ]
     };
+
+    function getStudentSignal(studentId) {
+      const key = (studentId && studentId !== 'teacher') ? studentId : (state.activeStudent && state.activeStudent !== 'teacher' ? state.activeStudent : 'narin');
+      if (!state.studentSignals[key]) {
+        const nameMap = { narin: '🙂 นรินทร์', beam: '🧢 บีม', mali: '🌼 มะลิ', khaohom: '🌿 ข้าวหอม' };
+        state.studentSignals[key] = {
+          name: nameMap[key] || key,
+          messageCount: 0,
+          emojiCount: 0,
+          tabSwitchCount: 0,
+          tabAwaySeconds: 0,
+          idleSeconds: 0,
+          isHandRaised: false,
+          hypothesis: {
+            title: "กำลังติดตามบทเรียนในห้องเรียน",
+            reason: "กำลังอ่านข้อความของเพื่อนและบทเรียน",
+            confidence: 80
+          }
+        };
+      }
+      return state.studentSignals[key];
+    }
 
     function filterAnalyticsStudents(query) {
       const q = query.trim().toLowerCase();
@@ -3890,28 +3972,7 @@
         chatInput.placeholder = `พิมพ์ข้อความในนาม: ${sender.name}...`;
       }
 
-      if (studentId === 'narin') {
-        state.currentHypothesis.title = "อาจกำลังลังเลระหว่าง O2 กับ CO2";
-        state.currentHypothesis.reason = "พิมพ์คำว่า 'หรือเปล่า' + เงียบพิมพ์ 34s";
-        state.currentHypothesis.confidence = 68;
-      } else if (studentId === 'beam') {
-        state.currentHypothesis.title = "เข้าใจแนวคิดหลักได้ดี มีความมั่นใจสูง";
-        state.currentHypothesis.reason = "ตอบทันที + ได้รับ 3 Like จากเพื่อน";
-        state.currentHypothesis.confidence = 92;
-      } else if (studentId === 'mali') {
-        state.currentHypothesis.title = "เข้าใจเรื่องปัจจัยน้ำ พร้อมต่อยอดปัจจัยถัดไป";
-        state.currentHypothesis.reason = "ระบุคำตอบสั้นแต่นำเข้าสู่เรื่องรากพืช";
-        state.currentHypothesis.confidence = 85;
-      } else if (studentId === 'khaohom') {
-        state.currentHypothesis.title = "ต้องการเวลาอ่านและประมวลผลข้อความเพื่อน";
-        state.currentHypothesis.reason = "เปิดอ่านแชทต่อเนื่องโดยยังไม่กดพิมพ์ (เงียบ 45s)";
-        state.currentHypothesis.confidence = 74;
-      } else if (studentId === 'teacher') {
-        state.currentHypothesis.title = "ครูผู้สอนกำลังสังเกตการณ์การสนทนาของกลุ่ม 3";
-        state.currentHypothesis.reason = "ครูวิภากำลังติดตามคำตอบและการมีส่วนร่วมของนักเรียนแบบเรียลไทม์";
-        state.currentHypothesis.confidence = 100;
-      }
-
+      const sig = getStudentSignal(studentId);
       showToast(`เลือกผู้พิมพ์ข้อความ: ${sender.name}`);
       updateTeacherConsoleUI();
     }
@@ -3925,31 +3986,11 @@
       if (detailBtn) detailBtn.classList.add('active');
 
       const execFocus = document.getElementById('execFocusStudent');
-
-      if (studentId === 'narin') {
-        state.currentHypothesis.title = "อาจกำลังลังเลระหว่าง O2 กับ CO2";
-        state.currentHypothesis.reason = "พิมพ์คำว่า 'หรือเปล่า' + เงียบพิมพ์ 34s";
-        state.currentHypothesis.confidence = 68;
-        if (execFocus) execFocus.textContent = "นรินทร์ (ลังเล O2/CO2 • เงียบ 34s)";
-      } else if (studentId === 'beam') {
-        state.currentHypothesis.title = "เข้าใจแนวคิดหลักได้ดี มีความมั่นใจสูง";
-        state.currentHypothesis.reason = "ตอบทันที + ได้รับ 3 Like จากเพื่อน";
-        state.currentHypothesis.confidence = 92;
-        if (execFocus) execFocus.textContent = "บีม (เข้าใจหลักดี • ตอบทันที)";
-      } else if (studentId === 'mali') {
-        state.currentHypothesis.title = "เข้าใจเรื่องปัจจัยน้ำ พร้อมต่อยอดปัจจัยถัดไป";
-        state.currentHypothesis.reason = "ระบุคำตอบสั้นแต่นำเข้าสู่เรื่องรากพืช";
-        state.currentHypothesis.confidence = 85;
-        if (execFocus) execFocus.textContent = "มะลิ (เข้าใจเรื่องปัจจัยน้ำ)";
-      } else if (studentId === 'khaohom') {
-        state.currentHypothesis.title = "ต้องการเวลาอ่านและประมวลผลข้อความเพื่อน";
-        state.currentHypothesis.reason = "เปิดอ่านแชทต่อเนื่องโดยยังไม่กดพิมพ์ (เงียบ 45s)";
-        state.currentHypothesis.confidence = 74;
-        if (execFocus) execFocus.textContent = "ข้าวหอม (กำลังประมวลผลข้อความ)";
-      }
+      const sig = getStudentSignal(studentId);
+      if (execFocus) execFocus.textContent = `${sig.name} (${sig.hypothesis.title})`;
 
       updateTeacherConsoleUI();
-      showToast(`สลับแผงวิเคราะห์เป็น: ${studentId}`);
+      showToast(`สลับข้อมูลวิเคราะห์เป็น: ${sig.name}`);
     }
 
     // Emoji React Toggle (Records as Active Non-Verbal Engagement Telemetry)
@@ -3958,20 +3999,25 @@
       const countSpan = btn.querySelector('.count');
       let count = parseInt(countSpan.textContent) || 0;
 
-      // Reset Silence Counter to 0s immediately because student is Active!
+      const activeKey = (state.activeSender && state.activeSender !== 'teacher') ? state.activeSender : (state.activeStudent && state.activeStudent !== 'teacher' ? state.activeStudent : 'narin');
+      const sig = getStudentSignal(activeKey);
+
+      // Reset Silence Counter to 0s for active student!
+      sig.idleSeconds = 0;
       state.idleSeconds = 0;
       updateSilenceUI();
 
       if (btn.classList.contains('selected')) {
         count++;
+        sig.emojiCount++;
         state.emojiCount++;
         markPollResponded(`กดอีโมจิ ${emoji}`);
         
-        state.currentHypothesis.title = `มีส่วนร่วมผ่านอีโมจิ/ฟีดแบ็ก (Active Emoji Participant)`;
-        state.currentHypothesis.reason = `ตรวจพบการกดอีโมจิ ${emoji} (${state.emojiCount} ครั้ง) -> ยืนยันว่าเด็กกำลังอ่านและติดตามแชทสดอยู่ ไม่ได้ไร้การตอบสนอง`;
-        state.currentHypothesis.confidence = 88;
+        sig.hypothesis.title = `มีส่วนร่วมผ่านอีโมจิ/ฟีดแบ็ก (Active Emoji Participant)`;
+        sig.hypothesis.reason = `ตรวจพบการกดอีโมจิ ${emoji} (${sig.emojiCount} ครั้ง) ➔ ยืนยันว่ากำลังอ่านและติดตามแชทสดอยู่ ไม่ได้ไร้การตอบสนอง`;
+        sig.hypothesis.confidence = 88;
 
-        showToast(`👍 กดอีโมจิ ${emoji} -> ระบบนับเป็นสัญญาณ Active Engagement ทันที! (รีเซ็ตเวลาเงียบเป็น 0s)`);
+        showToast(`👍 ${sig.name} กดอีโมจิ ${emoji} ➔ อัปเดตสัญญาณของ ${sig.name} ทันที! (รีเซ็ตเวลาเงียบเป็น 0s)`);
       } else {
         count = Math.max(0, count - 1);
       }
@@ -3986,25 +4032,33 @@
         return;
       }
 
+      const activeKey = (state.activeSender && state.activeSender !== 'teacher') ? state.activeSender : (state.activeStudent && state.activeStudent !== 'teacher' ? state.activeStudent : 'narin');
+      const sig = getStudentSignal(activeKey);
+
       // Reset Silence Counter to 0s immediately
+      sig.idleSeconds = 0;
       state.idleSeconds = 0;
       updateSilenceUI();
 
-      state.isNarinRaisedHand = !state.isNarinRaisedHand;
-      btn.classList.toggle('raised', state.isNarinRaisedHand);
+      sig.isHandRaised = !sig.isHandRaised;
+      state.isNarinRaisedHand = sig.isHandRaised;
+      btn.classList.toggle('raised', sig.isHandRaised);
 
       const txt = document.getElementById('handRaiseText');
       const cnt = document.getElementById('handRaiseCount');
 
-      if (state.isNarinRaisedHand) {
+      if (sig.isHandRaised) {
         state.handRaisedCount = Math.min(4, state.handRaisedCount + 1);
-        txt.textContent = "ยกมือแล้ว: เข้าใจภาพรวมของกลุ่มแล้ว!";
+        sig.hypothesis.title = "กดยกมือยืนยันความเข้าใจ (Active Hand Raised)";
+        sig.hypothesis.reason = "กดยกมือยืนยันว่าเข้าใจภาพรวมของบทเรียนกลุ่มแล้ว";
+        sig.hypothesis.confidence = 90;
+        txt.textContent = `${sig.name} ยกมือแล้ว: เข้าใจภาพรวมของกลุ่มแล้ว!`;
         markPollResponded('กดยกมือ');
-        showToast("✋ กดยกมือ -> ระบบบันทึกเป็นสัญญาณ Active Engagement (เข้าใจภาพรวม)");
+        showToast(`✋ ${sig.name} กดยกมือ ➔ บันทึกสัญญาณ Active Engagement ของ ${sig.name}`);
       } else {
         state.handRaisedCount = Math.max(0, state.handRaisedCount - 1);
         txt.textContent = "ยกมือ: เข้าใจภาพรวมของกลุ่มแล้ว!";
-        showToast("เอาพ้นมือลงแล้ว");
+        showToast(`${sig.name} เอาพ้นมือลงแล้ว`);
       }
 
       cnt.textContent = `ยกมือแล้ว ${state.handRaisedCount}/${state.totalGroupMembers} คน`;
@@ -4259,21 +4313,58 @@
 
     // Update Console Dashboard UI
     function updateTeacherConsoleUI() {
-      document.getElementById('val-msgcount').textContent = `${state.messageCount} ข้อความ`;
-      document.getElementById('val-emoji').textContent = `${state.emojiCount} ครั้ง`;
-      document.getElementById('val-tabswitch').textContent = `${state.tabSwitchCount} ครั้ง (${state.tabAwaySeconds}s)`;
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const sig = getStudentSignal(currentKey);
 
-      document.getElementById('txt-hypo-title').textContent = state.currentHypothesis.title;
-      document.getElementById('txt-hypo-reason').textContent = state.currentHypothesis.reason;
-      document.getElementById('txt-confidence').textContent = state.currentHypothesis.confidence + '%';
+      // Update Card 1 header title student name
+      const sigNameSpan = document.getElementById('signalsStudentNameSpan');
+      if (sigNameSpan) sigNameSpan.textContent = sig.name;
+
+      const detailTitleEl = document.getElementById('detailStudentTitleName');
+      if (detailTitleEl) detailTitleEl.textContent = sig.name;
+
+      // Update Signal values for active student
+      const msgEl = document.getElementById('val-msgcount');
+      if (msgEl) msgEl.textContent = `${sig.messageCount} ข้อความ`;
+
+      const emojiEl = document.getElementById('val-emoji');
+      if (emojiEl) emojiEl.textContent = `${sig.emojiCount} ครั้ง`;
+
+      const tabEl = document.getElementById('val-tabswitch');
+      if (tabEl) tabEl.textContent = `${sig.tabSwitchCount} ครั้ง (${sig.tabAwaySeconds}s)`;
+
+      const mins = String(Math.floor(sig.idleSeconds / 60)).padStart(2, '0');
+      const secs = String(sig.idleSeconds % 60).padStart(2, '0');
+      const silenceEl = document.getElementById('val-silence');
+      if (silenceEl) silenceEl.textContent = `${mins}:${secs} นาที`;
+
+      const barSilence = document.getElementById('bar-silence');
+      if (barSilence) {
+        const pct = Math.min(100, Math.round((sig.idleSeconds / 120) * 100));
+        barSilence.style.width = pct + '%';
+        barSilence.className = 'meter-fill' + (pct > 75 ? ' danger' : (pct > 40 ? ' warning' : ''));
+      }
+
+      // Update Hypothesis for active student
+      const hypoTitle = document.getElementById('txt-hypo-title');
+      if (hypoTitle) hypoTitle.textContent = sig.hypothesis.title;
+
+      const hypoReason = document.getElementById('txt-hypo-reason');
+      if (hypoReason) hypoReason.textContent = sig.hypothesis.reason;
+
+      const hypoConf = document.getElementById('txt-confidence');
+      if (hypoConf) hypoConf.textContent = sig.hypothesis.confidence + '%';
 
       const accPct = Math.round((state.hypoAccuracyCount / state.hypoTotalCount) * 100);
-      document.getElementById('txt-accuracy').innerHTML = `${accPct}% <span>(${state.hypoAccuracyCount}/${state.hypoTotalCount} ยืนยันถูกต้อง)</span>`;
+      const accEl = document.getElementById('txt-accuracy');
+      if (accEl) accEl.innerHTML = `${accPct}% <span>(${state.hypoAccuracyCount}/${state.hypoTotalCount} ยืนยันถูกต้อง)</span>`;
 
       // Update Hand-raise ratios
       const hrPct = Math.round((state.handRaisedCount / state.totalGroupMembers) * 100);
-      document.getElementById('val-handraise-ratio').textContent = `${state.handRaisedCount} / ${state.totalGroupMembers} คน (${hrPct}%)`;
-      document.getElementById('bar-handraise').style.width = hrPct + '%';
+      const hrEl = document.getElementById('val-handraise-ratio');
+      if (hrEl) hrEl.textContent = `${state.handRaisedCount} / ${state.totalGroupMembers} คน (${hrPct}%)`;
+      const barHr = document.getElementById('bar-handraise');
+      if (barHr) barHr.style.width = hrPct + '%';
 
       // Update Peer agreement/disagreement log
       const peerList = document.getElementById('peerAgreementList');
@@ -4288,12 +4379,14 @@
 
       // Update Feedback log list
       const logContainer = document.getElementById('feedbackLogList');
-      logContainer.innerHTML = state.feedbackLogs.slice(0, 4).map(item => `
-        <div class="log-item">
-          <span>${item.hypothesis}</span>
-          <strong style="color: var(--primary);">${item.feedback}</strong>
-        </div>
-      `).join('');
+      if (logContainer) {
+        logContainer.innerHTML = state.feedbackLogs.slice(0, 4).map(item => `
+          <div class="log-item">
+            <span>${item.hypothesis}</span>
+            <strong style="color: var(--primary);">${item.feedback}</strong>
+          </div>
+        `).join('');
+      }
     }
 
     // Send Chat Message Form
@@ -4332,6 +4425,15 @@
       input.value = '';
       msgArea.scrollTop = msgArea.scrollHeight;
 
+      if (senderKey !== 'teacher') {
+        const sig = getStudentSignal(senderKey);
+        sig.idleSeconds = 0;
+        sig.messageCount++;
+        sig.hypothesis.title = "ส่งข้อความร่วมอภิปรายในกลุ่ม (Active Contributor)";
+        sig.hypothesis.reason = `ส่งข้อความเพิ่มในแชทกลุ่ม (${sig.messageCount} ข้อความ) ➔ กำลังมีส่วนร่วมอภิปรายบทเรียนอย่างต่อเนื่อง`;
+        sig.hypothesis.confidence = 95;
+      }
+
       state.idleSeconds = 0;
       state.messageCount++;
       state.draftText = '';
@@ -4341,7 +4443,7 @@
       updateTeacherConsoleUI();
 
       markPollResponded(`พิมพ์ส่งข้อความแชท (${sender.name})`);
-      showToast(`ส่งข้อความในนาม ${sender.name} เรียบร้อย!`);
+      showToast(`ส่งข้อความในนาม ${sender.name} เรียบร้อย! (อัปเดตสัญญาณ Active ของ ${sender.name})`);
     });
 
     // Send Gentle Support Manual Button
