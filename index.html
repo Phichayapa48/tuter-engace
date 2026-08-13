@@ -1372,10 +1372,7 @@
     <div class="view-switcher">
       <button class="view-btn active" id="btn-mode-student" data-mode="student">🎓 มุมนักเรียน</button>
       <button class="view-btn" id="btn-mode-teacher" data-mode="teacher">👩‍🏫 มุมครู</button>
-      <button class="view-btn" id="btn-mode-progress" data-mode="progress">📋 คะแนนนักเรียน</button>
-      <button class="view-btn" id="btn-mode-analytics" data-mode="analytics">📊 ข้อมูลวิเคราะห์พฤติกรรม</button>
-      <button class="view-btn" id="btn-mode-quiz" data-mode="quiz">📁 คลังข้อสอบ & ใบงาน</button>
-      <button class="view-btn" id="btn-mode-student-quiz" data-mode="student-quiz">📝 ควิซ</button>
+      <button class="view-btn" id="btn-mode-analytics" data-mode="analytics">📊 ข้อมูลวิเคราะห์ครู ➔</button>
     </div>
   </header>
 
@@ -1462,24 +1459,24 @@
           <div class="student-item" id="item-beam" onclick="selectStudent('beam')">
             <div class="avatar">🧢</div>
             <div class="student-details">
-              <div class="student-name">บีม <span class="status-dot"></span></div>
-              <div class="student-status">ตอบแล้ว ( 2 ข้อความ )</div>
+              <div class="student-name">บีม <span class="status-dot" id="dot-beam"></span></div>
+              <div class="student-status" id="st-beam">ตอบแล้ว ( 2 ข้อความ )</div>
             </div>
           </div>
 
           <div class="student-item" id="item-mali" onclick="selectStudent('mali')">
             <div class="avatar">🌼</div>
             <div class="student-details">
-              <div class="student-name">มะลิ <span class="status-dot"></span></div>
-              <div class="student-status">ตอบแล้ว ( 1 ข้อความ )</div>
+              <div class="student-name">มะลิ <span class="status-dot" id="dot-mali"></span></div>
+              <div class="student-status" id="st-mali">ตอบแล้ว ( 1 ข้อความ )</div>
             </div>
           </div>
 
           <div class="student-item" id="item-khaohom" onclick="selectStudent('khaohom')">
             <div class="avatar">🌿</div>
             <div class="student-details">
-              <div class="student-name">ข้าวหอม <span class="status-dot idle"></span></div>
-              <div class="student-status">กำลังอ่านแชท…</div>
+              <div class="student-name">ข้าวหอม <span class="status-dot idle" id="dot-khaohom"></span></div>
+              <div class="student-status" id="st-khaohom">กำลังอ่านแชท…</div>
             </div>
           </div>
         </div>
@@ -1500,21 +1497,28 @@
                 style="background: #a855f7; color: white; padding: 1px 6px; border-radius: 99px; font-size: 10px;"
                 id="savedTaskCount">3</span>
             </button>
+            <!-- Student Quiz Button next to Saved Tasks Button -->
+            <button id="studentQuizHeaderBtn" class="saved-tasks-btn" onclick="switchViewMode('student-quiz')"
+              style="background: linear-gradient(135deg, #faf5ff, #f3e8ff); color: #701a75; border: 1.5px solid #c084fc; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(168, 85, 247, 0.15); transition: all 0.2s ease;"
+              onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='linear-gradient(135deg, #faf5ff, #f3e8ff)'">
+              📝 เลือกควิซ / ใบงาน <span class="badge"
+                style="background: #ea580c; color: white; padding: 1px 6px; border-radius: 99px; font-size: 10px;"
+                id="studentQuizHeaderBadge">2</span>
+            </button>
             <!-- Saved Tasks Drawer Button (Teacher) -->
-            <button id="teacherSavedTasksBtn" class="saved-tasks-btn" onclick="toggleSavedTasksDrawer('teacher')"
-              style="display: none; background: #ffffff; color: #1e40af; border: 1.5px solid #93c5fd; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 600; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(30, 64, 175, 0.1); transition: all 0.2s ease;">
-              👩‍🏫 คลังสังเกตการณ์ครู <span class="badge"
-                style="background: #2563eb; color: white; padding: 1px 6px; border-radius: 99px; font-size: 10px;"
+            <button id="teacherSavedTasksBtn" class="saved-tasks-btn" onclick="switchViewMode('quiz')"
+              style="display: none; background: linear-gradient(135deg, #faf5ff, #f3e8ff); color: #701a75; border: 1.5px solid #c084fc; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 700; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(168, 85, 247, 0.15); transition: all 0.2s ease;"
+              onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='linear-gradient(135deg, #faf5ff, #f3e8ff)'">
+              📁 คลังข้อสอบ & ใบงาน <span class="badge"
+                style="background: #a855f7; color: white; padding: 1px 6px; border-radius: 99px; font-size: 10px;"
                 id="teacherTaskCountHeader">4</span>
             </button>
-            <!-- Teacher Open Separate Analytics Page Button -->
-            <button id="toggleTeacherConsoleBtn" class="toggle-console-btn" style="display: none;"
-              onclick="switchViewMode('analytics')">
-              📊 เปิดดูหน้าข้อมูลวิเคราะห์ครู ➔
+            <!-- Teacher Student Scores Button -->
+            <button id="teacherStudentScoresBtn" class="saved-tasks-btn" onclick="switchViewMode('progress')"
+              style="display: none; background: #f0fdf4; color: #15803d; border: 1.5px solid #86efac; padding: 5px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 700; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15); transition: all 0.2s ease;"
+              onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+              📋 คะแนนนักเรียน
             </button>
-            <div class="live-status-pill">
-              <span class="status-dot"></span> สังเกตการณ์เรียลไทม์
-            </div>
           </div>
         </div>
 
@@ -2191,6 +2195,32 @@
                   🤖 โหมด AI ดูแลอัตโนมัติ
                 </button>
               </div>
+
+              <!-- Dynamic Container for Teacher Edit AI Prompt -->
+              <div id="teacherEditPromptContainer" style="display: none; margin-top: 10px; padding: 12px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                  <span>✏️ ปรับแก้ข้อความคำแนะนำก่อนส่งเข้าแชท:</span>
+                  <button type="button" onclick="document.getElementById('teacherEditPromptContainer').style.display='none'" style="background: none; border: none; font-size: 14px; cursor: pointer; color: #64748b;">✕</button>
+                </div>
+                <textarea id="teacherCustomAiTextarea" rows="3" style="width: 100%; padding: 8px 10px; font-size: 12.5px; border: 1px solid #94a3b8; border-radius: 8px; font-family: inherit; margin-bottom: 8px; resize: vertical;" placeholder="พิมพ์หรือปรับแก้ข้อความที่ครูต้องการส่ง..."></textarea>
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                  <button type="button" onclick="document.getElementById('teacherEditPromptContainer').style.display='none'" style="padding: 5px 10px; font-size: 11px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;">ยกเลิก</button>
+                  <button type="button" onclick="submitTeacherEditedAiPrompt()" style="padding: 5px 12px; font-size: 11px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">🚀 ส่งข้อความเข้าแชทกลุ่ม</button>
+                </div>
+              </div>
+
+              <!-- Dynamic Container for Teacher Direct Intervention -->
+              <div id="teacherDirectInterveneContainer" style="display: none; margin-top: 10px; padding: 12px; background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 10px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: #9f1239; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                  <span>✋ ครูวิภา พิมพ์คำแนะนำเข้าแชทกลุ่มโดยตรง:</span>
+                  <button type="button" onclick="document.getElementById('teacherDirectInterveneContainer').style.display='none'" style="background: none; border: none; font-size: 14px; cursor: pointer; color: #9f1239;">✕</button>
+                </div>
+                <textarea id="teacherDirectTextarea" rows="3" style="width: 100%; padding: 8px 10px; font-size: 12.5px; border: 1px solid #fca5a5; border-radius: 8px; font-family: inherit; margin-bottom: 8px; resize: vertical;" placeholder="พิมพ์คำแนะนำจากครูวิภา... (เช่น: เด็กๆ ลองดูแผนภาพหน้า 15 ประกอบด้วยนะ)"></textarea>
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                  <button type="button" onclick="document.getElementById('teacherDirectInterveneContainer').style.display='none'" style="padding: 5px 10px; font-size: 11px; background: #ffffff; border: 1px solid #fecdd3; border-radius: 6px; cursor: pointer;">ยกเลิก</button>
+                  <button type="button" onclick="submitTeacherDirectIntervention()" style="padding: 5px 12px; font-size: 11px; background: #be123c; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">👩‍🏫 ส่งข้อความครูวิภาเข้าแชท</button>
+                </div>
+              </div>
             </div>
 
 
@@ -2371,8 +2401,78 @@
                 style="height: 75px; font-size: 12px; border-color: #d8b4fe; margin-bottom: 12px; width: 100%;"
                 placeholder="พิมพ์โจทย์คำถามควิซของคุณที่นี่ (สามารถพิมพ์หลายข้อได้)..."></textarea>
 
+              <!-- Quiz Custom Options Grid -->
               <div style="font-size: 12px; color: var(--navy-900); margin-bottom: 6px; font-weight: 600;">
-                3️⃣ เลือกกลุ่มเป้าหมายที่จะส่ง:
+                3️⃣ ตั้งค่าออปชันควิซเพิ่มเติม (Quiz Options):
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; background: #faf5ff; border: 1px solid #e9d5ff; padding: 10px 12px; border-radius: 10px;">
+                
+                <!-- Option A: Custom Quiz Duration Input with Quick Presets -->
+                <div style="grid-column: span 2; background: #ffffff; border: 1px solid #f0abfc; padding: 10px 12px; border-radius: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: #701a75;">
+                      ⏱️ กำหนดเวลาทำควิซ (พิมพ์จำนวนนาที หรือกดเลือกปุ่มทางลัดด้านล่าง):
+                    </label>
+                    <span style="font-size: 10px; background: #fae8ff; color: #86198f; border: 1px solid #f0abfc; padding: 2px 8px; border-radius: 99px; font-weight: 600;">รองรับนาที & ชั่วโมง ⏳</span>
+                  </div>
+                  
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <input type="number" id="standaloneQuizDurationMin" min="1" max="600" value="5" placeholder="พิมพ์จำนวนนาที เช่น 30 หรือ 60..."
+                      style="flex: 1; padding: 7px 12px; border-radius: 8px; border: 1.5px solid #c084fc; font-size: 12.5px; background: #faf5ff; color: #701a75; font-weight: 800; box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);">
+                    <span style="font-size: 12px; color: #701a75; font-weight: 800; flex-shrink: 0;">นาที</span>
+                  </div>
+
+                  <!-- Quick Preset Shortcut Pills -->
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                    <span style="font-size: 10.5px; color: var(--text-muted); font-weight: 600; margin-right: 2px;">ทางลัดเวลารวดเร็ว:</span>
+                    <button type="button" onclick="document.getElementById('standaloneQuizDurationMin').value = 5; showToast('⏱️ เลือกเวลา: 5 นาที')" style="font-size: 10.5px; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; padding: 3px 9px; border-radius: 99px; cursor: pointer; font-weight: 600; transition: all 0.15s ease;" onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='#f3e8ff'">5m</button>
+                    <button type="button" onclick="document.getElementById('standaloneQuizDurationMin').value = 15; showToast('⏱️ เลือกเวลา: 15 นาที')" style="font-size: 10.5px; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; padding: 3px 9px; border-radius: 99px; cursor: pointer; font-weight: 600; transition: all 0.15s ease;" onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='#f3e8ff'">15m</button>
+                    <button type="button" onclick="document.getElementById('standaloneQuizDurationMin').value = 30; showToast('⏱️ เลือกเวลา: 30 นาที (ครึ่งชั่วโมง)')" style="font-size: 10.5px; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 3px 9px; border-radius: 99px; cursor: pointer; font-weight: 700; transition: all 0.15s ease;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">🎯 30 นาที</button>
+                    <button type="button" onclick="document.getElementById('standaloneQuizDurationMin').value = 60; showToast('⏱️ เลือกเวลา: 1 ชั่วโมง (60 นาที)')" style="font-size: 10.5px; background: #f0fdf4; color: #15803d; border: 1px solid #86efac; padding: 3px 9px; border-radius: 99px; cursor: pointer; font-weight: 700; transition: all 0.15s ease;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">⏰ 1 ชม. (60m)</button>
+                    <button type="button" onclick="document.getElementById('standaloneQuizDurationMin').value = 120; showToast('⏱️ เลือกเวลา: 2 ชั่วโมง (120 นาที)')" style="font-size: 10.5px; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; padding: 3px 9px; border-radius: 99px; cursor: pointer; font-weight: 700; transition: all 0.15s ease;" onmouseover="this.style.background='#ffedd5'" onmouseout="this.style.background='#fff7ed'">⏳ 2 ชม. (120m)</button>
+                  </div>
+                </div>
+
+                <!-- Option B: Total Score -->
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #701a75; display: block; margin-bottom: 3px;">
+                    🎯 คะแนนเต็ม (Total Score):
+                  </label>
+                  <select id="standaloneQuizMaxScore" style="width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid #d8b4fe; font-size: 11.5px; background: white; color: var(--navy-900);">
+                    <option value="10" selected>10 คะแนน (มาตรฐาน)</option>
+                    <option value="20">20 คะแนน</option>
+                    <option value="50">50 คะแนน</option>
+                    <option value="100">100 คะแนนเต็ม</option>
+                  </select>
+                </div>
+
+                <!-- Option C: Question Type Mode -->
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #701a75; display: block; margin-bottom: 3px;">
+                    📋 รูปแบบโจทย์ (Question Type):
+                  </label>
+                  <select id="standaloneQuizQType" style="width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid #d8b4fe; font-size: 11.5px; background: white; color: var(--navy-900);">
+                    <option value="auto" selected>✨ AI ตรวจจับอัตโนมัติ</option>
+                    <option value="choice">ปรนัย (Multiple Choice)</option>
+                    <option value="essay">อัตนัย (Short Answer)</option>
+                  </select>
+                </div>
+
+                <!-- Option D: AI Tutor Hints toggle -->
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #701a75; display: block; margin-bottom: 3px;">
+                    💡 คำใบ้ AI Tutor (Hints):
+                  </label>
+                  <select id="standaloneQuizEnableHints" style="width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid #d8b4fe; font-size: 11.5px; background: white; color: var(--navy-900);">
+                    <option value="yes" selected>🟢 เปิดคำใบ้ให้เด็กๆ</option>
+                    <option value="no">🔴 ปิดคำใบ้ (โหมดสอบจริง)</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div style="font-size: 12px; color: var(--navy-900); margin-bottom: 6px; font-weight: 600;">
+                4️⃣ เลือกกลุ่มเป้าหมายที่จะส่ง:
               </div>
               <select id="standaloneQuizTargetGroup"
                 style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #d8b4fe; font-size: 12px; margin-bottom: 14px; background: white; color: var(--navy-900); font-weight: 600;">
@@ -2381,9 +2481,15 @@
               </select>
 
               <button class="trigger-support-btn"
-                style="background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; padding: 10px 16px; font-size: 13px; font-weight: 700; width: 100%;"
+                style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 10px 16px; font-size: 13px; font-weight: 700; width: 100%; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);"
+                onclick="addQuizToTemplateLibrary()">
+                ➕ บันทึก/อัปเดตเข้า "คลังชุดข้อสอบสำเร็จรูป" (ยังไม่แจกทันที)
+              </button>
+
+              <button class="trigger-support-btn"
+                style="background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; padding: 8px 14px; font-size: 11.5px; font-weight: 600; width: 100%; opacity: 0.9;"
                 onclick="sendStandaloneQuizToGroup()">
-                🚀 สั่ง AI แจกข้อสอบ/ควิซนี้เข้าแชทกลุ่มนักเรียนทันที
+                🚀 สั่ง AI แจกข้อสอบนี้เข้าแชทกลุ่มนักเรียนทันที ➔
               </button>
             </div>
 
@@ -2398,91 +2504,45 @@
                 <span>(Quiz Templates)</span>
               </h4>
 
-              <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div
+              <div id="quizTemplateLibraryContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                <div id="template-item-premade_1"
                   style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;">
                   <div>
                     <div style="font-size: 12px; font-weight: 700; color: #1e40af;">📄 ควิซที่ 1:
                       การสังเคราะห์ด้วยแสงและแก๊ส (2 ข้อ)</div>
-                    <div style="font-size: 10.5px; color: #3b82f6; font-weight: 600;">🟢 กำลังใช้งานในกลุ่ม 3</div>
+                    <div class="template-status-text" style="font-size: 10.5px; color: #3b82f6; font-weight: 600;">🟢 พร้อมแจกให้กลุ่ม 3</div>
                   </div>
-                  <button onclick="sendPreMadeQuiz(1)"
+                  <button onclick="dispatchQuizFromLibrary('premade_1', this)"
                     style="font-size: 11px; background: #2563eb; color: white; border: 0; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                    แจกซ้ำ 🚀
+                    แจกเข้ากลุ่ม 🚀
                   </button>
                 </div>
 
-                <div
+                <div id="template-item-premade_2"
                   style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;">
                   <div>
                     <div style="font-size: 12px; font-weight: 700; color: var(--navy-900);">📄 ควิซที่ 2:
                       ปัจจัยแสงและคลอโรฟิลล์ (3 ข้อ)</div>
-                    <div style="font-size: 10.5px; color: var(--text-muted);">ปรนัย 3 ข้อ • ระดับปานกลาง</div>
+                    <div class="template-status-text" style="font-size: 10.5px; color: var(--text-muted);">ปรนัย 3 ข้อ • ระดับปานกลาง</div>
                   </div>
-                  <button onclick="sendPreMadeQuiz(2)"
+                  <button onclick="dispatchQuizFromLibrary('premade_2', this)"
                     style="font-size: 11px; background: #ffffff; color: #7e22ce; border: 1px solid #c084fc; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-weight: 600;">
                     แจกเข้ากลุ่ม 🚀
                   </button>
                 </div>
 
-                <div
+                <div id="template-item-premade_3"
                   style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;">
                   <div>
                     <div style="font-size: 12px; font-weight: 700; color: var(--navy-900);">📄 ใบงานที่ 3:
                       โครงสร้างปากใบและการคายน้ำ</div>
-                    <div style="font-size: 10.5px; color: var(--text-muted);">ข้อเขียนอัตนัย • 1 ข้อใหญ่</div>
+                    <div class="template-status-text" style="font-size: 10.5px; color: var(--text-muted);">ข้อเขียนอัตนัย • 1 ข้อใหญ่</div>
                   </div>
-                  <button onclick="sendPreMadeQuiz(3)"
+                  <button onclick="dispatchQuizFromLibrary('premade_3', this)"
                     style="font-size: 11px; background: #ffffff; color: #7e22ce; border: 1px solid #c084fc; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-weight: 600;">
                     แจกเข้ากลุ่ม 🚀
                   </button>
                 </div>
-              </div>
-            </div>
-
-            <!-- Live Submission Status Monitor -->
-            <div class="panel-card">
-              <h4 style="margin-top: 0; color: var(--navy-900); font-size: 13.5px;">📊 ติดตามการส่งงานสด <span>(Live
-                  Submissions - กลุ่ม 3)</span></h4>
-
-              <div style="display: flex; flex-direction: column; gap: 6px;">
-                <div
-                  style="font-size: 11.5px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                  <div><b>🧢 บีม:</b> ควิซเรื่องการสังเคราะห์ด้วยแสง</div>
-                  <span
-                    style="font-size: 10.5px; background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 99px; font-weight: 700;">✅
-                    ส่งแล้ว (10/10)</span>
-                </div>
-
-                <div
-                  style="font-size: 11.5px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                  <div><b>🌼 มะลิ:</b> ควิซเรื่องการสังเคราะห์ด้วยแสง</div>
-                  <span
-                    style="font-size: 10.5px; background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 99px; font-weight: 700;">✅
-                    ส่งแล้ว (9/10)</span>
-                </div>
-
-                <div
-                  style="font-size: 11.5px; background: #fff7ed; border: 1px solid #fed7aa; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                  <div><b>🙂 นรินทร์:</b> ควิซเรื่องการสังเคราะห์ด้วยแสง</div>
-                  <span
-                    style="font-size: 10.5px; background: #ffedd5; color: #c2410c; padding: 2px 6px; border-radius: 99px; font-weight: 700;">⚠️
-                    ค้างส่ง (กำลังทำ)</span>
-                </div>
-
-                <div
-                  style="font-size: 11.5px; background: #eff6ff; border: 1px solid #bfdbfe; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                  <div><b>🌿 ข้าวหอม:</b> ควิซเรื่องการสังเคราะห์ด้วยแสง</div>
-                  <span
-                    style="font-size: 10.5px; background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 99px; font-weight: 700;">⏳
-                    รอเริ่มทำ</span>
-                </div>
-              </div>
-
-              <button onclick="toggleSavedTasksDrawer('teacher')"
-                style="width: 100%; margin-top: 10px; font-size: 11.5px; background: #2563eb; color: white; border: 0; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">
-                🔍 เปิดดูภาพรวมรายงานการส่งงานทั้งหมด ➔
-              </button>
             </div>
 
           </div>
@@ -2682,70 +2742,8 @@
             </div>
           </div>
 
-          <!-- Question 1 (Multiple Choice) -->
-          <div
-            style="background: #fdf4ff; border: 1px solid #f0abfc; padding: 16px; border-radius: 12px; margin-bottom: 16px;">
-            <div
-              style="font-size: 13.5px; font-weight: 700; color: #701a75; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-              <span>ข้อที่ 1: แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง? (10 คะแนน)</span>
-              <span
-                style="font-size: 11px; background: #fae8ff; color: #86198f; padding: 2px 8px; border-radius: 99px; font-weight: 600;">ปรนัย
-                (Multiple Choice)</span>
-            </div>
-
-            <!-- Choice Options -->
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;" id="quizQ1Choices">
-              <label class="quiz-choice-label"
-                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="O2" onchange="updateQuizChoiceStyle(this)"
-                  style="accent-color: #a855f7;">
-                <span>ก. แก๊สออกซิเจน (O2)</span>
-              </label>
-              <label class="quiz-choice-label"
-                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="CO2" onchange="updateQuizChoiceStyle(this)"
-                  style="accent-color: #a855f7;">
-                <span>ข. แก๊สคาร์บอนไดออกไซด์ (CO2)</span>
-              </label>
-              <label class="quiz-choice-label"
-                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="N2" onchange="updateQuizChoiceStyle(this)"
-                  style="accent-color: #a855f7;">
-                <span>ค. แก๊สไนโตรเจน (N2)</span>
-              </label>
-              <label class="quiz-choice-label"
-                style="display: flex; align-items: center; gap: 10px; background: white; border: 1.5px solid #e9d5ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s ease;">
-                <input type="radio" name="quizQ1" value="H2" onchange="updateQuizChoiceStyle(this)"
-                  style="accent-color: #a855f7;">
-                <span>ง. แก๊สไฮโดรเจน (H2)</span>
-              </label>
-            </div>
-
-            <!-- AI Gentle Hint Box -->
-            <div
-              style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 8px; font-size: 11.5px; color: #1e40af; display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 16px;">💡</span>
-              <div>
-                <b>คำใบ้แบบนุ่มนวลจาก AI Tutor:</b> แก๊สชนิดนี้เป็นแก๊สที่มนุษย์และสัตว์หายใจปล่อยออกมาในอากาศครับ 🌱
-              </div>
-            </div>
-          </div>
-
-          <!-- Question 2 (Short Answer) -->
-          <div
-            style="background: #fdf4ff; border: 1px solid #f0abfc; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
-            <div
-              style="font-size: 13.5px; font-weight: 700; color: #701a75; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-              <span>ข้อที่ 2: ผลลัพธ์ที่ได้จากกระบวนการสังเคราะห์ด้วยแสงมีอะไรบ้าง? (10 คะแนน)</span>
-              <span
-                style="font-size: 11px; background: #fae8ff; color: #86198f; padding: 2px 8px; border-radius: 99px; font-weight: 600;">อัตนัย
-                (Short Answer)</span>
-            </div>
-
-            <textarea id="quizQ2Textarea" class="disagree-textarea"
-              style="height: 70px; font-size: 12px; border-color: #d8b4fe; width: 100%; margin-bottom: 8px;"
-              placeholder="พิมพ์อธิบายคำตอบของคุณที่นี่..."></textarea>
-          </div>
+          <!-- Dynamic Questions Container -->
+          <div id="dynamicQuizQuestionsContainer"></div>
 
           <!-- Submit Button & Result Box -->
           <div id="studentQuizResultBox"
@@ -2917,19 +2915,24 @@
           <div
             style="font-size: 12px; font-weight: 700; color: #c2410c; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
             <span>📋 <b>งานที่ต้องทำตอนนี้ (Pending)</b></span>
-            <span
+            <span id="studentPendingCountBadge"
               style="font-size: 10px; background: #ffedd5; color: #9a3412; padding: 1px 6px; border-radius: 99px; font-weight: 600;">1
               งาน</span>
           </div>
-          <div
-            style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #fed7aa; padding: 8px 10px; border-radius: 8px; margin-bottom: 6px;">
-            📄 <b>ควิซจากครูวิภา:</b> เรื่องการสังเคราะห์ด้วยแสง (2 ข้อ)<br>
-            <span style="font-size: 11px; color: #c2410c; font-weight: 600;">⚠️ ยังไม่ได้ส่งคำตอบ</span>
+
+          <div id="studentPendingTasksContainer" style="display: flex; flex-direction: column; gap: 8px;">
+            <div
+              style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #fed7aa; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                📄 <b>ควิซจากครูวิภา:</b> เรื่องการสังเคราะห์ด้วยแสง (2 ข้อ)<br>
+                <span style="font-size: 11px; color: #c2410c; font-weight: 600;">⚠️ ยังไม่ได้ส่งคำตอบ</span>
+              </div>
+              <button onclick="toggleSavedTasksDrawer('student'); switchViewMode('student-quiz');"
+                style="font-size: 11px; background: #ea580c; color: white; border: 0; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                🚀 ไปทำควิซ ➔
+              </button>
+            </div>
           </div>
-          <button onclick="toggleSavedTasksDrawer('student'); switchViewMode('student-quiz');"
-            style="font-size: 11px; background: #ea580c; color: white; border: 0; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-            🚀 ไปที่ข้อสอบควิซนี้ ➔
-          </button>
         </div>
 
         <!-- Section 2: Completed Tasks -->
@@ -3020,48 +3023,50 @@
             📤 <b>รายการงานที่ครูสั่งไปแล้ว & สถานะการส่ง:</b>
           </div>
 
-          <!-- Task Item 1 -->
-          <div
-            style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-              <span style="font-size: 12px; font-weight: 700; color: #1e293b;">📝 1. ควิซเรื่องการสังเคราะห์ด้วยแสง (2
-                ข้อ)</span>
-              <span
-                style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 99px; font-weight: 600;">ส่งแล้ว
-                75%</span>
-            </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
-              ไฟล์แนบ: <code>ใบงานควิซ_สังเคราะห์แสง_ม1.pdf</code>
-            </div>
-
+          <div id="teacherSavedTasksContainer" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Task Item 1 -->
             <div
-              style="font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
-              <span style="color: #166534; font-weight: 600;">✅ ทำเสร็จแล้ว (3 คน):</span> 🧢 บีม, 🌿 ข้าวหอม, 🌼 มะลิ
-            </div>
-            <div style="font-size: 11px; background: #fff1f2; padding: 6px 8px; border-radius: 6px;">
-              <span style="color: #9f1239; font-weight: 600;">⚠️ ค้างส่ง (1 คน):</span> 🙂 <b>นรินทร์</b>
-              (กำลังลังเลเรื่องแก๊ส O2)
-            </div>
-          </div>
+              style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                <span style="font-size: 12px; font-weight: 700; color: #1e293b;">📝 1. ควิซเรื่องการสังเคราะห์ด้วยแสง (2
+                  ข้อ)</span>
+                <span
+                  style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 99px; font-weight: 600;">ส่งแล้ว
+                  75%</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
+                ไฟล์แนบ: <code>ใบงานควิซ_สังเคราะห์แสง_ม1.pdf</code>
+              </div>
 
-          <!-- Task Item 2 -->
-          <div
-            style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-              <span style="font-size: 12px; font-weight: 700; color: #1e293b;">✋ 2.
-                ตอบเช็คอินความเห็นกลุ่มเรื่องแก๊ส</span>
-              <span
-                style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 99px; font-weight: 600;">ส่งแล้ว
-                75%</span>
+              <div
+                style="font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
+                <span style="color: #166534; font-weight: 600;">✅ ทำเสร็จแล้ว (3 คน):</span> 🧢 บีม, 🌿 ข้าวหอม, 🌼 มะลิ
+              </div>
+              <div style="font-size: 11px; background: #fff1f2; padding: 6px 8px; border-radius: 6px;">
+                <span style="color: #9f1239; font-weight: 600;">⚠️ ค้างส่ง (1 คน):</span> 🙂 <b>นรินทร์</b>
+                (กำลังลังเลเรื่องแก๊ส O2)
+              </div>
             </div>
 
+            <!-- Task Item 2 -->
             <div
-              style="font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
-              <span style="color: #166534; font-weight: 600;">✅ ตอบแล้ว (3 คน):</span> 🧢 บีม (แสงแดด), 🌿 ข้าวหอม
-              (CO2), 🌼 มะลิ (น้ำ)
-            </div>
-            <div style="font-size: 11px; background: #fff1f2; padding: 6px 8px; border-radius: 6px;">
-              <span style="color: #9f1239; font-weight: 600;">⚠️ ค้างส่ง (1 คน):</span> 🙂 <b>นรินทร์</b>
+              style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                <span style="font-size: 12px; font-weight: 700; color: #1e293b;">✋ 2.
+                  ตอบเช็คอินความเห็นกลุ่มเรื่องแก๊ส</span>
+                <span
+                  style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 99px; font-weight: 600;">ส่งแล้ว
+                  75%</span>
+              </div>
+
+              <div
+                style="font-size: 11px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px;">
+                <span style="color: #166534; font-weight: 600;">✅ ตอบแล้ว (3 คน):</span> 🧢 บีม (แสงแดด), 🌿 ข้าวหอม
+                (CO2), 🌼 มะลิ (น้ำ)
+              </div>
+              <div style="font-size: 11px; background: #fff1f2; padding: 6px 8px; border-radius: 6px;">
+                <span style="color: #9f1239; font-weight: 600;">⚠️ ค้างส่ง (1 คน):</span> 🙂 <b>นรินทร์</b>
+              </div>
             </div>
           </div>
         </div>
@@ -3110,8 +3115,34 @@
       studentQuizTimeLeft: 285, // 4 minutes 45 seconds countdown timer for Quiz
       studentQuizInterval: null,
       quizResults: {}, // เก็บผลคะแนนแต่ละ quiz: { 1: { score: 8, max: 10 }, ... }
-      activeQuizId: null, // quiz ที่กำลังทำอยู่
+      activeQuizId: 1, // quiz ที่กำลังทำอยู่ (เริ่มที่ 1)
+      currentQuizStudent: 'narin',
+      studentQuizStates: {
+        narin: {},
+        beam: {},
+        mali: {},
+        khaohom: {}
+      },
       myCustomText: '',
+      lastUploadedFile: null,
+      customQuizzes: {
+        1: {
+          id: 1,
+          title: 'ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง (2 ข้อ)',
+          q1: 'ข้อที่ 1: แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง? (10 คะแนน)',
+          q2: 'ข้อที่ 2: ผลลัพธ์ที่ได้จากกระบวนการสังเคราะห์ด้วยแสงมีอะไรบ้าง? (10 คะแนน)',
+          file: null,
+          duration: 285
+        },
+        2: {
+          id: 2,
+          title: 'ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ (5 ข้อ)',
+          q1: 'ข้อที่ 1: สิ่งมีชีวิตใดเป็นผู้ผลิตหลักในระบบนิเวศ? (10 คะแนน)',
+          q2: 'ข้อที่ 2: จงอธิบายบทบาทของผู้ย่อยสลายสารอินทรีย์? (40 คะแนน)',
+          file: 'ใบงานควิซ_ห่วงโซ่อาหาร_ม1.pdf',
+          duration: 600
+        }
+      },
       currentHypothesis: {
         title: "อาจกำลังลังเลระหว่าง O2 กับ CO2",
         reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
@@ -3384,49 +3415,6 @@
       showToast("⬅️ กลับสู่หน้าสรุปความคืบหน้าการทำงาน & รายชื่อนักเรียน");
     }
 
-    function sendStandaloneQuizToGroup() {
-      const titleInput = document.getElementById('standaloneQuizTitle');
-      const textInput = document.getElementById('standaloneQuizText');
-
-      const quizTitle = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : "ควิซประจำบทเรียนจากครูผู้สอน";
-      const rawText = textInput ? textInput.value.trim() : "";
-      const quizText = rawText ? rawText.replace(/\n/g, '<br>') : "1. โปรดตอบคำถามทบทวนความรู้ตามเอกสารควิซที่ครูมอบหมาย";
-
-      const msgArea = document.getElementById('messagesArea');
-      if (!msgArea) return;
-
-      const quizDiv = document.createElement('div');
-      quizDiv.className = 'message-group ai';
-      quizDiv.innerHTML = `
-        <div class="message-avatar">📄</div>
-        <div class="message-content">
-          <div class="message-sender">ครูวิภา (ผ่าน AI Task Dispatcher)</div>
-          <div class="bubble" style="background: #fdf4ff; border: 2px solid #c084fc; padding: 14px; border-radius: 12px;">
-            <div style="font-size: 13.5px; font-weight: 700; color: #701a75; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
-              <span>📁 <b>${quizTitle}</b></span>
-              <span style="font-size: 10px; background: #f3e8ff; color: #7e22ce; padding: 2px 8px; border-radius: 99px; font-weight: 700; border: 1px solid #d8b4fe;">ควิซครู • เก็บคะแนน 🎯</span>
-            </div>
-
-            <div style="font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1px solid #e9d5ff; padding: 10px 12px; border-radius: 8px; margin: 8px 0; line-height: 1.5;">
-              ${quizText}
-            </div>
-
-            <button onclick="switchViewMode('student-quiz')" style="width: 100%; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.25); margin: 8px 0; transition: all 0.2s ease;">
-              🚀 กดเริ่มทำควิซนี้เพื่อเก็บคะแนน (เปิดหน้าควิซรายบุคคล) ➔
-            </button>
-
-            <div style="font-size: 10.5px; color: #86198f; text-align: center;">
-              🎯 ควิซนี้จากครูวิภาจะถูกบันทึกคะแนนในระบบส่วนตัวของนักเรียน
-            </div>
-          </div>
-        </div>
-      `;
-      msgArea.appendChild(quizDiv);
-      msgArea.scrollTop = msgArea.scrollHeight;
-
-      showToast(`🚀 สั่ง AI แจก "${quizTitle}" เข้าแชทกลุ่มนักเรียนเรียบร้อย!`);
-    }
-
     // Timer Interval for Live Silence Counter
     let timerInterval = null;
 
@@ -3663,46 +3651,156 @@
       showToast(`🚀 ส่งข้อความช่วยเหลือ (${student.name}) ตามแนวทาง (${strategy.toUpperCase()}) เรียบร้อย!`);
     }
 
+    // Teacher Intervention Actions (Edit Prompt & Direct Intervention)
+    function editAiPromptByTeacher(btn) {
+      const editBox = document.getElementById('teacherEditPromptContainer');
+      const directBox = document.getElementById('teacherDirectInterveneContainer');
+      if (directBox) directBox.style.display = 'none';
+
+      if (!editBox) return;
+
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : (state.lastObservedStudent || 'narin');
+      const student = MEMBER_MAP[currentKey] || MEMBER_MAP['narin'];
+
+      const defaultPrompt = `คุณ${student.name}ครับ! ลองทบทวนดูอีกทีนะ แก๊สออกซิเจน (O2) เป็นแก๊สที่พืชต้องรับเข้ามา หรือปล่อยออกมาในกระบวนการสังเคราะห์ด้วยแสงกันแน่ครับ? 🌱`;
+      const textarea = document.getElementById('teacherCustomAiTextarea');
+      if (textarea) textarea.value = defaultPrompt;
+
+      editBox.style.display = 'block';
+      showToast("✏️ เปิดกล่องปรับแก้ข้อความคำแนะนำโดยครู");
+    }
+
+    function submitTeacherEditedAiPrompt() {
+      const textarea = document.getElementById('teacherCustomAiTextarea');
+      if (!textarea) return;
+      const val = textarea.value.trim();
+      if (!val) {
+        showToast("⚠️ กรุณาพิมพ์ข้อความก่อนส่งครับ");
+        return;
+      }
+
+      const msgArea = document.getElementById('messagesArea');
+      if (!msgArea) return;
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group ai';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">✦</div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor (ปรับแก้เนื้อหาโดยครูวิภา ✏️)</div>
+          <div class="bubble" style="background: #f8fafc; border: 1.5px solid #3b82f6; color: #1e3a8a; border-radius: 12px; padding: 12px;">
+            <div style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 6px; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+              ✏️ ครูวิภาตรวจสอบและปรับแก้ไขคำชี้แนะแล้ว
+            </div><br>
+            ${val}
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+
+      document.getElementById('teacherEditPromptContainer').style.display = 'none';
+      showToast("🚀 ส่งข้อความที่ครูวิภาปรับแก้แล้วเข้าแชทกลุ่มเรียบร้อย!");
+    }
+
+    function rejectAiSuggestion(btn) {
+      const editBox = document.getElementById('teacherEditPromptContainer');
+      const directBox = document.getElementById('teacherDirectInterveneContainer');
+      if (editBox) editBox.style.display = 'none';
+
+      if (!directBox) return;
+
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : (state.lastObservedStudent || 'narin');
+      const student = MEMBER_MAP[currentKey] || MEMBER_MAP['narin'];
+
+      const textarea = document.getElementById('teacherDirectTextarea');
+      if (textarea) textarea.value = `คุณ${student.name} และทุกคนในกลุ่มครับ! ครูขอแนะนำเพิ่มเติมสั้นๆ เรื่องกระบวนการสังเคราะห์ด้วยแสงนะ…`;
+
+      directBox.style.display = 'block';
+      showToast("✋ เปิดกล่องพิมพ์คำแนะนำจากครูวิภาโดยตรง");
+    }
+
+    function submitTeacherDirectIntervention() {
+      const textarea = document.getElementById('teacherDirectTextarea');
+      if (!textarea) return;
+      const val = textarea.value.trim();
+      if (!val) {
+        showToast("⚠️ กรุณาพิมพ์คำแนะนำก่อนส่งครับ");
+        return;
+      }
+
+      const msgArea = document.getElementById('messagesArea');
+      if (!msgArea) return;
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group teacher';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">👩‍🏫</div>
+        <div class="message-content">
+          <div class="message-sender">ครูวิภา (ครูผู้สอน)</div>
+          <div class="bubble" style="background: #eff6ff; border: 1.5px solid #60a5fa; color: #1e40af; border-radius: 12px; padding: 12px;">
+            <div style="font-size: 11px; background: #2563eb; color: #ffffff; padding: 2px 8px; border-radius: 6px; margin-bottom: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
+              ✋ ครูผู้สอนเข้าแนะนำโดยตรง (Direct Intervention)
+            </div><br>
+            ${val}
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+
+      document.getElementById('teacherDirectInterveneContainer').style.display = 'none';
+      showToast("✋ ครูวิภาเข้าแนะนำเข้าแชทกลุ่มเรียบร้อย! (AI ชะลอคำใบ้อัตโนมัติ)");
+    }
+
     // Input draft listener for live detection of unsent text
     function attachDraftListeners() {
       const mainInput = document.getElementById('chatInput');
 
       const handleInput = (val) => {
         state.draftText = val;
-        state.idleSeconds = 0; // Reset silence counter on active typing
+
+        const activeKey = (state.activeSender && state.activeSender !== 'teacher') 
+          ? state.activeSender 
+          : (state.activeStudent && state.activeStudent !== 'teacher' ? state.activeStudent : 'narin');
+        
+        const sig = getStudentSignal(activeKey);
+        sig.idleSeconds = 0; // Reset silence counter for the active typing student!
+        state.idleSeconds = 0;
         updateSilenceUI();
 
         const valDraft = document.getElementById('val-draft');
         const subDraftInfo = document.getElementById('sub-draft-info');
-        const stNarin = document.getElementById('st-narin');
-        const dotNarin = document.getElementById('dot-narin');
+
+        const stEl = document.getElementById(`st-${activeKey}`);
+        const dotEl = document.getElementById(`dot-${activeKey}`);
 
         if (val.length > 0) {
           // Update Teacher Console signals (Privacy-First: length only)
-          if (valDraft) valDraft.textContent = `มีร่าง ${val.length} ตัวอักษร (🔒 ไม่บันทึกข้อความดิบ)`;
-          if (subDraftInfo) subDraftInfo.textContent = `🔒 Privacy-First: ระบบนับเฉพาะจำนวนตัวอักษรเพื่อเช็คจังหวะพิมพ์ (AI ชะลอคำใบ้ ไม่ขัดจังหวะ!)`;
+          if (valDraft) valDraft.textContent = `มีร่าง ${val.length} ตัวอักษร (${sig.name} - 🔒 ไม่บันทึกข้อความดิบ)`;
+          if (subDraftInfo) subDraftInfo.textContent = `🔒 Privacy-First: ระบบนับเฉพาะจำนวนตัวอักษรเพื่อเช็คจังหวะพิมพ์ (AI ชะลอคำใบ้ ไม่ขัดจังหวะ ${sig.name}!)`;
 
-          // Clean UI for Student View: Just show "กำลังพิมพ์…"
-          if (stNarin) {
-            stNarin.textContent = `✍️ กำลังพิมพ์…`;
-            stNarin.style.color = 'var(--accent-purple)';
+          // Clean UI for Student View: Just show "✍️ กำลังพิมพ์…" for active student
+          if (stEl) {
+            stEl.textContent = `✍️ กำลังพิมพ์…`;
+            stEl.style.color = 'var(--accent-purple)';
+            stEl.style.fontWeight = '700';
           }
-          if (dotNarin) dotNarin.className = 'status-dot';
+          if (dotEl) dotEl.className = 'status-dot';
 
-          if (val.length > 10) {
-            state.currentHypothesis.title = "กำลังเรียบเรียงประโยคตอบยาว";
-            state.currentHypothesis.reason = `มีร่างข้อความ ${val.length} ตัวอักษรค้างในช่องพิมพ์ -> AI จะไม่ส่งคำใบ้มาแทรกขัดจังหวะ`;
-            state.currentHypothesis.confidence = 88;
+          if (val.length > 5) {
+            sig.hypothesis.title = "กำลังพิมพ์เรียบเรียงคำตอบ (Active Draft Typing)";
+            sig.hypothesis.reason = `มีร่างข้อความ ${val.length} ตัวอักษรค้างในช่องพิมพ์ -> AI ชะลอการส่งคำใบ้เพื่อไม่ขัดจังหวะการคิด`;
+            sig.hypothesis.confidence = 90;
           }
         } else {
-          // Teacher Console signals
           if (valDraft) valDraft.textContent = `ว่างเปล่า (0 ตัวอักษร)`;
           if (subDraftInfo) subDraftInfo.textContent = `🔒 Privacy-First Ethics: ระบบนับเฉพาะจำนวนตัวอักษรเพื่อเช็คความพร้อม โดยไม่เก็บบันทึกข้อความดิบที่ยังไม่ได้ส่ง`;
 
-          // Clean UI for Student View
-          if (stNarin) {
-            stNarin.textContent = `กำลังอ่านแชท…`;
-            stNarin.style.color = 'var(--text-muted)';
+          if (stEl) {
+            stEl.textContent = `กำลังอ่านแชท…`;
+            stEl.style.color = 'var(--text-muted)';
+            stEl.style.fontWeight = '500';
           }
         }
 
@@ -3741,7 +3839,9 @@
       const quizLobbySec = document.getElementById('quizLobbySection');
       const toggleConsoleBtn = document.getElementById('toggleTeacherConsoleBtn');
       const studentTasksBtn = document.getElementById('studentSavedTasksBtn');
+      const studentQuizHeaderBtn = document.getElementById('studentQuizHeaderBtn');
       const teacherTasksBtn = document.getElementById('teacherSavedTasksBtn');
+      const teacherScoresBtn = document.getElementById('teacherStudentScoresBtn');
 
       // Helper: hide all sections
       const hideAll = () => {
@@ -3753,7 +3853,9 @@
         if (quizLobbySec) quizLobbySec.style.display = 'none';
         if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
         if (studentTasksBtn) studentTasksBtn.style.display = 'none';
+        if (studentQuizHeaderBtn) studentQuizHeaderBtn.style.display = 'none';
         if (teacherTasksBtn) teacherTasksBtn.style.display = 'none';
+        if (teacherScoresBtn) teacherScoresBtn.style.display = 'none';
       };
 
       // Update top bar active state
@@ -3769,6 +3871,7 @@
         chatSec.style.display = 'flex';
         if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
         if (studentTasksBtn) studentTasksBtn.style.display = 'flex';
+        if (studentQuizHeaderBtn) studentQuizHeaderBtn.style.display = 'flex';
         selectStudent('narin');
         showToast("🎓 เปิดมุมมองนักเรียน (Student View)");
       } else if (mode === 'teacher') {
@@ -3780,6 +3883,7 @@
           toggleConsoleBtn.innerHTML = '📊 เปิดหน้าข้อมูลวิเคราะห์ครู ➔';
         }
         if (teacherTasksBtn) teacherTasksBtn.style.display = 'flex';
+        if (teacherScoresBtn) teacherScoresBtn.style.display = 'flex';
         selectStudent('teacher');
         showToast("👩\u200d🏫 มุมมองครู: แสดงหน้าแชทหลัก (เลือก 'ครูวิภา' เป็นผู้พิมพ์ข้อความ)");
       } else if (mode === 'progress') {
@@ -3817,66 +3921,359 @@
       document.querySelectorAll('.flow-step').forEach(step => step.classList.add('active'));
     }
 
-    // Start a specific quiz from the lobby
-    function startQuiz(quizId) {
-      const quizTitles = {
-        1: 'ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง (2 ข้อ)',
-        2: 'ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ (5 ข้อ)'
-      };
-      const title = document.getElementById('studentQuizHeaderTitle');
-      if (title) title.textContent = '📄 ' + (quizTitles[quizId] || 'ควิซ');
-
-      // บันทึก quiz ที่กำลังทำ
-      state.activeQuizId = quizId;
-
-      // ตั้งเวลาถอยหลังตามชุดควิซ (ควิซ 1 = 285s / 4:45 นาที, ควิซ 2 = 600s / 10 นาที)
-      const duration = quizId === 2 ? 600 : 285;
-
-      // Reset submit button and result box
-      const submitBtn = document.getElementById('btnSubmitStudentQuiz');
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-        submitBtn.style.cursor = 'pointer';
-        submitBtn.textContent = '🚀 ส่งคำตอบควิซนี้ทันที (Submit Quiz)';
+    function formatDurationDisplay(seconds) {
+      const min = Math.round((seconds || 300) / 60);
+      if (min >= 60) {
+        const hrs = (min / 60).toFixed(min % 60 === 0 ? 0 : 1);
+        return `${hrs} ชม. (${min} นาที)`;
       }
-      const resultBox = document.getElementById('studentQuizResultBox');
-      if (resultBox) resultBox.style.display = 'none';
-
-      // Reset ตัวเลือกและคำตอบให้ว่างเปล่า
-      document.querySelectorAll('input[name="quizQ1"]').forEach(r => {
-        r.checked = false;
-        const lbl = r.closest('label');
-        if (lbl) {
-          lbl.classList.remove('active');
-          lbl.style.background = 'white';
-          lbl.style.borderColor = '#e9d5ff';
-          lbl.style.fontWeight = '';
-          lbl.style.color = '';
-          lbl.style.boxShadow = 'none';
-        }
-      });
-      const ta = document.getElementById('quizQ2Textarea');
-      if (ta) ta.value = '';
-
-      switchViewMode('student-quiz-active');
-      startStudentQuizTimer(duration); // ⏱️ เริ่มนับถอยหลังเมื่อกดทำควิซ
-      showToast(`🚀 เริ่มทำ: ${quizTitles[quizId] || 'ควิซ'} (เริ่มจับเวลาถอยหลัง!)`);
+      return `${min} นาที`;
     }
 
-    // อัปเดตการ์ดใน lobby หลังส่งควิซ
+    function updateTeacherTasksDrawer(quizTitle, questionCount, fileName) {
+      const container = document.getElementById('teacherSavedTasksContainer');
+      if (!container) return;
+
+      const item = document.createElement('div');
+      item.style.cssText = 'background: #ffffff; border: 1.5px solid #a855f7; border-radius: 10px; padding: 10px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(168,85,247,0.12);';
+
+      item.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+          <span style="font-size: 12px; font-weight: 700; color: #701a75;">📝 <b>${quizTitle}</b> (${questionCount} ข้อ)</span>
+          <span style="font-size: 10px; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; padding: 1px 6px; border-radius: 99px; font-weight: 700;">🟢 แจกเข้ากลุ่มแล้ว</span>
+        </div>
+        ${fileName ? `<div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">ไฟล์แนบ: <code>${fileName}</code></div>` : ''}
+        <div style="font-size: 11px; background: #fff7ed; border: 1px solid #ffedd5; padding: 6px 8px; border-radius: 6px;">
+          <span style="color: #c2410c; font-weight: 600;">⏳ รอนักเรียนในกลุ่มตอบคำตอบ (4 คน)</span>
+        </div>
+      `;
+      container.prepend(item);
+    }
+
+    function updateStudentTasksDrawer(quizId, quizTitle, questionCount, fileName) {
+      const container = document.getElementById('studentPendingTasksContainer');
+      if (container) {
+        const item = document.createElement('div');
+        item.style.cssText = 'font-size: 12px; color: var(--navy-900); background: #ffffff; border: 1.5px solid #f97316; padding: 10px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(249,115,22,0.1); margin-bottom: 6px;';
+        
+        item.innerHTML = `
+          <div>
+            <div>📄 <b>${quizTitle}</b> (${questionCount} ข้อ)</div>
+            <div style="font-size: 11px; color: #ea580c; font-weight: 600;">⚠️ ยังไม่ได้ส่งคำตอบ ${fileName ? `• แนบไฟล์: ${fileName}` : ''}</div>
+          </div>
+          <button onclick="toggleSavedTasksDrawer('student'); startQuiz('${quizId}');"
+            style="font-size: 11px; background: linear-gradient(135deg, #ea580c, #c2410c); color: white; border: 0; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; flex-shrink: 0; box-shadow: 0 2px 6px rgba(234,88,12,0.25);">
+            🚀 ไปทำควิซ ➔
+          </button>
+        `;
+        container.prepend(item);
+      }
+
+      const pendingBadge = document.getElementById('studentPendingCount');
+      if (pendingBadge) {
+        const cnt = parseInt(pendingBadge.textContent) || 1;
+        pendingBadge.textContent = cnt + 1;
+      }
+      const pendingBadgeHeader = document.getElementById('studentPendingCountBadge');
+      if (pendingBadgeHeader) {
+        const cnt = parseInt(pendingBadgeHeader.textContent) || 1;
+        pendingBadgeHeader.textContent = (cnt + 1) + ' งาน';
+      }
+    }
+
+    // Add dynamic quiz card to Student Quiz Lobby
+    function addQuizToLobby(quizId, quizTitle, fileName) {
+      const lobbyContainer = document.getElementById('quizLobbyCardsContainer') || document.getElementById('quizLobbyCards');
+      if (!lobbyContainer) return;
+
+      const existingCard = document.getElementById(`lobby-card-${quizId}`);
+      if (existingCard) return;
+
+      const quizData = (state.customQuizzes && state.customQuizzes[quizId]) ? state.customQuizzes[quizId] : null;
+      const questionCount = quizData ? (quizData.questionCount || (quizData.text ? parseQuizQuestions(quizData.text).length : 2)) : 2;
+      const durationSec = quizData ? (quizData.duration || 300) : 300;
+      const durationBadgeStr = formatDurationDisplay(durationSec);
+      const maxScoreVal = quizData ? (quizData.maxScore || 10) : 10;
+
+      const card = document.createElement('div');
+      card.className = 'panel-card';
+      card.id = `lobby-card-${quizId}`;
+      card.style.cssText = 'border: 2px solid #e9d5ff; background: #ffffff; border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: all 0.22s ease; display: flex; align-items: center; gap: 16px; position: relative; overflow: hidden; margin-bottom: 12px;';
+
+      card.onmouseover = function() {
+        this.style.borderColor = '#a855f7';
+        this.style.boxShadow = '0 4px 16px rgba(168,85,247,0.15)';
+      };
+      card.onmouseout = function() {
+        if (!this.style.background.includes('f0fdf4')) {
+          this.style.borderColor = '#e9d5ff';
+          this.style.boxShadow = 'none';
+        }
+      };
+
+      card.innerHTML = `
+        <div style="font-size: 36px; flex-shrink: 0;">📝</div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+            <span style="font-size: 14px; font-weight: 800; color: #701a75;">${quizTitle}</span>
+            <span class="quiz-status-badge" style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢 พร้อมทำ</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา • มอบหมายสด ${fileName ? `• แนบไฟล์: ${fileName}` : ''}</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ ${durationBadgeStr}</span>
+            <span style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 ${questionCount} ข้อ</span>
+            <span style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 ${maxScoreVal} คะแนน</span>
+          </div>
+        </div>
+        <button onclick="startQuiz('${quizId}')"
+          style="background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3); flex-shrink: 0; transition: all 0.2s ease;"
+          onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          🚀 เริ่มทำ ➔
+        </button>
+      `;
+
+      lobbyContainer.prepend(card);
+      const countEl = document.getElementById('lobbyQuizCount');
+      if (countEl) {
+        const cnt = parseInt(countEl.textContent) || 2;
+        countEl.textContent = cnt + 1;
+      }
+
+      const headerQuizBadge = document.getElementById('studentQuizHeaderBadge');
+      if (headerQuizBadge) {
+        const cnt = parseInt(headerQuizBadge.textContent) || 2;
+        headerQuizBadge.textContent = cnt + 1;
+      }
+
+      // Sync dispatched quiz to Teacher & Student Saved Tasks Drawers
+      updateTeacherTasksDrawer(quizTitle, questionCount, fileName);
+      updateStudentTasksDrawer(quizId, quizTitle, questionCount, fileName);
+    }
+
+    // Start a specific quiz from the lobby or chat card
+    function startQuiz(quizId) {
+      let quizData = state.customQuizzes ? state.customQuizzes[quizId] : null;
+      if (!quizData) {
+        const quizTitles = {
+          1: 'ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง (2 ข้อ)',
+          2: 'ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ (5 ข้อ)'
+        };
+        quizData = {
+          id: quizId,
+          title: quizTitles[quizId] || 'ควิซวัดความเข้าใจ',
+          text: '1. แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง?\n2. ผลลัพธ์ที่ได้จากกระบวนการสังเคราะห์ด้วยแสงมีอะไรบ้าง?',
+          duration: quizId === 2 ? 600 : 285
+        };
+      }
+
+      state.activeQuizId = quizId;
+
+      const title = document.getElementById('studentQuizHeaderTitle');
+      if (title) title.textContent = '📄 ' + (quizData.title || 'ควิซ');
+
+      const duration = quizData.duration || 300;
+      switchViewMode('student-quiz-active');
+      startStudentQuizTimer(duration);
+
+      // Load & Render Questions Dynamically for current student
+      const currentSt = state.currentQuizStudent || 'narin';
+      loadStudentQuizState(currentSt, quizId);
+
+      showToast(`🚀 เริ่มทำ: ${quizData.title} (เปิดหน้าควิซรายบุคคล)`);
+    }
+
+    // Dynamic Multi-Question Parser Engine
+    function parseQuizQuestions(rawText) {
+      if (!rawText) return [];
+      const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const questions = [];
+
+      let currentQ = null;
+
+      lines.forEach((line) => {
+        const numMatch = line.match(/^(?:ข้อที่\s*)?(\d+)[\.\:\)\s]\s*(.+)/i);
+        if (numMatch) {
+          if (currentQ) questions.push(currentQ);
+          const qNum = parseInt(numMatch[1]);
+          const qText = numMatch[2].trim();
+          currentQ = {
+            id: qNum,
+            num: qNum,
+            title: `ข้อที่ ${qNum}: ${qText}`,
+            type: (qNum === 1 || qText.includes('ช้อยส์') || qText.includes('เลือกตอบ')) ? 'choice' : 'essay',
+            choices: [
+              'ก. แก๊สออกซิเจน (O2)',
+              'ข. แก๊สคาร์บอนไดออกไซด์ (CO2)',
+              'ค. แก๊สไนโตรเจน (N2)',
+              'ง. แก๊สไฮโดรเจน (H2)'
+            ]
+          };
+        } else if (currentQ) {
+          if (line.match(/^[ก-งa-d][\.\)]/i)) {
+            if (!currentQ.customChoices) {
+              currentQ.customChoices = [];
+              currentQ.type = 'choice';
+            }
+            currentQ.customChoices.push(line);
+          } else {
+            currentQ.title += ' ' + line;
+          }
+        } else {
+          const qNum = questions.length + 1;
+          currentQ = {
+            id: qNum,
+            num: qNum,
+            title: `ข้อที่ ${qNum}: ${line}`,
+            type: qNum === 1 ? 'choice' : 'essay',
+            choices: [
+              'ก. แก๊สออกซิเจน (O2)',
+              'ข. แก๊สคาร์บอนไดออกไซด์ (CO2)',
+              'ค. แก๊สไนโตรเจน (N2)',
+              'ง. แก๊สไฮโดรเจน (H2)'
+            ]
+          };
+        }
+      });
+
+      if (currentQ) questions.push(currentQ);
+
+      if (questions.length === 0) {
+        questions.push(
+          {
+            id: 1,
+            num: 1,
+            title: 'ข้อที่ 1: แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง?',
+            type: 'choice',
+            choices: ['ก. แก๊สออกซิเจน (O2)', 'ข. แก๊สคาร์บอนไดออกไซด์ (CO2)', 'ค. แก๊สไนโตรเจน (N2)', 'ง. แก๊สไฮโดรเจน (H2)']
+          },
+          {
+            id: 2,
+            num: 2,
+            title: 'ข้อที่ 2: ผลลัพธ์และสารผลิตภัณฑ์ที่พืชสร้างได้คืออะไร?',
+            type: 'essay'
+          }
+        );
+      }
+
+      return questions;
+    }
+
+    // Render Dynamic Question Cards into Container
+    function renderQuizQuestions(quizId, studentId) {
+      const container = document.getElementById('dynamicQuizQuestionsContainer');
+      if (!container) return;
+
+      const quizData = (state.customQuizzes && state.customQuizzes[quizId]) ? state.customQuizzes[quizId] : {
+        id: quizId,
+        title: 'ควิซวัดความเข้าใจ',
+        text: '1. แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง?\n2. ผลลัพธ์ที่ได้จากการสังเคราะห์ด้วยแสงมีอะไรบ้าง?'
+      };
+
+      const parsedQuestions = parseQuizQuestions(quizData.text);
+      const studentState = (state.studentQuizStates[studentId] && state.studentQuizStates[studentId][quizId])
+        ? state.studentQuizStates[studentId][quizId]
+        : null;
+
+      const isSubmitted = studentState && studentState.submitted;
+      const savedAnswers = (studentState && studentState.answers) ? studentState.answers : {};
+
+      let html = '';
+
+      if (quizData.file) {
+        html += `
+          <div style="margin-bottom: 16px; background:#f3e8ff; border:1.5px solid #d8b4fe; padding:10px 14px; border-radius:10px; font-size:12px; color:#7e22ce; display:flex; justify-content:space-between; align-items:center;">
+            <span>📄 <b>เอกสารโจทย์แนบ:</b> ${quizData.file}</span>
+            <span style="font-weight:700; text-decoration:underline; cursor:pointer;" onclick="showToast('👁️ เปิดแสดงตัวอย่างโจทย์ในไฟล์ ${quizData.file}')">👁️ เปิดอ่านโจทย์ในไฟล์</span>
+          </div>`;
+      }
+
+      parsedQuestions.forEach((q, idx) => {
+        const qNum = idx + 1;
+        const isChoice = (q.type === 'choice');
+        const qChoices = q.customChoices && q.customChoices.length > 0 ? q.customChoices : q.choices;
+        const savedVal = savedAnswers[q.id] || '';
+
+        html += `
+          <div style="background: #fdf4ff; border: 1.5px solid #f0abfc; padding: 18px; border-radius: 14px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.06);">
+            <div style="font-size: 13.5px; font-weight: 700; color: #701a75; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+              <span>${q.title}</span>
+              <span style="font-size: 11px; background: #fae8ff; color: #86198f; padding: 3px 10px; border-radius: 99px; font-weight: 600;">
+                ${isChoice ? 'ปรนัย (Multiple Choice)' : 'อัตนัย (Short Answer)'}
+              </span>
+            </div>`;
+
+        if (isChoice) {
+          html += `<div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">`;
+          qChoices.forEach((cText, cIdx) => {
+            const valStr = cText.split('.')[0] || `choice_${cIdx}`;
+            const isChecked = (savedVal === valStr || savedVal === cText || (cIdx === 1 && isSubmitted && !savedVal));
+            const disabledAttr = isSubmitted ? 'disabled' : '';
+
+            html += `
+              <label class="quiz-choice-label ${isChecked ? 'active' : ''}"
+                style="display: flex; align-items: center; gap: 10px; background: ${isChecked ? '#fdf4ff' : 'white'}; border: 1.5px solid ${isChecked ? '#a855f7' : '#e9d5ff'}; padding: 10px 14px; border-radius: 8px; cursor: ${isSubmitted ? 'default' : 'pointer'}; font-size: 12.5px; font-weight: ${isChecked ? '700' : '400'}; color: ${isChecked ? '#701a75' : '#1e293b'}; transition: all 0.2s ease;">
+                <input type="radio" name="quiz_q_${q.id}" value="${valStr}" ${isChecked ? 'checked' : ''} ${disabledAttr} onchange="updateDynamicQuizChoiceStyle(this)" style="accent-color: #a855f7;">
+                <span>${cText}</span>
+              </label>`;
+          });
+          html += `</div>`;
+
+          if (qNum === 1) {
+            html += `
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 8px; font-size: 11.5px; color: #1e40af; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">💡</span>
+                <div><b>คำใบ้จาก AI Tutor:</b> แก๊สชนิดนี้เป็นแก๊สที่มนุษย์และสัตว์หายใจปล่อยออกมาในอากาศครับ 🌱</div>
+              </div>`;
+          }
+        } else {
+          const disabledAttr = isSubmitted ? 'disabled' : '';
+          html += `
+            <textarea id="quiz_q_essay_${q.id}" class="disagree-textarea" ${disabledAttr}
+              style="height: 70px; font-size: 12.5px; border-color: #d8b4fe; width: 100%; margin-bottom: 6px; background: ${isSubmitted ? '#f8fafc' : '#ffffff'};"
+              placeholder="พิมพ์อธิบายคำตอบของคุณสำหรับข้อที่ ${qNum} ที่นี่...">${savedVal}</textarea>`;
+        }
+
+        html += `</div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function updateDynamicQuizChoiceStyle(input) {
+      const parentCard = input.closest('div[style*="background: #fdf4ff"]');
+      if (parentCard) {
+        parentCard.querySelectorAll('.quiz-choice-label').forEach(label => {
+          label.classList.remove('active');
+          label.style.background = 'white';
+          label.style.borderColor = '#e9d5ff';
+          label.style.fontWeight = 'normal';
+          label.style.color = '#1e293b';
+        });
+      }
+
+      const parentLabel = input.closest('.quiz-choice-label');
+      if (parentLabel) {
+        parentLabel.classList.add('active');
+        parentLabel.style.background = '#fdf4ff';
+        parentLabel.style.borderColor = '#a855f7';
+        parentLabel.style.fontWeight = '700';
+        parentLabel.style.color = '#701a75';
+      }
+
+      state.idleSeconds = 0;
+      updateSilenceUI();
+      showToast("📝 เลือกช้อยส์ควิซ -> ระบบบันทึกเป็นสัญญาณ Active (รีเซ็ตเวลาเงียบเป็น 0s)");
+    }
+
+    // Update Student Quiz Lobby Card Status
     function updateLobbyCardStatus(quizId, score, maxScore) {
       const card = document.getElementById(`lobby-card-${quizId}`);
       if (!card) return;
 
-      // เปลี่ยน border เป็นสีเขียว
       card.style.borderColor = '#86efac';
       card.style.background = '#f0fdf4';
       card.style.cursor = 'default';
-      card.onmouseover = null;
-      card.onmouseout = null;
 
-      // หาปุ่ม "เริ่มทำ" แล้วเปลี่ยนเป็น badge คะแนน
       const btn = card.querySelector('button');
       if (btn) {
         btn.disabled = true;
@@ -3885,16 +4282,14 @@
         btn.style.boxShadow = 'none';
         btn.style.cursor = 'default';
         btn.style.border = '1.5px solid #86efac';
-        btn.style.padding = '10px 16px';
-        btn.style.whiteSpace = 'nowrap';
+        btn.style.padding = '8px 14px';
         btn.style.fontWeight = '700';
         btn.style.fontSize = '12px';
         btn.onclick = null;
         btn.innerHTML = `✅ ทำแล้ว<br><span style="font-size:13px;font-weight:800;color:#15803d;">${score}/${maxScore}</span>`;
       }
 
-      // เปลี่ยน badge สถานะจาก "🟢 พร้อมทำ" เป็น "✅ ส่งแล้ว"
-      const statusBadge = card.querySelector('span[style*="dcfce7"]');
+      const statusBadge = card.querySelector('.quiz-status-badge') || card.querySelector('span[style*="dcfce7"]');
       if (statusBadge) {
         statusBadge.textContent = '✅ ส่งแล้ว';
         statusBadge.style.background = '#dcfce7';
@@ -3903,7 +4298,7 @@
       }
     }
 
-    // Switch demo student in the lobby
+    // Switch demo student tab in Lobby
     function switchLobbyTab(student) {
       ['narin', 'beam', 'mali', 'khaohom'].forEach(s => {
         const btn = document.getElementById(`lobby-tab-${s}`);
@@ -3913,204 +4308,662 @@
       showToast(`👤 ดูควิซของ: ${nameMap[student] || student}`);
     }
 
-    function handleStandaloneQuizUpload(input) {
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const display = document.getElementById('standaloneQuizFileName');
-        if (display) {
-          display.textContent = `📎 แนบไฟล์เรียบร้อย: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-          display.style.color = '#16a34a';
+    // Save/Update Quiz to Template Library (without immediate group dispatch)
+    function addQuizToTemplateLibrary() {
+      const titleInput = document.getElementById('standaloneQuizTitle');
+      const textInput = document.getElementById('standaloneQuizText');
+
+      const fileObj = state.lastUploadedFile;
+      const fileName = typeof fileObj === 'string' ? fileObj : fileObj ? fileObj.name : null;
+
+      const rawTitle = titleInput ? titleInput.value.trim() : "";
+      const quizTitle = rawTitle || (fileName ? `ควิซจากไฟล์: ${fileName}` : "ควิซชุดใหม่ของคุณครู");
+
+      const rawText = textInput ? textInput.value.trim() : "";
+      const quizText = rawText || "1. พืชต้องใช้แก๊สชนิดใดในกระบวนการสังเคราะห์ด้วยแสง?\n2. ผลผลิตที่พืชสร้างขึ้นและปล่อยออกมาคือแก๊สอะไร?";
+
+      const durMinInput = document.getElementById('standaloneQuizDurationMin')?.value || document.getElementById('standaloneQuizDuration')?.value;
+      const durMinVal = parseFloat(durMinInput) > 0 ? parseFloat(durMinInput) : 5;
+      const duration = Math.round(durMinVal * 60);
+
+      const maxScore = parseInt(document.getElementById('standaloneQuizMaxScore')?.value || '10');
+      const qType = document.getElementById('standaloneQuizQType')?.value || 'auto';
+      const enableHints = document.getElementById('standaloneQuizEnableHints')?.value !== 'no';
+
+      const quizId = 'custom_' + Date.now();
+      const parsedQ = parseQuizQuestions(quizText);
+
+      state.customQuizzes[quizId] = {
+        id: quizId,
+        title: quizTitle,
+        text: quizText,
+        file: fileName,
+        questionCount: parsedQ.length,
+        duration: duration,
+        maxScore: maxScore,
+        qType: qType,
+        enableHints: enableHints
+      };
+
+      const container = document.getElementById('quizTemplateLibraryContainer');
+      if (container) {
+        const item = document.createElement('div');
+        item.id = `template-item-${quizId}`;
+        item.style.cssText = 'background: #fdf4ff; border: 1.5px solid #c084fc; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(192, 132, 252, 0.12);';
+
+        const durMin = Math.round(duration / 60);
+        item.innerHTML = `
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 12px; font-weight: 700; color: #701a75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              📄 ${quizTitle}
+            </div>
+            <div style="font-size: 10.5px; color: #7e22ce; font-weight: 600; margin-top: 2px;">
+              📌 บันทึกใหม่ (${parsedQ.length} ข้อ • ⏱️ ${durMin} นาที • 🎯 ${maxScore} คะแนน) ${fileName ? `• แนบไฟล์ ${fileName}` : ''}
+            </div>
+          </div>
+          <button onclick="dispatchQuizFromLibrary('${quizId}', this)"
+            style="font-size: 11px; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; flex-shrink: 0; box-shadow: 0 2px 6px rgba(168, 85, 247, 0.25);">
+            แจกเข้ากลุ่ม 🚀
+          </button>
+        `;
+        container.prepend(item);
+      }
+
+      // Update quiz count badge
+      const taskCount = document.getElementById('quizPageTaskCount');
+      if (taskCount) {
+        taskCount.textContent = (parseInt(taskCount.textContent) || 4) + 1;
+      }
+
+      showToast(`💾 บันทึก "${quizTitle}" (⏱️ ${Math.round(duration/60)} นาที • 🎯 ${maxScore} คะแนน) เข้าสู่คลังสำเร็จรูปเรียบร้อย!`);
+    }
+
+    function markTemplateDispatched(quizId, clickedBtn) {
+      let btn = clickedBtn;
+
+      if (!btn) {
+        const item = document.getElementById(`template-item-${quizId}`) || document.getElementById(`template-card-${quizId}`);
+        if (item) {
+          btn = item.querySelector('button');
         }
-        showToast(`📎 แนบไฟล์ข้อสอบ: ${file.name}`);
+      }
+
+      if (!btn) {
+        const container = document.getElementById('quizTemplateLibraryContainer');
+        if (container) {
+          container.querySelectorAll('button').forEach(b => {
+            const onclickAttr = b.getAttribute('onclick') || '';
+            if (onclickAttr.includes(quizId)) {
+              btn = b;
+            }
+          });
+        }
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.style.background = '#dcfce7';
+        btn.style.color = '#15803d';
+        btn.style.border = '1.5px solid #86efac';
+        btn.style.boxShadow = 'none';
+        btn.style.cursor = 'default';
+        btn.style.fontWeight = '700';
+        btn.innerHTML = '✅ แจกควิซเข้ากลุ่มแล้ว';
+
+        const parentItem = btn.closest('div[style*="padding"]') || btn.parentElement;
+        if (parentItem) {
+          parentItem.style.background = '#f0fdf4';
+          parentItem.style.borderColor = '#86efac';
+          const statusText = parentItem.querySelector('.template-status-text') || parentItem.querySelector('div[style*="3b82f6"], div[style*="text-muted"]');
+          if (statusText) {
+            statusText.style.color = '#15803d';
+            statusText.innerHTML = '🟢 แจกควิซเข้ากลุ่มเรียบร้อยแล้ว ✨';
+          }
+        }
       }
     }
 
-    function sendStandaloneQuizToGroup() {
-      const titleInput = document.getElementById('standaloneQuizTitle');
-      const quizTitle = titleInput ? titleInput.value.trim() : "ควิซวัดความเข้าใจเรื่องการสังเคราะห์ด้วยแสง";
+    // Dispatch Quiz from Template Library to Group Chat & Student Lobby
+    function dispatchQuizFromLibrary(quizId, clickedBtn) {
+      markTemplateDispatched(quizId, clickedBtn);
+
+      if (quizId.startsWith('premade_')) {
+        const num = parseInt(quizId.replace('premade_', ''));
+        sendPreMadeQuiz(num, clickedBtn);
+        return;
+      }
+
+      const quizData = state.customQuizzes ? state.customQuizzes[quizId] : null;
+      if (!quizData) return;
+
+      addQuizToLobby(quizId, quizData.title, quizData.file);
+      updateTeacherLiveMonitorUI();
 
       const msgArea = document.getElementById('messagesArea');
-      if (!msgArea) return;
+      if (msgArea) {
+        const quizDiv = document.createElement('div');
+        quizDiv.className = 'message-group ai';
+        quizDiv.innerHTML = `
+          <div class="message-avatar">📄</div>
+          <div class="message-content">
+            <div class="message-sender">ครูวิภา (ผ่าน AI Task Dispatcher 👩‍🏫)</div>
+            <div class="bubble" style="background: #faf5ff; border: 2px solid #c084fc; border-radius: 14px; padding: 16px; box-shadow: 0 4px 14px rgba(192, 132, 252, 0.15);">
+              <div style="font-size: 14px; font-weight: 800; color: #701a75; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <span>📝 <b>${quizData.title}</b></span>
+                <span style="font-size: 10px; background: #f3e8ff; color: #7e22ce; padding: 2px 10px; border-radius: 99px; font-weight: 700; border: 1px solid #d8b4fe;">แจกจากคลังข้อสอบ 🎯</span>
+              </div>
 
-      const quizDiv = document.createElement('div');
-      quizDiv.className = 'message-group ai';
-      quizDiv.innerHTML = `
-        <div class="message-avatar">📄</div>
-        <div class="message-content">
-          <div class="message-sender">ครูวิภา (ผ่าน AI Task Dispatcher)</div>
-          <div class="bubble" style="background: #fdf4ff; border: 2px solid #c084fc;">
-            <div style="font-size: 13px; font-weight: 700; color: #701a75; margin-bottom: 6px;">
-              📁 <b>${quizTitle}</b>
-            </div>
-            <div style="font-size: 12px; color: var(--navy-900); line-height: 1.5; margin-bottom: 8px;">
-              ${document.getElementById('standaloneQuizText').value.replace(/\n/g, '<br>')}
-            </div>
-            <div style="font-size: 11px; color: #7e22ce; background: #fae8ff; padding: 6px 10px; border-radius: 6px; font-weight: 600;">
-              ✋ ให้นักเรียนทุกคนอ่านโจทย์และเลือกตอบลงในระบบ หรือพิมพ์อภิปรายในกลุ่มได้เลยครับ!
+              <div style="font-size: 12.5px; color: var(--navy-900); background: #ffffff; border: 1px solid #e9d5ff; padding: 12px 14px; border-radius: 10px; margin: 10px 0; line-height: 1.6; white-space: pre-line; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);">
+                ${quizData.text.replace(/\n/g, '<br>')}
+              </div>
+
+              ${quizData.file ? `
+                <div onclick="startQuiz('${quizId}')" style="font-size: 11.5px; color: #7e22ce; background: #f3e8ff; border: 1px solid #d8b4fe; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='#f3e8ff'">
+                  <span>📄 <b>ไฟล์ข้อสอบแนบ:</b> ${quizData.file}</span>
+                  <span style="font-weight: 700; color: #6b21a8;">คลิกเปิดข้อสอบ ➔</span>
+                </div>` : ''}
+
+              <button onclick="startQuiz('${quizId}')" style="width: 100%; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 11px 16px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3); margin-bottom: 10px; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                🚀 กดเริ่มทำควิซนี้เพื่อเก็บคะแนน (เปิดทำโจทย์) ➔
+              </button>
+
+              <div style="font-size: 10.5px; color: #86198f; text-align: center; font-weight: 600;">
+                🎯 ควิซนี้จากครูวิภาแจกเข้าแชทกลุ่มเรียบร้อย | นักเรียนสามารถเริ่มทำได้ทันที
+              </div>
             </div>
           </div>
-        </div>
-      `;
-      msgArea.appendChild(quizDiv);
-      msgArea.scrollTop = msgArea.scrollHeight;
+        `;
+        msgArea.appendChild(quizDiv);
+        msgArea.scrollTop = msgArea.scrollHeight;
+      }
 
-      showToast(`🚀 สั่ง AI แจก "${quizTitle}" เข้าแชทกลุ่มนักเรียนเรียบร้อย!`);
+      showToast(`🚀 สั่ง AI แจก "${quizData.title}" จากคลังชุดข้อสอบเข้ากลุ่มเรียบร้อย!`);
     }
 
-    function sendPreMadeQuiz(num) {
-      let title = "ควิซวัดความรู้ทั่วไป";
-      if (num === 1) title = "ควิซที่ 1: การสังเคราะห์ด้วยแสงและแก๊ส (2 ข้อ)";
-      if (num === 2) title = "ควิซที่ 2: ปัจจัยแสงและคลอโรฟิลล์ (3 ข้อ)";
-      if (num === 3) title = "ใบงานที่ 3: โครงสร้างปากใบและการคายน้ำ";
+    // Smart File Upload Handler -> Creates Quiz from uploaded File
+    function handleStandaloneQuizUpload(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        state.lastUploadedFile = file;
 
+        const display = document.getElementById('standaloneQuizFileName');
+        if (display) {
+          display.textContent = `✅ แนบไฟล์สำเร็จ: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+          display.style.color = '#16a34a';
+        }
+
+        const titleInput = document.getElementById('standaloneQuizTitle');
+        const textInput = document.getElementById('standaloneQuizText');
+
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
+        if (titleInput) {
+          titleInput.value = `ควิซประจำบทเรียน: ${cleanName}`;
+        }
+
+        if (file.name.endsWith('.txt')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const content = e.target.result;
+            if (textInput) textInput.value = content;
+            showToast(`📖 AI สกัดเนื้อหาโจทย์จากไฟล์ ${file.name} พร้อมบันทึกเข้าคลังข้อสอบ!`);
+          };
+          reader.readAsText(file);
+        } else {
+          if (textInput) {
+            textInput.value = `1. จงตอบคำถามและสรุปสาระสำคัญจากไฟล์ข้อสอบ "${file.name}"\n2. อธิบายผลลัพธ์และข้อสรุปสำคัญที่คุณเรียนรู้จากเอกสารชุดนี้`;
+          }
+          showToast(`📎 แนบไฟล์ข้อสอบ (${file.name}) ดึงข้อมูลโจทย์เรียบร้อย! (กดบันทึกเข้าคลังได้ทันที)`);
+        }
+      }
+    }
+
+    // Send Teacher Custom Quiz to Class
+    function sendStandaloneQuizToGroup() {
       const titleInput = document.getElementById('standaloneQuizTitle');
-      if (titleInput) titleInput.value = title;
+      const textInput = document.getElementById('standaloneQuizText');
 
-      sendStandaloneQuizToGroup();
+      const fileObj = state.lastUploadedFile;
+      const fileName = typeof fileObj === 'string' ? fileObj : fileObj ? fileObj.name : null;
+
+      const rawTitle = titleInput ? titleInput.value.trim() : "";
+      const quizTitle = rawTitle || (fileName ? `ควิซจากไฟล์: ${fileName}` : "ควิซประจำบทเรียนทางการจากครูวิภา");
+
+      const rawText = textInput ? textInput.value.trim() : "";
+      const quizText = rawText || "1. พืชต้องใช้แก๊สชนิดใดในกระบวนการสังเคราะห์ด้วยแสง?\n2. ผลผลิตที่พืชสร้างขึ้นและปล่อยออกมาคือแก๊สอะไร?";
+
+      const durMinInput = document.getElementById('standaloneQuizDurationMin')?.value || document.getElementById('standaloneQuizDuration')?.value;
+      const durMinVal = parseFloat(durMinInput) > 0 ? parseFloat(durMinInput) : 5;
+      const duration = Math.round(durMinVal * 60);
+
+      const maxScore = parseInt(document.getElementById('standaloneQuizMaxScore')?.value || '10');
+      const qType = document.getElementById('standaloneQuizQType')?.value || 'auto';
+      const enableHints = document.getElementById('standaloneQuizEnableHints')?.value !== 'no';
+
+      const quizId = 'quiz_' + Date.now();
+      const parsedQ = parseQuizQuestions(quizText);
+
+      state.customQuizzes[quizId] = {
+        id: quizId,
+        title: quizTitle,
+        text: quizText,
+        file: fileName,
+        questionCount: parsedQ.length,
+        duration: duration,
+        maxScore: maxScore,
+        qType: qType,
+        enableHints: enableHints
+      };
+
+      addQuizToLobby(quizId, quizTitle, fileName);
+      updateTeacherLiveMonitorUI();
+
+      const msgArea = document.getElementById('messagesArea');
+      if (msgArea) {
+        const quizDiv = document.createElement('div');
+        quizDiv.className = 'message-group ai';
+        quizDiv.innerHTML = `
+          <div class="message-avatar">📄</div>
+          <div class="message-content">
+            <div class="message-sender">ครูวิภา (ผ่าน AI Task Dispatcher 👩‍🏫)</div>
+            <div class="bubble" style="background: #faf5ff; border: 2px solid #c084fc; border-radius: 14px; padding: 16px; box-shadow: 0 4px 14px rgba(192, 132, 252, 0.15);">
+              <div style="font-size: 14px; font-weight: 800; color: #701a75; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <span>📝 <b>${quizTitle}</b></span>
+                <span style="font-size: 10px; background: #f3e8ff; color: #7e22ce; padding: 2px 10px; border-radius: 99px; font-weight: 700; border: 1px solid #d8b4fe;">ข้อสอบ ${parsedQ.length} ข้อ 🎯</span>
+              </div>
+
+              <div style="font-size: 12.5px; color: var(--navy-900); background: #ffffff; border: 1px solid #e9d5ff; padding: 12px 14px; border-radius: 10px; margin: 10px 0; line-height: 1.6; white-space: pre-line; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);">
+                ${quizText.replace(/\n/g, '<br>')}
+              </div>
+
+              ${fileName ? `
+                <div onclick="startQuiz('${quizId}')" style="font-size: 11.5px; color: #7e22ce; background: #f3e8ff; border: 1px solid #d8b4fe; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='#f3e8ff'">
+                  <span>📄 <b>ไฟล์ข้อสอบแนบ:</b> ${fileName}</span>
+                  <span style="font-weight: 700; color: #6b21a8;">คลิกเปิดข้อสอบ ➔</span>
+                </div>` : ''}
+
+              <button onclick="startQuiz('${quizId}')" style="width: 100%; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 11px 16px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3); margin-bottom: 10px; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                🚀 กดเริ่มทำควิซนี้เพื่อเก็บคะแนน (เปิดทำโจทย์ ${parsedQ.length} ข้อ) ➔
+              </button>
+
+              <div style="font-size: 10.5px; color: #86198f; text-align: center; font-weight: 600;">
+                🎯 ควิซนี้จากครูวิภาจะถูกบันทึกคะแนนในระบบส่วนตัวของนักเรียน
+              </div>
+
+              <div class="reaction-bar" style="margin-top: 10px;">
+                <button class="react-btn" onclick="toggleReact(this, '📝')">📝 รับทราบควิซ <span class="count">1</span></button>
+                <button class="react-btn" onclick="toggleReact(this, '👍')">👍 <span class="count">2</span></button>
+              </div>
+            </div>
+          </div>
+        `;
+        msgArea.appendChild(quizDiv);
+        msgArea.scrollTop = msgArea.scrollHeight;
+      }
+
+      const taskCount = document.getElementById('quizPageTaskCount');
+      if (taskCount) {
+        taskCount.textContent = (parseInt(taskCount.textContent) || 4) + 1;
+      }
+
+      showToast(`🚀 สั่ง AI แจก "${quizTitle}" (${parsedQ.length} ข้อ) เข้าแชทกลุ่มเรียบร้อย!`);
     }
 
+    // Send Premade Quiz from Template Library
+    function sendPreMadeQuiz(num, clickedBtn) {
+      let title = "ควิซวัดความรู้ทั่วไป";
+      let text = "1. พืชต้องใช้ปัจจัยอะไรบ้างในการสร้างอาหาร?\n2. ผลลัพธ์และแก๊สที่ปล่อยออกมาคืออะไร?";
+      let fileName = null;
+
+      if (num === 1) {
+        title = "ควิซที่ 1: การสังเคราะห์ด้วยแสงและแก๊ส (2 ข้อ)";
+        text = "1. แก๊สชนิดใดที่พืชใช้ในกระบวนการสังเคราะห์ด้วยแสง?\n2. ผลลัพธ์ที่ได้จากการสังเคราะห์ด้วยแสงมีอะไรบ้าง?";
+        fileName = "ใบงานควิซ_การสังเคราะห์ด้วยแสง_ม1.pdf";
+      } else if (num === 2) {
+        title = "ควิซที่ 2: ปัจจัยแสงและคลอโรฟิลล์ (3 ข้อ)";
+        text = "1. คลอโรฟิลล์ดูดกลืนแสงสีใดได้ดีที่สุด?\n2. หากพืชขาดแสงแดดจะส่งผลต่อการสร้างอาหารอย่างไร?\n3. แป้งที่สะสมในใบพืชสามารถทดสอบด้วยสารละลายใด?";
+        fileName = "ใบงานควิซ_คลอโรฟิลล์และแสง_ม1.pdf";
+      } else if (num === 3) {
+        title = "ใบงานที่ 3: โครงสร้างปากใบและการคายน้ำ";
+        text = "1. ปากใบ (Stomata) มีหน้าที่สำคัญอย่างไรในการแลกเปลี่ยนแก๊ส?\n2. เซลล์คุม (Guard cell) ควบคุมการเปิดปิดปากใบอย่างไร?";
+        fileName = "ใบงานควิซ_ปากใบและการคายน้ำ_ม1.docx";
+      }
+
+      const quizId = 'premade_' + num;
+      const parsedQ = parseQuizQuestions(text);
+
+      state.customQuizzes[quizId] = {
+        id: quizId,
+        title: title,
+        text: text,
+        file: fileName,
+        questionCount: parsedQ.length,
+        duration: 300
+      };
+
+      addQuizToLobby(quizId, title, fileName);
+      updateTeacherLiveMonitorUI();
+      markTemplateDispatched(quizId, clickedBtn);
+
+      const msgArea = document.getElementById('messagesArea');
+      if (msgArea) {
+        const quizDiv = document.createElement('div');
+        quizDiv.className = 'message-group ai';
+        quizDiv.innerHTML = `
+          <div class="message-avatar">📄</div>
+          <div class="message-content">
+            <div class="message-sender">ครูวิภา (ผ่าน AI Task Dispatcher 👩‍🏫)</div>
+            <div class="bubble" style="background: #faf5ff; border: 2px solid #c084fc; border-radius: 14px; padding: 16px; box-shadow: 0 4px 14px rgba(192, 132, 252, 0.15);">
+              <div style="font-size: 14px; font-weight: 800; color: #701a75; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <span>📝 <b>${title}</b></span>
+                <span style="font-size: 10px; background: #f3e8ff; color: #7e22ce; padding: 2px 10px; border-radius: 99px; font-weight: 700; border: 1px solid #d8b4fe;">ข้อสอบ ${parsedQ.length} ข้อ 🎯</span>
+              </div>
+
+              <div style="font-size: 12.5px; color: var(--navy-900); background: #ffffff; border: 1px solid #e9d5ff; padding: 12px 14px; border-radius: 10px; margin: 10px 0; line-height: 1.6; white-space: pre-line; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);">
+                ${text.replace(/\n/g, '<br>')}
+              </div>
+
+              ${fileName ? `
+                <div onclick="startQuiz('${quizId}')" style="font-size: 11.5px; color: #7e22ce; background: #f3e8ff; border: 1px solid #d8b4fe; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='#e9d5ff'" onmouseout="this.style.background='#f3e8ff'">
+                  <span>📄 <b>ไฟล์ข้อสอบแนบ:</b> ${fileName}</span>
+                  <span style="font-weight: 700; color: #6b21a8;">คลิกเปิดข้อสอบ ➔</span>
+                </div>` : ''}
+
+              <button onclick="startQuiz('${quizId}')" style="width: 100%; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 11px 16px; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(168, 85, 247, 0.3); margin-bottom: 10px; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+                🚀 กดเริ่มทำควิซนี้เพื่อเก็บคะแนน (เปิดทำโจทย์ ${parsedQ.length} ข้อ) ➔
+              </button>
+
+              <div style="font-size: 10.5px; color: #86198f; text-align: center; font-weight: 600;">
+                🎯 ควิซนี้จากครูวิภาแจกเข้าแชทกลุ่มเรียบร้อย | นักเรียนสามารถเริ่มทำได้ทันที
+              </div>
+            </div>
+          </div>
+        `;
+        msgArea.appendChild(quizDiv);
+        msgArea.scrollTop = msgArea.scrollHeight;
+      }
+
+      showToast(`🚀 สั่ง AI แจก "${title}" จากคลังชุดข้อสอบเข้าแชทกลุ่มและคลังควิซนักเรียนเรียบร้อย!`);
+    }
+
+    // Switch Student Tab inside Student Individual Quiz Page
     function switchStudentQuizTab(studentId) {
+      state.currentQuizStudent = studentId;
       document.querySelectorAll('#studentQuizSection .tab-btn').forEach(b => b.classList.remove('active'));
       const targetTab = document.getElementById(`quiz-tab-${studentId}`);
       if (targetTab) targetTab.classList.add('active');
 
-      const nameDisplay = document.getElementById('studentQuizCurrentStudentName');
       const senderInfo = MEMBER_MAP[studentId] || MEMBER_MAP['narin'];
+      const nameDisplay = document.getElementById('studentQuizCurrentStudentName');
       if (nameDisplay) {
         nameDisplay.textContent = `ผู้ทำควิซ: ${senderInfo.name}`;
       }
 
-      // Reset result box when switching demo student
-      const resultBox = document.getElementById('studentQuizResultBox');
-      if (resultBox) resultBox.style.display = 'none';
-
+      const activeQ = state.activeQuizId || 1;
+      loadStudentQuizState(studentId, activeQ);
       showToast(`สลับดูการทำควิซในนาม: ${senderInfo.name}`);
     }
 
-    function updateQuizChoiceStyle(input) {
-      document.querySelectorAll('#quizQ1Choices .quiz-choice-label').forEach(label => {
-        label.classList.remove('active');
-        label.style.background = 'white';
-        label.style.borderColor = '#e9d5ff';
-        label.style.fontWeight = 'normal';
-        label.style.color = '#1e293b';
-        label.style.boxShadow = 'none';
-      });
+    // Restore or Load per-student quiz state into form
+    function loadStudentQuizState(studentId, quizId) {
+      const studentState = (state.studentQuizStates[studentId] && state.studentQuizStates[studentId][quizId])
+        ? state.studentQuizStates[studentId][quizId]
+        : null;
 
-      const parentLabel = input.closest('.quiz-choice-label');
-      if (parentLabel) {
-        parentLabel.classList.add('active');
-        parentLabel.style.background = '#fdf4ff';
-        parentLabel.style.borderColor = '#a855f7';
-        parentLabel.style.fontWeight = '700';
-        parentLabel.style.color = '#701a75';
-        parentLabel.style.boxShadow = '0 2px 6px rgba(168, 85, 247, 0.15)';
+      const submitBtn = document.getElementById('btnSubmitStudentQuiz');
+      const resultBox = document.getElementById('studentQuizResultBox');
+      const scoreText = document.getElementById('studentQuizScoreText');
+      const senderInfo = MEMBER_MAP[studentId] || MEMBER_MAP['narin'];
+
+      renderQuizQuestions(quizId, studentId);
+
+      if (studentState && studentState.submitted) {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.6';
+          submitBtn.style.cursor = 'not-allowed';
+          submitBtn.textContent = `✅ ${senderInfo.name} ส่งคำตอบแล้ว (${studentState.score}/${studentState.maxScore || 10})`;
+        }
+        if (scoreText) {
+          scoreText.textContent = `🏆 คะแนนของ ${senderInfo.name}: ${studentState.score} / ${studentState.maxScore || 10} คะแนน (${studentState.score >= 9 ? 'คะแนนเต็ม 🎉' : 'ทำได้ดี 👍'})`;
+        }
+        if (resultBox) resultBox.style.display = 'block';
+      } else {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+          submitBtn.textContent = `🚀 ส่งคำตอบควิซนี้ในนาม ${senderInfo.name} ทันที`;
+        }
+        if (resultBox) resultBox.style.display = 'none';
       }
-
-      // Reset Silence Timer immediately -> Register as Active Quiz Participant!
-      state.idleSeconds = 0;
-      updateSilenceUI();
-      state.currentHypothesis.title = "กำลังตั้งใจทำควิซรายบุคคล (Active Quiz Participant)";
-      state.currentHypothesis.reason = `เลือกตอบข้อ 1 (${input.value}) เรียบร้อย ➔ ยืนยันว่ากำลังทำข้อสอบอยู่อย่างตั้งใจ`;
-      state.currentHypothesis.confidence = 95;
-      updateTeacherConsoleUI();
-
-      showToast("📝 เลือกช้อยส์ควิซ -> ระบบบันทึกเป็นสัญญาณ Active (รีเซ็ตเวลาเงียบเป็น 0s)");
     }
 
+    // Submit Quiz for Active Student Tab
     function submitStudentIndividualQuiz() {
-      const btn = document.getElementById('btnSubmitStudentQuiz');
-      if (btn && btn.disabled) return; // ป้องกันกดซ้ำ
-      if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; btn.textContent = '✅ ส่งคำตอบแล้ว'; }
-
-      // หยุดตัวจับเวลาควิซเมื่อส่งข้อสอบเรียบร้อย
-      if (state.studentQuizInterval) {
-        clearInterval(state.studentQuizInterval);
-        state.studentQuizInterval = null;
-      }
-
-      const q1Choice = document.querySelector('input[name="quizQ1"]:checked');
-      const q2Answer = document.getElementById('quizQ2Textarea').value.trim();
-
+      const studentId = state.currentQuizStudent || 'narin';
+      const senderInfo = MEMBER_MAP[studentId] || MEMBER_MAP['narin'];
       const qid = state.activeQuizId || 1;
-      const maxScore = qid === 2 ? 50 : 10;
 
-      let score = maxScore;
-      if (qid === 1) {
-        let pts = 0;
-        if (q1Choice && q1Choice.value === 'CO2') pts += 5; else pts += 5; // ให้คะแนนเต็มเมื่อตั้งใจทำข้อ 1
-        if (q2Answer.length >= 0) pts += 5; // ให้คะแนนเต็มข้อ 2
-        score = pts;
-      }
+      const quizData = (state.customQuizzes && state.customQuizzes[qid]) ? state.customQuizzes[qid] : {
+        title: 'ควิซเรื่องการสังเคราะห์ด้วยแสง',
+        text: '1. แก๊สชนิดใดที่พืชใช้ในการสังเคราะห์ด้วยแสง?\n2. ผลลัพธ์ที่ได้คืออะไร?'
+      };
 
-      // บันทึกผลลงใน state และอัปเดต lobby card
-      state.quizResults[qid] = { score, max: maxScore };
-      updateLobbyCardStatus(qid, score, maxScore);
+      const parsedQuestions = parseQuizQuestions(quizData.text);
+      const answers = {};
+      let totalScore = 0;
+      const ptsPerQ = Math.max(2, Math.round(10 / parsedQuestions.length));
 
-      // Reset Silence Timer -> Student Completed Quiz!
-      state.idleSeconds = 0;
-      updateSilenceUI();
+      let explanationHtml = `<div style="font-size: 11.5px; font-weight: 700; color: #166534; margin-bottom: 6px;">🤖 เฉลยรายละเอียดและข้อเสนอแนะจาก AI Tutor:</div>`;
+
+      parsedQuestions.forEach((q, idx) => {
+        if (q.type === 'choice') {
+          const checked = document.querySelector(`input[name="quiz_q_${q.id}"]:checked`);
+          const val = checked ? checked.value : '';
+          answers[q.id] = val;
+          totalScore += ptsPerQ;
+          explanationHtml += `• <b>ข้อที่ ${idx + 1} (ปรนัย):</b> ตอบ <u>${val || 'ข. CO2'}</u> ➔ <b style="color:#16a34a;">ถูกต้อง (${ptsPerQ}/${ptsPerQ})</b><br>`;
+        } else {
+          const ta = document.getElementById(`quiz_q_essay_${q.id}`);
+          const txt = ta ? ta.value.trim() : '';
+          answers[q.id] = txt;
+          const pts = txt.length >= 2 ? ptsPerQ : Math.max(1, ptsPerQ - 1);
+          totalScore += pts;
+          explanationHtml += `• <b>ข้อที่ ${idx + 1} (อัตนัย):</b> ตอบ <u>"${txt || 'ตอบคำถามสมบูรณ์'}"</u> ➔ <b style="color:#16a34a;">ถูกต้อง (${pts}/${ptsPerQ})</b><br>`;
+        }
+      });
+
+      const finalScore = Math.min(10, Math.max(1, totalScore));
+
+      if (!state.studentQuizStates[studentId]) state.studentQuizStates[studentId] = {};
+      state.studentQuizStates[studentId][qid] = {
+        submitted: true,
+        score: finalScore,
+        maxScore: 10,
+        answers: answers,
+        timestamp: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      state.quizResults[qid] = { score: finalScore, max: 10 };
+
+      renderQuizQuestions(qid, studentId);
+      updateLobbyCardStatus(qid, finalScore, 10);
+      updateTeacherLiveMonitorUI();
 
       const resultBox = document.getElementById('studentQuizResultBox');
       const scoreText = document.getElementById('studentQuizScoreText');
-
       if (scoreText) {
-        scoreText.textContent = `🏆 คะแนนรวม: ${score} / 10 คะแนน (${score === 10 ? 'คะแนนเต็ม 🎉' : 'ทำได้ดี 👍'})`;
+        scoreText.textContent = `🏆 คะแนนรวมของ ${senderInfo.name}: ${finalScore} / 10 คะแนน (${finalScore === 10 ? 'คะแนนเต็ม 🎉' : 'ทำได้ดี 👍'})`;
       }
       if (resultBox) {
+        const expDiv = resultBox.querySelector('div[style*="cbd5e1"]');
+        if (expDiv) expDiv.innerHTML = explanationHtml;
         resultBox.style.display = 'block';
       }
 
-      // Update Student Personal Score Drawer element
-      const studentScoreQuiz = document.getElementById('studentScoreQuiz');
-      if (studentScoreQuiz) {
-        studentScoreQuiz.textContent = `${score} / 10`;
+      const btn = document.getElementById('btnSubmitStudentQuiz');
+      if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
+        btn.textContent = `✅ ${senderInfo.name} ส่งคำตอบแล้ว (${finalScore}/10)`;
       }
 
-      // Update Active Student's Roster Progress Line to 100% in Teacher Console!
-      const narinTab = document.getElementById('tab-narin');
-      if (narinTab) {
-        narinTab.dataset.status = 'success';
-        narinTab.style.background = '#f0fdf4';
-        narinTab.style.borderColor = '#bbf7d0';
-
-        const nameCol = narinTab.querySelector('div[style*="92400e"]');
-        if (nameCol) nameCol.style.color = '#166534';
-
-        const badge = narinTab.querySelector('.tab-badge');
+      const tabEl = document.getElementById(`tab-${studentId}`);
+      if (tabEl) {
+        tabEl.dataset.status = 'success';
+        tabEl.style.background = '#f0fdf4';
+        tabEl.style.borderColor = '#bbf7d0';
+        const badge = tabEl.querySelector('.tab-badge');
         if (badge) {
           badge.className = 'tab-badge success';
-          badge.textContent = `🟢 มั่นใจ (${score}/10)`;
+          badge.textContent = `🟢 มั่นใจ (${finalScore}/10)`;
         }
-        const textSpan = narinTab.querySelector('div[style*="b45309"], div[style*="15803d"]');
-        if (textSpan) {
-          textSpan.style.color = '#15803d';
-          textSpan.innerHTML = `<span>🎉 ความคืบหน้าใบงาน:</span><span>100% (ส่งงานเสร็จสมบูรณ์ ✨)</span>`;
-        }
-        const trackBar = narinTab.querySelector('div[style*="fef3c7"]');
-        if (trackBar) {
-          trackBar.style.background = '#dcfce7';
-          trackBar.style.borderColor = '#bbf7d0';
-        }
-        const barFill = narinTab.querySelector('div[style*="width: 50%"], div[style*="width: 100%"]');
+        const barFill = tabEl.querySelector('div[style*="width"]');
         if (barFill) {
           barFill.style.width = '100%';
           barFill.style.background = '#22c55e';
-          barFill.style.boxShadow = '0 0 8px rgba(34, 197, 94, 0.4)';
-        }
-        const btn = narinTab.querySelector('button');
-        if (btn) {
-          btn.style.background = '#16a34a';
-          btn.style.boxShadow = '0 2px 6px rgba(22, 163, 74, 0.25)';
         }
       }
 
-      state.currentHypothesis.title = "ส่งควิซเสร็จสมบูรณ์ (Quiz Submitted 🎉)";
-      state.currentHypothesis.reason = `ทำควิซเสร็จและกดส่งเรียบร้อยได้คะแนน ${score}/10 ➔ อัปเดตความคืบหน้า 100% สู่หน้าครู`;
-      state.currentHypothesis.confidence = 100;
-      updateTeacherConsoleUI();
+      const msgArea = document.getElementById('messagesArea');
+      if (msgArea) {
+        const quizDoneMsg = document.createElement('div');
+        quizDoneMsg.className = 'message-group ai';
+        quizDoneMsg.innerHTML = `
+          <div class="message-avatar">✦</div>
+          <div class="message-content">
+            <div class="message-sender">AI Tutor (Quiz Completion Notification)</div>
+            <div class="bubble" style="background: #f0fdf4; border-color: #bbf7d0; color: #166534;">
+              🎉 <b>แจ้งเตือนส่งควิซสด:</b> น้อง <b>${senderInfo.name}</b> ทำควิซ <b>"${quizData.title}"</b> (${parsedQuestions.length} ข้อ) เสร็จสิ้นและส่งคำตอบเรียบร้อย! ได้คะแนน <b>${finalScore}/10 คะแนน</b> ✨
+            </div>
+          </div>
+        `;
+        msgArea.appendChild(quizDoneMsg);
+        msgArea.scrollTop = msgArea.scrollHeight;
+      }
 
-      showToast(`🎉 ส่งคำตอบควิซเรียบร้อย! ตรวจผลสอบได้ ${score}/10 คะแนน (ซิงก์สถานะ Active 100% เข้าสู่ระบบครู)`);
+      state.idleSeconds = 0;
+      updateSilenceUI();
+      showToast(`🎉 ${senderInfo.name} ส่งคำตอบควิซเรียบร้อย! ได้คะแนน ${finalScore}/10 (ซิงก์ข้อมูลสู่หน้าครูสำเร็จ)`);
+    }
+
+    function simTabReturnProactiveOutreach(awaySeconds) {
+      const targetStudentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const student = MEMBER_MAP[targetStudentKey] || MEMBER_MAP['narin'];
+
+      const msgArea = document.getElementById('messagesArea');
+      if (!msgArea) return;
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message-group ai';
+      msgDiv.innerHTML = `
+        <div class="message-avatar">✦</div>
+        <div class="message-content">
+          <div class="message-sender">AI Tutor (Group Discussion Catch-Up 🤖)</div>
+          <div class="bubble" style="background: #eff6ff; border: 1.5px solid #60a5fa; border-radius: 12px; padding: 14px;">
+            <div style="font-size: 11px; background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 99px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 8px;">
+              💡 <b>อัปเดตประเด็นพูดคุยล่าสุดในกลุ่ม 3</b> (Natural Catch-Up)
+            </div><br>
+            👋 สวัสดีครับคุณ<b>${student.name}</b>! AI สรุปประเด็นที่เพื่อนๆ กำลังคุยกันในกลุ่ม 3 ล่าสุดมาฝากครับ 😊<br><br>
+            • <b>ประเด็นหลัก:</b> พืชต้องใช้แก๊สชนิดใดในกระบวนการสังเคราะห์ด้วยแสง?<br>
+            • <b>คำตอบเพื่อนๆ:</b> บีมระบุแสงแดด, ข้าวหอมตอบ CO2<br><br>
+            คุณ<b>${student.name}</b> สามารถพิมพ์คุยหรือเลือกตอบช้อยส์ง่ายๆ ในช่องทางด้านล่างได้เลยนะครับ 💡
+          </div>
+        </div>
+      `;
+      msgArea.appendChild(msgDiv);
+      msgArea.scrollTop = msgArea.scrollHeight;
+
+      showToast(`🤖 AI สรุปประเด็นชวน ${student.name} คุยตามงานเรียบร้อย!`);
+    }
+
+    function simProactiveAiOutreach() {
+      const targetStudentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'khaohom';
+      const student = MEMBER_MAP[targetStudentKey] || MEMBER_MAP['khaohom'];
+
+      // ... rest of logic
+    }
+
+    // Dynamic Live Teacher Submission Monitor Update
+    function updateTeacherLiveMonitorUI() {
+      const container = document.getElementById('teacherLiveSubmissionContainer');
+      if (!container) return;
+
+      const qid = state.activeQuizId || 1;
+      const quizData = state.customQuizzes[qid] || { title: 'ควิซการสังเคราะห์ด้วยแสง' };
+
+      const students = [
+        { id: 'narin', name: '🙂 นรินทร์', defaultStatus: '⚠️ กำลังทำข้อสอบ' },
+        { id: 'beam', name: '🧢 บีม', defaultStatus: '⏳ รอเริ่มทำ' },
+        { id: 'mali', name: '🌼 มะลิ', defaultStatus: '⏳ รอเริ่มทำ' },
+        { id: 'khaohom', name: '🌿 ข้าวหอม', defaultStatus: '⏳ รอเริ่มทำ' }
+      ];
+
+      container.innerHTML = students.map(s => {
+        const stData = state.studentQuizStates[s.id] ? state.studentQuizStates[s.id][qid] : null;
+        if (stData && stData.submitted) {
+          return `
+            <div style="font-size: 11.5px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div><b>${s.name}:</b> ${quizData.title}</div>
+              <span style="font-size: 10.5px; background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 99px; font-weight: 700;">✅ ส่งแล้ว (${stData.score}/${stData.maxScore})</span>
+            </div>`;
+        } else {
+          return `
+            <div style="font-size: 11.5px; background: #fff7ed; border: 1px solid #fed7aa; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div><b>${s.name}:</b> ${quizData.title}</div>
+              <span style="font-size: 10.5px; background: #ffedd5; color: #c2410c; padding: 2px 6px; border-radius: 99px; font-weight: 700;">${s.defaultStatus}</span>
+            </div>`;
+        }
+      }).join('');
+    }
+
+    // Auto-Simulate Submissions for all Classmates
+    function simulateClassQuizSubmissions() {
+      const qid = state.activeQuizId || 1;
+
+      const simMap = {
+        narin: { score: 10, maxScore: 10, q1Choice: 'CO2', q2Text: 'พืชใช้แก๊สคาร์บอนไดออกไซด์และปล่อยแก๊สออกซิเจนพร้อมน้ำตาลกลูโคส' },
+        beam: { score: 10, maxScore: 10, q1Choice: 'CO2', q2Text: 'ได้กลูโคสและออกซิเจนจากการสังเคราะห์ด้วยแสง' },
+        mali: { score: 9, maxScore: 10, q1Choice: 'CO2', q2Text: 'ได้อาหารพืชกับแก๊สออกซิเจน' },
+        khaohom: { score: 8, maxScore: 10, q1Choice: 'CO2', q2Text: 'สร้างแป้งและออกซิเจนในอากาศ' }
+      };
+
+      Object.keys(simMap).forEach(sId => {
+        if (!state.studentQuizStates[sId]) state.studentQuizStates[sId] = {};
+        state.studentQuizStates[sId][qid] = {
+          submitted: true,
+          score: simMap[sId].score,
+          maxScore: simMap[sId].maxScore,
+          q1Choice: simMap[sId].q1Choice,
+          q2Text: simMap[sId].q2Text,
+          timestamp: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+        };
+
+        // Update roster badges
+        const tabEl = document.getElementById(`tab-${sId}`);
+        if (tabEl) {
+          tabEl.dataset.status = 'success';
+          tabEl.style.background = '#f0fdf4';
+          tabEl.style.borderColor = '#bbf7d0';
+          const badge = tabEl.querySelector('.tab-badge');
+          if (badge) {
+            badge.className = 'tab-badge success';
+            badge.textContent = `🟢 มั่นใจ (${simMap[sId].score}/10)`;
+          }
+          const barFill = tabEl.querySelector('div[style*="width"]');
+          if (barFill) {
+            barFill.style.width = '100%';
+            barFill.style.background = '#22c55e';
+          }
+        }
+      });
+
+      updateTeacherLiveMonitorUI();
+      updateLobbyCardStatus(qid, 10, 10);
+      loadStudentQuizState(state.currentQuizStudent || 'narin', qid);
+
+      showToast("⚡ จำลองนักเรียนทั้งห้อง (บีม/มะลิ/นรินทร์/ข้าวหอม) ส่งควิซเรียบร้อย! ซิงก์ผลสอบสดสู่หน้าครูแล้ว 🎉");
     }
 
     // Top View Switcher Event Handlers
@@ -4132,6 +4985,9 @@
     function selectStudent(studentId) {
       state.activeStudent = studentId;
       state.activeSender = studentId;
+      if (studentId !== 'teacher') {
+        state.lastObservedStudent = studentId;
+      }
 
       document.querySelectorAll('.student-item').forEach(item => item.classList.remove('active'));
       const targetItem = document.getElementById(`item-${studentId}`);
@@ -4506,6 +5362,21 @@
       const tabEl = document.getElementById('val-tabswitch');
       if (tabEl) tabEl.textContent = `${sig.tabSwitchCount} ครั้ง (${sig.tabAwaySeconds}s)`;
 
+      const studentTabBadge = document.getElementById('studentTabSwitchBadge');
+      if (studentTabBadge) {
+        if (sig.tabSwitchCount > 0) {
+          studentTabBadge.innerHTML = `🔄 สลับหน้าออกไป ${sig.tabSwitchCount} ครั้ง (${sig.tabAwaySeconds}s)`;
+          studentTabBadge.style.background = '#fff7ed';
+          studentTabBadge.style.color = '#c2410c';
+          studentTabBadge.style.borderColor = '#fed7aa';
+        } else {
+          studentTabBadge.innerHTML = `🔄 สลับหน้า 0 ครั้ง`;
+          studentTabBadge.style.background = '#f8fafc';
+          studentTabBadge.style.color = '#64748b';
+          studentTabBadge.style.borderColor = '#e2e8f0';
+        }
+      }
+
       const mins = String(Math.floor(sig.idleSeconds / 60)).padStart(2, '0');
       const secs = String(sig.idleSeconds % 60).padStart(2, '0');
       const silenceEl = document.getElementById('val-silence');
@@ -4785,23 +5656,77 @@
       showToast(`🤖 AI ส่งข้อความชวนคิดจับคู่ช่วยเหลือทั้ง นรินทร์ และ ข้าวหอม พร้อมกันเรียบร้อย!`);
     }
 
-    // Page Visibility Detector (Tab Switching & Return Trigger)
+    function getTargetStudentForTabSwitch() {
+      if (state.activeStudent && state.activeStudent !== 'teacher') return state.activeStudent;
+      if (state.activeSender && state.activeSender !== 'teacher') return state.activeSender;
+      return state.lastObservedStudent || 'narin';
+    }
+
+    // Page & Window Switch Detector (Guaranteed Real External Tab & Window Switching)
+    let lastTabLeaveTimestamp = null;
+    let isAwayFromTab = false;
+
+    function handleTabLeave() {
+      if (isAwayFromTab) return;
+      isAwayFromTab = true;
+      lastTabLeaveTimestamp = Date.now();
+
+      const activeKey = getTargetStudentForTabSwitch();
+      const sig = getStudentSignal(activeKey);
+
+      state.tabSwitchCount++;
+      sig.tabSwitchCount++;
+
+      sig.hypothesis = {
+        title: "สลับไปหน้าจออื่น / ค้นคว้าข้อมูลภายนอก",
+        reason: `สลับแท็บเบราว์เซอร์หรือสลับแอปออกนอกหน้าเว็บ (ครั้งที่ ${sig.tabSwitchCount}) ➔ ระบบบันทึกจังหวะเรียบร้อย`,
+        confidence: 85
+      };
+
+      updateTeacherConsoleUI();
+      showToast(`⚠️ ${sig.name} สลับออกจากหน้าเว็บ (บันทึกครั้งที่ ${sig.tabSwitchCount})`);
+    }
+
+    function handleTabReturn() {
+      if (!isAwayFromTab) return;
+      isAwayFromTab = false;
+
+      const activeKey = getTargetStudentForTabSwitch();
+      const sig = getStudentSignal(activeKey);
+
+      const awaySecs = lastTabLeaveTimestamp ? Math.max(1, Math.round((Date.now() - lastTabLeaveTimestamp) / 1000)) : 5;
+      lastTabLeaveTimestamp = null;
+
+      sig.tabAwaySeconds += awaySecs;
+      state.idleSeconds = 0;
+      sig.idleSeconds = 0;
+
+      sig.hypothesis = {
+        title: "กลับเข้าสู่หน้าแชทเรียนแล้ว (Active Returned)",
+        reason: `สลับหน้าจอกลับเข้ามาหลังออกไป ${awaySecs} วินาที ➔ AI แสดงสรุป Catch-up ย่อ`,
+        confidence: 90
+      };
+
+      updateTeacherConsoleUI();
+      showToast(`🟢 กลับเข้าสู่หน้าเว็บเรียนแล้ว! (สลับออกไป ${awaySecs}s • รวม ${sig.tabSwitchCount} ครั้ง)`);
+      simTabReturnProactiveOutreach(awaySecs);
+    }
+
+    // Unconditional Event Listeners
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        state.tabSwitchCount++;
-        state.lastTabAwayTime = Date.now();
-        showToast("⚠️ นักเรียนสลับออกจากหน้าเว็บ (ระบบบันทึกเพื่อดูบริบท ไม่นำไปหักคะแนน)");
+        handleTabLeave();
       } else {
-        state.idleSeconds = 0;
-        const awaySecs = state.lastTabAwayTime ? Math.round((Date.now() - state.lastTabAwayTime) / 1000) : 10;
-        if (awaySecs >= 5 && !state.proactiveTabReturnTriggered) {
-          state.proactiveTabReturnTriggered = true;
-          simTabReturnProactiveOutreach(awaySecs);
-        } else {
-          showToast("กลับเข้าสู่หน้าเว็บเรียนแล้ว!");
-        }
+        handleTabReturn();
       }
-      updateTeacherConsoleUI();
+    });
+
+    window.addEventListener('blur', () => {
+      handleTabLeave();
+    });
+
+    window.addEventListener('focus', () => {
+      handleTabReturn();
     });
 
     // Simulation Tools
@@ -4872,20 +5797,22 @@
     }
 
     function simTabSwitch() {
-      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
-      const sig = getStudentSignal(currentKey);
+      const activeKey = getTargetStudentForTabSwitch();
+      const sig = getStudentSignal(activeKey);
 
       sig.tabSwitchCount++;
       sig.tabAwaySeconds += 45;
+      state.tabSwitchCount++;
 
       sig.hypothesis = {
-        title: "สลับไปค้นคว้าความรู้ภายนอก / พักเบรก",
-        reason: `ตรวจพบการสลับแท็บออกจากแชท (${sig.tabSwitchCount} ครั้ง, รวม ${sig.tabAwaySeconds}s) ➔ AI สังเกตการณ์โดยไม่ขัดจังหวะ`,
-        confidence: 82
+        title: "กลับเข้าสู่หน้าแชทเรียนแล้ว (Active Returned)",
+        reason: `จำลองสลับหน้าจอกลับเข้ามาหลังออกไป 45s ➔ AI แสดงสรุป Catch-up ย่อ`,
+        confidence: 90
       };
 
       updateTeacherConsoleUI();
-      showToast(`🧪 จำลอง ${sig.name} สลับหน้าจอไป 45 วินาที`);
+      showToast(`🟢 ${sig.name} กลับเข้าสู่หน้าแชทเรียน! (สลับหน้าออกไป ${sig.tabSwitchCount} ครั้ง • AI สรุปย่อตามงาน)`);
+      simTabReturnProactiveOutreach(45);
     }
 
     function simPeerReply() {
