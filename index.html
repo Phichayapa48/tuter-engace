@@ -3469,6 +3469,9 @@
       const msgArea = document.getElementById('messagesArea');
       if (!msgArea) return;
 
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const student = MEMBER_MAP[currentKey] || MEMBER_MAP['narin'];
+
       const msgDiv = document.createElement('div');
       msgDiv.className = 'message-group ai';
 
@@ -3477,13 +3480,13 @@
 
       if (strategy === 'socratic') {
         strategyTitle = "🧠 AI Tutor (คำถามชวนคิด • Socratic Scaffolding)";
-        strategyText = "คุณ<b>นรินทร์</b>ครับ! ลองทบทวนดูอีกทีนะ แก๊สออกซิเจน (O2) เป็นแก๊สที่พืชต้องรับเข้ามา หรือปล่อยออกมาในกระบวนการสังเคราะห์ด้วยแสงกันแน่ครับ? 🌱";
+        strategyText = `คุณ<b>${student.name}</b>ครับ! ลองทบทวนดูอีกทีนะ แก๊สออกซิเจน (O2) เป็นแก๊สที่พืชต้องรับเข้ามา หรือปล่อยออกมาในกระบวนการสังเคราะห์ด้วยแสงกันแน่ครับ? 🌱`;
       } else if (strategy === 'peer') {
         strategyTitle = "👥 AI Tutor (ดึงเพื่อนช่วยอภิปราย • Peer Scaffolding)";
-        strategyText = "คุณ<b>นรินทร์</b>กำลังทบทวนเรื่องแก๊สอยู่นะครับ! ลองฟังความคิดเห็นจาก 🧢 <b>บีม</b> และ 🌿 <b>ข้าวหอม</b> ดูไหมว่าคิดเห็นอย่างไรเรื่องแก๊ส CO2 กับ O2?";
+        strategyText = `คุณ<b>${student.name}</b>กำลังทบทวนเรื่องแก๊สอยู่นะครับ! ลองฟังความคิดเห็นจากเพื่อนๆ ในกลุ่มดูไหมว่าคิดเห็นอย่างไรเรื่องแก๊ส CO2 กับ O2?`;
       } else if (strategy === 'direct') {
         strategyTitle = "🎯 AI Tutor (สรุปมโนทัศน์ • Direct Clarification)";
-        strategyText = "สรุปมโนทัศน์สั้นๆ นะครับ: พืชใช้ <b>แก๊สคาร์บอนไดออกไซด์ (CO2)</b> เป็นวัตถุดิบสร้างอาหาร และจะปล่อย <b>แก๊สออกซิเจน (O2)</b> ออกมาเป็นผลพลอยได้ครับ 💡";
+        strategyText = `สำหรับคุณ<b>${student.name}</b> สรุปมโนทัศน์สั้นๆ นะครับ: พืชใช้ <b>แก๊สคาร์บอนไดออกไซด์ (CO2)</b> เป็นวัตถุดิบสร้างอาหาร และจะปล่อย <b>แก๊สออกซิเจน (O2)</b> ออกมาเป็นผลพลอยได้ครับ 💡`;
       }
 
       msgDiv.innerHTML = `
@@ -3492,7 +3495,7 @@
           <div class="message-sender">${strategyTitle}</div>
           <div class="bubble">
             <div style="font-size: 11px; color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
-              ↩️ แนวทางการสอนโดยครูวิภา: <span style="background: #ffffff; color: #1e40af; padding: 1px 6px; border-radius: 4px; border: 1px solid #93c5fd;">${strategy.toUpperCase()} STRATEGY</span>
+              ↩️ แนวทางการสอนโดยครูวิภา: <span style="background: #ffffff; color: #1e40af; padding: 1px 6px; border-radius: 4px; border: 1px solid #93c5fd;">${strategy.toUpperCase()} STRATEGY ➔ ช่วยเหลือ ${student.name}</span>
             </div><br>
             ${strategyText}
           </div>
@@ -3501,7 +3504,7 @@
       msgArea.appendChild(msgDiv);
       msgArea.scrollTop = msgArea.scrollHeight;
 
-      showToast(`🚀 ส่งข้อความตามแนวทางการสอน (${strategy.toUpperCase()}) เข้าแชทกลุ่มเรียบร้อย!`);
+      showToast(`🚀 ส่งข้อความช่วยเหลือ (${student.name}) ตามแนวทาง (${strategy.toUpperCase()}) เรียบร้อย!`);
     }
 
     // Input draft listener for live detection of unsent text
@@ -4457,7 +4460,11 @@
 
     // Send Gentle Support Manual Button
     function sendGentleSupportManual() {
+      const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
+      const student = MEMBER_MAP[currentKey] || MEMBER_MAP['narin'];
+
       const msgArea = document.getElementById('messagesArea');
+      if (!msgArea) return;
       const msgDiv = document.createElement('div');
       msgDiv.className = 'message-group ai';
       msgDiv.innerHTML = `
@@ -4466,11 +4473,11 @@
           <div class="message-sender">AI Tutor (Gentle Support)</div>
           <div class="bubble">
             <div style="font-size: 11px; color: #2563eb; background: #eff6ff; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 6px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;">
-              ↩️ กำลังตอบกลับ: <span style="background: #ffffff; color: #1e40af; padding: 1px 6px; border-radius: 4px; border: 1px solid #93c5fd;">🙂 นรินทร์</span>
+              ↩️ กำลังตอบกลับช่วยเหลือ: <span style="background: #ffffff; color: #1e40af; padding: 1px 6px; border-radius: 4px; border: 1px solid #93c5fd;">${student.avatar} ${student.name}</span>
             </div><br>
-            คุณ<b>นรินทร์</b>ครับ! ${state.supportPrompt}
+            คุณ<b>${student.name}</b>ครับ! ${state.supportPrompt}
             <div class="hypothesis-verify-box">
-              <div class="verify-title">💡 AI สันนิษฐานว่า: คำถามนี้อาจช่วยสะกิดความคิดของคุณ</div>
+              <div class="verify-title">💡 AI สันนิษฐานว่า: คำถามนี้อาจช่วยสะกิดความคิดของ ${student.name}</div>
               <div class="verify-options">
                 <button class="verify-chip" onclick="confirmHypothesis(this, 'true_positive', 'ช่วยได้มาก')">✅ ช่วยได้มาก</button>
                 <button class="verify-chip" onclick="confirmHypothesis(this, 'thinking', 'กำลังลองคิดดู')">💡 กำลังลองคิดดู</button>
@@ -4492,7 +4499,7 @@
       `;
       msgArea.appendChild(msgDiv);
       msgArea.scrollTop = msgArea.scrollHeight;
-      showToast("ส่ง Gentle Support เข้าแชทกลุ่มสำเร็จ!");
+      showToast(`ส่ง Gentle Support ช่วยเหลือ ${student.name} เข้าแชทกลุ่มสำเร็จ!`);
     }
 
     // Send Group Recap Manual / Sim Button
