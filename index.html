@@ -2408,8 +2408,8 @@
 
       </section>
 
-      <!-- Student Standalone Individual Quiz Page Section -->
-      <section class="quiz-console" id="studentQuizSection"
+      <!-- Quiz Lobby / Selection Screen -->
+      <section class="quiz-console" id="quizLobbySection"
         style="display: none; flex-direction: column; gap: 16px; width: 100%;">
 
         <div class="console-header"
@@ -2417,6 +2417,111 @@
           <div style="display: flex; align-items: center; gap: 12px;">
             <button class="back-to-chat-btn" onclick="switchViewMode('student')">
               ⬅️ กลับสู่หน้าแชทหลัก
+            </button>
+            <div>
+              <h2 style="font-size: 16.5px; margin: 0; color: #701a75;">📝 เลือกควิซที่ครูมอบหมาย</h2>
+              <p style="font-size: 11.5px; color: var(--text-muted); margin: 2px 0 0 0;">กดการ์ดควิซที่ต้องการทำ แล้วกด "เริ่มทำ" เพื่อเข้าสู่หน้าทำข้อสอบ</p>
+            </div>
+          </div>
+          <span style="font-size: 11px; background: #fdf4ff; color: #7e22ce; border: 1px solid #e9d5ff; padding: 4px 12px; border-radius: 99px; font-weight: 700;">📚 ควิซที่ได้รับ: <span id="lobbyQuizCount">3</span> งาน</span>
+        </div>
+
+        <!-- Student Selector Tabs -->
+        <div style="background: white; border: 1px solid var(--border-color); padding: 10px 16px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">ดูควิซของ:</span>
+          <button class="tab-btn active" id="lobby-tab-narin" onclick="switchLobbyTab('narin')">🙂 นรินทร์ (คุณ)</button>
+          <button class="tab-btn" id="lobby-tab-beam" onclick="switchLobbyTab('beam')">🧢 บีม</button>
+          <button class="tab-btn" id="lobby-tab-mali" onclick="switchLobbyTab('mali')">🌼 มะลิ</button>
+          <button class="tab-btn" id="lobby-tab-khaohom" onclick="switchLobbyTab('khaohom')">🌿 ข้าวหอม</button>
+        </div>
+
+        <!-- Quiz Cards -->
+        <div id="quizLobbyCards" style="display: flex; flex-direction: column; gap: 12px;">
+
+          <!-- Card 1: Available -->
+          <div id="lobby-card-1"
+            style="background: white; border: 2px solid #e9d5ff; border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: all 0.22s ease; display: flex; align-items: center; gap: 16px; position: relative; overflow: hidden;"
+            onmouseover="this.style.borderColor='#a855f7'; this.style.boxShadow='0 4px 16px rgba(168,85,247,0.15)';"
+            onmouseout="this.style.borderColor='#e9d5ff'; this.style.boxShadow='none';">
+            <div style="font-size: 36px; flex-shrink: 0;">🌱</div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                <span style="font-size: 14px; font-weight: 800; color: #701a75;">ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง</span>
+                <span style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢 พร้อมทำ</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา • มอบหมายเมื่อ 13 ส.ค. 2569</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ 5 นาที</span>
+                <span style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 2 ข้อ</span>
+                <span style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 20 คะแนน</span>
+              </div>
+            </div>
+            <button onclick="startQuiz(1)"
+              style="flex-shrink: 0; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(168,85,247,0.3); transition: all 0.2s ease; white-space: nowrap;"
+              onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              🚀 เริ่มทำ
+            </button>
+          </div>
+
+          <!-- Card 2: Available -->
+          <div id="lobby-card-2"
+            style="background: white; border: 2px solid #e9d5ff; border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: all 0.22s ease; display: flex; align-items: center; gap: 16px; position: relative; overflow: hidden;"
+            onmouseover="this.style.borderColor='#a855f7'; this.style.boxShadow='0 4px 16px rgba(168,85,247,0.15)';"
+            onmouseout="this.style.borderColor='#e9d5ff'; this.style.boxShadow='none';">
+            <div style="font-size: 36px; flex-shrink: 0;">⚗️</div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                <span style="font-size: 14px; font-weight: 800; color: #701a75;">ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ</span>
+                <span style="font-size: 10px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🟢 พร้อมทำ</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาวิทยาศาสตร์ • ครูวิภา • มอบหมายเมื่อ 12 ส.ค. 2569</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 11.5px; background: #fdf4ff; color: #7e22ce; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ 10 นาที</span>
+                <span style="font-size: 11.5px; background: #eff6ff; color: #1d4ed8; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 5 ข้อ</span>
+                <span style="font-size: 11.5px; background: #fff7ed; color: #c2410c; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 50 คะแนน</span>
+              </div>
+            </div>
+            <button onclick="startQuiz(2)"
+              style="flex-shrink: 0; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: 0; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(168,85,247,0.3); transition: all 0.2s ease; white-space: nowrap;"
+              onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              🚀 เริ่มทำ
+            </button>
+          </div>
+
+          <!-- Card 3: Locked -->
+          <div
+            style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; opacity: 0.65;">
+            <div style="font-size: 36px; flex-shrink: 0; filter: grayscale(1);">📐</div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                <span style="font-size: 14px; font-weight: 800; color: #475569;">ควิซท้ายบทคณิตศาสตร์: ฟังก์ชัน</span>
+                <span style="font-size: 10px; background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 2px 8px; border-radius: 99px; font-weight: 700;">🔒 ยังไม่เปิด</span>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">วิชาคณิตศาสตร์ • ครูวิภา • จะเปิดวันที่ 15 ส.ค. 2569</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">⏱️ 15 นาที</span>
+                <span style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">📋 10 ข้อ</span>
+                <span style="font-size: 11.5px; background: #f1f5f9; color: #64748b; padding: 3px 10px; border-radius: 99px; font-weight: 600;">🎯 100 คะแนน</span>
+              </div>
+            </div>
+            <button disabled
+              style="flex-shrink: 0; background: #cbd5e1; color: #94a3b8; border: 0; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: not-allowed; white-space: nowrap;">
+              🔒 ยังไม่เปิด
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Student Standalone Individual Quiz Page Section -->
+      <section class="quiz-console" id="studentQuizSection"
+        style="display: none; flex-direction: column; gap: 16px; width: 100%;">
+
+        <div class="console-header"
+          style="background: white; border: 1px solid var(--border-color); padding: 14px 20px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="back-to-chat-btn" onclick="switchViewMode('student-quiz')">
+              ⬅️ กลับเลือกควิซ
             </button>
             <div>
               <h2 style="font-size: 16.5px; margin: 0; color: #701a75;">📝 หน้าทำควิซรายบุคคลของนักเรียน (Student
@@ -3264,9 +3369,23 @@
       const teacherSec = document.getElementById('teacherSection');
       const quizSec = document.getElementById('quizSection');
       const studentQuizSec = document.getElementById('studentQuizSection');
+      const quizLobbySec = document.getElementById('quizLobbySection');
       const toggleConsoleBtn = document.getElementById('toggleTeacherConsoleBtn');
       const studentTasksBtn = document.getElementById('studentSavedTasksBtn');
       const teacherTasksBtn = document.getElementById('teacherSavedTasksBtn');
+
+      // Helper: hide all sections
+      const hideAll = () => {
+        if (rosterCard) rosterCard.style.display = 'none';
+        chatSec.style.display = 'none';
+        teacherSec.style.display = 'none';
+        if (quizSec) quizSec.style.display = 'none';
+        if (studentQuizSec) studentQuizSec.style.display = 'none';
+        if (quizLobbySec) quizLobbySec.style.display = 'none';
+        if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
+        if (studentTasksBtn) studentTasksBtn.style.display = 'none';
+        if (teacherTasksBtn) teacherTasksBtn.style.display = 'none';
+      };
 
       // Update top bar active state
       document.querySelectorAll('.view-btn').forEach(b => {
@@ -3276,68 +3395,85 @@
       grid.className = `workspace-grid mode-${mode}`;
 
       if (mode === 'student') {
+        hideAll();
         if (rosterCard) rosterCard.style.display = 'flex';
         chatSec.style.display = 'flex';
-        teacherSec.style.display = 'none';
-        if (quizSec) quizSec.style.display = 'none';
-        if (studentQuizSec) studentQuizSec.style.display = 'none';
         if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
         if (studentTasksBtn) studentTasksBtn.style.display = 'flex';
-        if (teacherTasksBtn) teacherTasksBtn.style.display = 'none';
         selectStudent('narin');
         showToast("🎓 เปิดมุมมองนักเรียน (Student View)");
       } else if (mode === 'teacher') {
-        // TEACHER MODE: Shows Chat FIRST as requested!
+        hideAll();
         if (rosterCard) rosterCard.style.display = 'flex';
         chatSec.style.display = 'flex';
-        teacherSec.style.display = 'none';
-        if (quizSec) quizSec.style.display = 'none';
-        if (studentQuizSec) studentQuizSec.style.display = 'none';
         if (toggleConsoleBtn) {
           toggleConsoleBtn.style.display = 'flex';
           toggleConsoleBtn.innerHTML = '📊 เปิดหน้าข้อมูลวิเคราะห์ครู ➔';
         }
-        if (studentTasksBtn) studentTasksBtn.style.display = 'none';
         if (teacherTasksBtn) teacherTasksBtn.style.display = 'flex';
         selectStudent('teacher');
-        showToast("👩‍🏫 มุมมองครู: แสดงหน้าแชทหลัก (เลือก 'ครูวิภา' เป็นผู้พิมพ์ข้อความ)");
+        showToast("👩\u200d🏫 มุมมองครู: แสดงหน้าแชทหลัก (เลือก 'ครูวิภา' เป็นผู้พิมพ์ข้อความ)");
       } else if (mode === 'analytics') {
-        // STANDALONE ANALYTICS PAGE: Displays ONLY the full-page Analytics Console cleanly!
-        if (rosterCard) rosterCard.style.display = 'none';
-        chatSec.style.display = 'none';
+        hideAll();
         teacherSec.style.display = 'flex';
-        if (quizSec) quizSec.style.display = 'none';
-        if (studentQuizSec) studentQuizSec.style.display = 'none';
-        if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
-        if (studentTasksBtn) studentTasksBtn.style.display = 'none';
-        if (teacherTasksBtn) teacherTasksBtn.style.display = 'none';
         showToast("📊 เปิดแยกเข้าสู่หน้าข้อมูลวิเคราะห์ของครู (Full Analytics Page)");
       } else if (mode === 'quiz') {
-        // STANDALONE QUIZ & TASK DISPATCHER PAGE
-        if (rosterCard) rosterCard.style.display = 'none';
-        chatSec.style.display = 'none';
-        teacherSec.style.display = 'none';
+        hideAll();
         if (quizSec) quizSec.style.display = 'flex';
-        if (studentQuizSec) studentQuizSec.style.display = 'none';
-        if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
-        if (studentTasksBtn) studentTasksBtn.style.display = 'none';
-        if (teacherTasksBtn) teacherTasksBtn.style.display = 'none';
         showToast("📁 เปิดคลังข้อสอบ & ใบงานของครู (Quiz & Task Dispatcher)");
       } else if (mode === 'student-quiz') {
-        // STANDALONE STUDENT INDIVIDUAL QUIZ PAGE
-        if (rosterCard) rosterCard.style.display = 'none';
-        chatSec.style.display = 'none';
-        teacherSec.style.display = 'none';
-        if (quizSec) quizSec.style.display = 'none';
+        // Show QUIZ LOBBY first — student picks which quiz to do
+        hideAll();
+        if (quizLobbySec) quizLobbySec.style.display = 'flex';
+        showToast("📝 เลือกควิซที่ครูมอบหมาย");
+      } else if (mode === 'student-quiz-active') {
+        // Actually start the selected quiz
+        hideAll();
         if (studentQuizSec) studentQuizSec.style.display = 'flex';
-        if (toggleConsoleBtn) toggleConsoleBtn.style.display = 'none';
-        if (studentTasksBtn) studentTasksBtn.style.display = 'none';
-        if (teacherTasksBtn) teacherTasksBtn.style.display = 'none';
         startStudentQuizTimer();
-        showToast("📝 เปิดหน้าทำควิซรายบุคคลของนักเรียน (เริ่มตัวจับเวลาถอยหลัง 04:45)");
+        showToast("📝 เปิดหน้าทำควิซ — เริ่มตัวจับเวลา!");
       }
 
       document.querySelectorAll('.flow-step').forEach(step => step.classList.add('active'));
+    }
+
+    // Start a specific quiz from the lobby
+    function startQuiz(quizId) {
+      const quizTitles = {
+        1: 'ควิซเรื่องกระบวนการสังเคราะห์ด้วยแสง (2 ข้อ)',
+        2: 'ใบงานที่ 3: ห่วงโซ่อาหารและระบบนิเวศ (5 ข้อ)'
+      };
+      const title = document.getElementById('studentQuizHeaderTitle');
+      if (title) title.textContent = '📄 ' + (quizTitles[quizId] || 'ควิซ');
+
+      // Reset timer
+      if (state.studentQuizInterval) clearInterval(state.studentQuizInterval);
+      state.studentQuizTimeLeft = quizId === 2 ? 600 : 285;
+      const timerEl = document.getElementById('studentQuizTimer');
+      if (timerEl) {
+        const m = Math.floor(state.studentQuizTimeLeft / 60).toString().padStart(2, '0');
+        const s = (state.studentQuizTimeLeft % 60).toString().padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+      }
+
+      // Reset submit button and result box
+      const submitBtn = document.getElementById('btnSubmitStudentQuiz');
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
+      const resultBox = document.getElementById('studentQuizResultBox');
+      if (resultBox) resultBox.style.display = 'none';
+
+      switchViewMode('student-quiz-active');
+      showToast(`🚀 เริ่มทำ: ${quizTitles[quizId] || 'ควิซ'}`);
+    }
+
+    // Switch demo student in the lobby
+    function switchLobbyTab(student) {
+      ['narin', 'beam', 'mali', 'khaohom'].forEach(s => {
+        const btn = document.getElementById(`lobby-tab-${s}`);
+        if (btn) btn.classList.toggle('active', s === student);
+      });
+      const nameMap = { narin: '🙂 นรินทร์ (คุณ)', beam: '🧢 บีม', mali: '🌼 มะลิ', khaohom: '🌿 ข้าวหอม' };
+      showToast(`👤 ดูควิซของ: ${nameMap[student] || student}`);
     }
 
     function handleStandaloneQuizUpload(input) {
