@@ -5662,9 +5662,51 @@
       return state.lastObservedStudent || 'narin';
     }
 
-    // Page & Window Switch Detector (Guaranteed Real External Tab & Window Switching)
+    // Page & Window Switch Detector (Guaranteed Real External Tab & Window Switching with Cross-Tab Sync)
     let lastTabLeaveTimestamp = null;
     let isAwayFromTab = false;
+
+    // Cross-Tab Telemetry Sync (BroadcastChannel + LocalStorage fallback)
+    const telemetryChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('tuter_telemetry_channel') : null;
+
+    function broadcastTelemetry(type, payload) {
+      if (telemetryChannel) {
+        telemetryChannel.postMessage({ type, payload, timestamp: Date.now() });
+      }
+      try {
+        localStorage.setItem('tuter_telemetry_sync', JSON.stringify({ type, payload, timestamp: Date.now() }));
+      } catch (e) {}
+    }
+
+    function handleRemoteTelemetrySync(data) {
+      if (!data || !data.type) return;
+      const { type, payload } = data;
+      if (type === 'TAB_LEAVE') {
+        const sig = getStudentSignal(payload.studentKey);
+        sig.tabSwitchCount = payload.tabSwitchCount;
+        sig.hypothesis = payload.hypothesis;
+        updateTeacherConsoleUI();
+        showToast(`⚠️ [แจ้งเตือนครู] ${sig.name} สลับออกจากหน้าเว็บ (ครั้งที่ ${sig.tabSwitchCount})`);
+      } else if (type === 'TAB_RETURN') {
+        const sig = getStudentSignal(payload.studentKey);
+        sig.tabAwaySeconds = payload.tabAwaySeconds;
+        sig.idleSeconds = 0;
+        sig.hypothesis = payload.hypothesis;
+        updateTeacherConsoleUI();
+        showToast(`🟢 [แจ้งเตือนครู] ${sig.name} กลับเข้าสู่หน้าเรียน (สลับออกไป ${payload.awaySecs}s • รวม ${sig.tabSwitchCount} ครั้ง)`);
+      }
+    }
+
+    if (telemetryChannel) {
+      telemetryChannel.onmessage = (event) => handleRemoteTelemetrySync(event.data);
+    }
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'tuter_telemetry_sync' && event.newValue) {
+        try {
+          handleRemoteTelemetrySync(JSON.parse(event.newValue));
+        } catch (e) {}
+      }
+    });
 
     function handleTabLeave() {
       if (isAwayFromTab) return;
@@ -5685,6 +5727,12 @@
 
       updateTeacherConsoleUI();
       showToast(`⚠️ ${sig.name} สลับออกจากหน้าเว็บ (บันทึกครั้งที่ ${sig.tabSwitchCount})`);
+
+      broadcastTelemetry('TAB_LEAVE', {
+        studentKey: activeKey,
+        tabSwitchCount: sig.tabSwitchCount,
+        hypothesis: sig.hypothesis
+      });
     }
 
     function handleTabReturn() {
@@ -5710,9 +5758,17 @@
       updateTeacherConsoleUI();
       showToast(`🟢 กลับเข้าสู่หน้าเว็บเรียนแล้ว! (สลับออกไป ${awaySecs}s • รวม ${sig.tabSwitchCount} ครั้ง)`);
       simTabReturnProactiveOutreach(awaySecs);
+
+      broadcastTelemetry('TAB_RETURN', {
+        studentKey: activeKey,
+        tabAwaySeconds: sig.tabAwaySeconds,
+        awaySecs: awaySecs,
+        tabSwitchCount: sig.tabSwitchCount,
+        hypothesis: sig.hypothesis
+      });
     }
 
-    // Unconditional Event Listeners
+    // Chrome & Safari Compatible Event Listeners
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         handleTabLeave();
@@ -5722,7 +5778,10 @@
     });
 
     window.addEventListener('blur', () => {
-      handleTabLeave();
+      // In Chrome, blur fires when clicking developer tools or URL bar, ensure document visibility state check
+      if (document.hidden || !document.hasFocus()) {
+        handleTabLeave();
+      }
     });
 
     window.addEventListener('focus', () => {
