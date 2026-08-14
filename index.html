@@ -1739,6 +1739,7 @@
                       ไม่เห็นด้วยกับบางความเห็น</button>
                     <button class="verify-chip" onclick="togglePeerAgree(this, 'my_idea', 'disagree')">💡
                       เสนอแนวคิดอื่น</button>
+                    <button class="verify-chip" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #ffffff; border: 0; font-weight: 700; box-shadow: 0 2px 6px rgba(99,102,241,0.35);" onclick="openPrivateWhisperModal()">🤫 กระซิบแนวคิดกับ AI (ส่วนตัว)</button>
                   </div>
 
                   <!-- Scoped Inline Disagree Input Container for Group Recap message -->
@@ -2111,8 +2112,8 @@
 
               <!-- Textarea -->
               <div>
-                <label style="font-size:12px; font-weight:700; color:#1e293b; display:block; margin-bottom:6px;">ข้อความแนวคิดของคุณถึง AI:</label>
-                <textarea id="privateWhisperText" rows="3" style="width:100%; border:1.5px solid #d8b4fe; border-radius:12px; padding:12px; font-size:13px; outline:none; box-sizing:border-box; font-family:inherit; resize:vertical;" placeholder="พิมพ์แนวคิด ความสงสัย หรือสิ่งที่คุณคิดไว้ที่นี่..."></textarea>
+                <label style="font-size:12px; font-weight:700; color:#1e293b; display:block; margin-bottom:6px;">ข้อความแนวคิดของคุณถึง AI (กด Enter เพื่อส่งได้ทันที):</label>
+                <textarea id="privateWhisperText" rows="3" onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); submitPrivateWhisper(); }" style="width:100%; border:1.5px solid #d8b4fe; border-radius:12px; padding:12px; font-size:13px; outline:none; box-sizing:border-box; font-family:inherit; resize:vertical;" placeholder="พิมพ์แนวคิด ความสงสัย หรือสิ่งที่คุณคิดไว้ที่นี่..."></textarea>
               </div>
 
               <!-- Footer Buttons -->
@@ -5779,7 +5780,13 @@
     // Introvert Private Whisper Functions
     function openPrivateWhisperModal() {
       const modal = document.getElementById('privateWhisperModal');
-      if (modal) modal.style.display = 'flex';
+      if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          const input = document.getElementById('privateWhisperText');
+          if (input) input.focus();
+        }, 50);
+      }
     }
 
     function closePrivateWhisperModal() {
@@ -5812,6 +5819,14 @@
         reason: `นักเรียนฝากแนวคิดส่วนตัว: "${whisperText}" ➔ AI อัปเดตสมมติฐานความเข้าใจเรียบร้อย`,
         confidence: 95
       };
+
+      // Update student opinion text in recap bullet list if active
+      if (studentKey === 'narin') {
+        const narinTextSpan = document.getElementById('narinOpinionText');
+        if (narinTextSpan) {
+          narinTextSpan.innerHTML = `<i>"${whisperText.substring(0, 30)}${whisperText.length > 30 ? '...' : ''}"</i> <span style="font-size:11px; background:#e9d5ff; color:#6b21a8; padding:2px 6px; border-radius:99px; font-weight:700;">(กระซิบส่วนตัวกับ AI 🤫)</span>`;
+        }
+      }
 
       // Add Private Feedback message from AI Tutor to Chat Area
       const msgArea = document.getElementById('messagesArea') || document.getElementById('chatMessages');
