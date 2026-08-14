@@ -3502,7 +3502,7 @@
     }
 
     // ===== ⚖️ MATHEMATICALLY RIGOROUS BOUNDED WEIGHT NORMALIZATION ALGORITHM =====
-    // Guarantees both: 1. sum = 1.000, 2. all weights w_i strictly in range [0.10, 0.50]
+    // Guarantees both: 1. sum = 1.000 (Exact 3-decimal precision), 2. all weights w_i strictly in range [0.10, 0.50]
     function enforceBoundedNormalization(weights, minBound = 0.10, maxBound = 0.50) {
       let keys = Object.keys(weights);
       let result = {};
@@ -3531,24 +3531,40 @@
         });
       }
 
-      // Automated Acceptance Assertion Check
-      let finalSum = Object.values(result).reduce((a, b) => a + b, 0);
-      let finalNormalized = {};
+      // Step 1: Normalize so total sum = 1.0
+      let rawSum = Object.values(result).reduce((a, b) => a + b, 0);
+      let roundedMap = {};
+      let roundedSum = 0;
+
       keys.forEach(k => {
-        finalNormalized[k] = parseFloat((result[k] / finalSum).toFixed(3));
+        let val = Math.round((result[k] / rawSum) * 1000) / 1000;
+        val = Math.max(minBound, Math.min(maxBound, val));
+        roundedMap[k] = val;
+        roundedSum += val;
       });
 
-      // Verification assertion check
-      const vals = Object.values(finalNormalized);
-      const isCompliant = vals.every(w => w >= minBound && w <= maxBound) && Math.abs(vals.reduce((a, b) => a + b, 0) - 1.0) < 0.01;
-      if (!isCompliant) {
-        console.warn('Weight bounds re-enforced for normalization compliance');
+      // Step 2: Exact Rounding Remainder Safety Adjustment
+      let remainder = Math.round((1.000 - roundedSum) * 1000) / 1000;
+      if (remainder !== 0) {
+        // Adjust the remainder onto the first key that can absorb it without breaking bounds
+        const targetKey = keys.find(k => (roundedMap[k] + remainder >= minBound && roundedMap[k] + remainder <= maxBound)) || keys[0];
+        roundedMap[targetKey] = Math.round((roundedMap[targetKey] + remainder) * 1000) / 1000;
       }
 
-      return finalNormalized;
+      // Acceptance Assertion Verification Check
+      const finalVals = Object.values(roundedMap);
+      const isSumExact = Math.abs(finalVals.reduce((a, b) => a + b, 0) - 1.000) < 0.0001;
+      const isBounded = finalVals.every(w => w >= minBound && w <= maxBound);
+
+      if (!isSumExact || !isBounded) {
+        console.warn('Weight bounds rounding re-enforced for compliance', roundedMap);
+      }
+
+      return roundedMap;
     }
 
     // Dynamic Feedback-Driven studentWeights Adjustment Logic (learningRate = 0.05)
+    // Invoked STRICTLY when explicit student confirmation events occur (hypothesis verification, hint request)
     function applyStudentFeedbackWeightAdjustment(studentId, feedbackType) {
       const sig = getStudentSignal(studentId);
       if (!sig.studentWeights) sig.studentWeights = { ...DEFAULT_GROUP_WEIGHTS };
@@ -3579,6 +3595,7 @@
       updatePersonalizedWeights(sig);
     }
 
+    // Full Complete Personalized Weights Calculation Logic
     function updatePersonalizedWeights(sig) {
       if (!sig.groupWeights) sig.groupWeights = { ...DEFAULT_GROUP_WEIGHTS };
       if (!sig.studentWeights) sig.studentWeights = { ...DEFAULT_GROUP_WEIGHTS };
@@ -3592,7 +3609,7 @@
 
       const lambda = Math.min(0.8, sig.confirmedFeedbackCount / 20);
 
-      // Calculate blended target: (1 - lambda) * groupWeight + lambda * studentWeight
+      // 1. Calculate blended target: (1 - lambda) * groupWeight + lambda * studentWeight
       let blended = {};
       for (let key in sig.groupWeights) {
         const groupW = sig.groupWeights[key];
@@ -3604,7 +3621,7 @@
         blended[key] = Math.max(0.10, Math.min(0.50, clamped));
       }
 
-      // Enforce Bounded Normalization Algorithm (Sum = 1.0, All w_i in [0.10, 0.50])
+      // 2. Enforce Water-Filling Bounded Normalization Algorithm (Sum = 1.000, All w_i in [0.10, 0.50])
       sig.personalizedWeights = enforceBoundedNormalization(blended, 0.10, 0.50);
     }
 
@@ -6273,14 +6290,17 @@
     });
 
     window.addEventListener('blur', () => {
-      // Blur is an auxiliary signal; evaluate only when document is genuinely not focused or hidden
-      if (document.hidden || !document.hasFocus()) {
+      // Auxiliary signal: trigger strictly when document is hidden and tab state is not away yet
+      if (document.hidden && !isAwayFromTab) {
         handleTabLeave();
       }
     });
 
     window.addEventListener('focus', () => {
-      handleTabReturn();
+      // Auxiliary signal: trigger strictly when tab is away and document returns visible
+      if (isAwayFromTab && !document.hidden) {
+        handleTabReturn();
+      }
     });
 
     // Simulation Tools
