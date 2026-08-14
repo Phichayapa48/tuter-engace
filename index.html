@@ -3234,7 +3234,7 @@
         reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
         confidence: 68
       },
-      // ✅ Per-Student Signals Tracking Store (Rich Telemetry Schema)
+      // ✅ Per-Student Signals Tracking Store (Rich Telemetry Schema with Separated Weight Profiles)
       studentSignals: {
         narin: {
           name: '🙂 นรินทร์',
@@ -3258,7 +3258,9 @@
           rawParticipationScore: 78,
           smoothedParticipationScore: 78,
           participationLevel: 'High',
-          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          groupWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          studentWeights: { response: 0.32, emoji: 0.18, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          personalizedWeights: { response: 0.31, emoji: 0.19, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "อาจกำลังลังเลระหว่าง O2 กับ CO2",
             reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
@@ -3287,7 +3289,9 @@
           rawParticipationScore: 94,
           smoothedParticipationScore: 94,
           participationLevel: 'High',
-          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          groupWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          studentWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          personalizedWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "เข้าใจแนวคิดหลักได้ดี มีความมั่นใจสูง",
             reason: "ตอบทันที + ได้รับ 3 Like จากเพื่อน",
@@ -3316,7 +3320,9 @@
           rawParticipationScore: 86,
           smoothedParticipationScore: 86,
           participationLevel: 'High',
-          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          groupWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          studentWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          personalizedWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "เข้าใจเรื่องปัจจัยน้ำ พร้อมต่อยอดปัจจัยถัดไป",
             reason: "ระบุคำตอบสั้นแต่นำเข้าสู่เรื่องรากพืช",
@@ -3345,7 +3351,9 @@
           rawParticipationScore: null,
           smoothedParticipationScore: null,
           participationLevel: 'INSUFFICIENT_DATA',
-          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          groupWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          studentWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          personalizedWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "ยังไม่มีข้อมูลเพียงพอเกี่ยวกับการทำกิจกรรม",
             reason: "นักเรียนเพิ่งเข้าห้องเรียนและยังไม่มีโอกาสตอบ",
@@ -3394,7 +3402,9 @@
           rawParticipationScore: null,
           smoothedParticipationScore: null,
           participationLevel: 'INSUFFICIENT_DATA',
-          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          groupWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          studentWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
+          personalizedWeights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "กำลังติดตามบทเรียนในห้องเรียน",
             reason: "กำลังอ่านข้อความของเพื่อนและบทเรียน",
@@ -3406,12 +3416,16 @@
     }
 
     // ===== 🧮 9-STEP PARTICIPATION SUPPORT SCORE ENGINE & EMA SMOOTHING =====
+    const DEFAULT_GROUP_WEIGHTS = { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 };
+
     function calculateSafeSignalRate(numerator, denominator) {
       if (!denominator || denominator <= 0) return null; // No opportunity yet
       return Math.min(1.0, Math.max(0.0, numerator / denominator));
     }
 
     function calculateParticipationScore(sig) {
+      const pWeights = sig.personalizedWeights || sig.groupWeights || DEFAULT_GROUP_WEIGHTS;
+
       const normResponse = calculateSafeSignalRate(sig.messageCount, state.totalQuestions || 2);
       const normEmoji = calculateSafeSignalRate(sig.emojiCount, state.visibleMessages || 8);
       const normRecap = calculateSafeSignalRate(sig.recapClickCount, state.offeredRecaps || 1);
@@ -3419,11 +3433,11 @@
       const normPostSupport = calculateSafeSignalRate(sig.postSupportResponseCount, sig.supportOfferedCount || 1);
 
       const signals = [
-        { rate: normResponse, weight: sig.weights.response },
-        { rate: normEmoji, weight: sig.weights.emoji },
-        { rate: normRecap, weight: sig.weights.recap },
-        { rate: normQuestion, weight: sig.weights.question },
-        { rate: normPostSupport, weight: sig.weights.postSupport }
+        { rate: normResponse, weight: pWeights.response },
+        { rate: normEmoji, weight: pWeights.emoji },
+        { rate: normRecap, weight: pWeights.recap },
+        { rate: normQuestion, weight: pWeights.question },
+        { rate: normPostSupport, weight: pWeights.postSupport }
       ];
 
       const validSignals = signals.filter(s => s.rate !== null);
@@ -3488,26 +3502,49 @@
     }
 
     function updatePersonalizedWeights(sig) {
+      if (!sig.groupWeights) sig.groupWeights = { ...DEFAULT_GROUP_WEIGHTS };
+      if (!sig.studentWeights) sig.studentWeights = { ...DEFAULT_GROUP_WEIGHTS };
+      if (!sig.personalizedWeights) sig.personalizedWeights = { ...DEFAULT_GROUP_WEIGHTS };
+
       if (!sig.confirmedFeedbackCount || sig.confirmedFeedbackCount < 3) {
+        sig.studentWeights = { ...sig.groupWeights };
+        sig.personalizedWeights = { ...sig.groupWeights };
         return; // w_student = w_group until at least 3 confirmed feedback events
       }
 
       const lambda = Math.min(0.8, sig.confirmedFeedbackCount / 20);
-      const groupWeights = { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 };
-      let newWeights = {};
+
+      // 1. Calculate blended target: (1 - lambda) * groupWeight + lambda * studentWeight
+      let rawPersonalized = {};
       let total = 0;
 
-      for (let key in groupWeights) {
-        const rawTarget = (1 - lambda) * groupWeights[key] + lambda * (sig.weights[key] || groupWeights[key]);
-        const prevWeight = sig.weights[key] || groupWeights[key];
-        const clamped = Math.max(prevWeight - 0.05, Math.min(prevWeight + 0.05, rawTarget));
+      for (let key in sig.groupWeights) {
+        const groupW = sig.groupWeights[key];
+        const studentW = sig.studentWeights[key];
+        const rawTarget = (1 - lambda) * groupW + lambda * studentW;
+
+        const prevW = sig.personalizedWeights[key] || groupW;
+        const clamped = Math.max(prevW - 0.05, Math.min(prevW + 0.05, rawTarget));
         const bounded = Math.max(0.10, Math.min(0.50, clamped));
-        newWeights[key] = bounded;
+
+        rawPersonalized[key] = bounded;
         total += bounded;
       }
 
-      for (let key in newWeights) {
-        sig.weights[key] = parseFloat((newWeights[key] / total).toFixed(3));
+      // 2. Normalize so total sum = 1.0
+      let normalized = {};
+      for (let key in rawPersonalized) {
+        normalized[key] = rawPersonalized[key] / total;
+      }
+
+      // 3. Post-normalization re-enforcer check: ensure every weight stays strictly in range [0.10, 0.50]
+      let reEnforcedTotal = 0;
+      for (let key in normalized) {
+        normalized[key] = Math.max(0.10, Math.min(0.50, normalized[key]));
+        reEnforcedTotal += normalized[key];
+      }
+      for (let key in normalized) {
+        sig.personalizedWeights[key] = parseFloat((normalized[key] / reEnforcedTotal).toFixed(3));
       }
     }
 
