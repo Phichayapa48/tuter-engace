@@ -3546,10 +3546,10 @@
       // Step 2: Exact Rounding Remainder Safety Adjustment
       let remainder = Math.round((1.000 - roundedSum) * 1000) / 1000;
       if (remainder !== 0) {
-        const targetKey = keys.find(k =>
-          roundedMap[k] + remainder >= minBound &&
-          roundedMap[k] + remainder <= maxBound
-        );
+        const targetKey = keys.find(k => {
+          const candidate = Math.round((roundedMap[k] + remainder) * 1000) / 1000;
+          return candidate >= minBound && candidate <= maxBound;
+        });
 
         if (!targetKey) {
           throw new Error('Unable to distribute rounding remainder safely');
@@ -3560,21 +3560,30 @@
         ) / 1000;
       }
 
-      // Step 3: Acceptance Assertions Validation
-      const values = Object.values(roundedMap);
-      const sum = values.reduce((a, b) => a + b, 0);
-
-      console.assert(
-        values.every(w => w >= minBound && w <= maxBound),
-        `Weight bound violation: Weight out of range [${minBound}, ${maxBound}]`
-      );
-
-      console.assert(
-        Math.abs(sum - 1.000) < 0.0001,
-        `Weight sum violation: Sum (${sum}) does not equal 1.000`
-      );
+      // Step 3: Strict Production Validator & Debug Assertions
+      assertValidWeights(roundedMap, minBound, maxBound);
 
       return roundedMap;
+    }
+
+    // Strict Production Weight Validator (Throws Error if bounds or sum are violated)
+    function assertValidWeights(weights, minBound = 0.10, maxBound = 0.50) {
+      const values = Object.values(weights);
+      const sum = values.reduce((a, b) => a + b, 0);
+
+      const isBounded = values.every(w => w >= minBound && w <= maxBound);
+      const isSumExact = Math.abs(sum - 1.000) < 0.0001;
+
+      console.assert(isBounded, `Weight bound violation: Weight out of range [${minBound}, ${maxBound}]`);
+      console.assert(isSumExact, `Weight sum violation: Sum (${sum}) does not equal 1.000`);
+
+      if (!isBounded) {
+        throw new Error('Weight bound violation: Weight out of range [0.10, 0.50]');
+      }
+
+      if (!isSumExact) {
+        throw new Error(`Weight sum violation: Sum (${sum}) does not equal 1.000`);
+      }
     }
 
     // Dynamic Feedback-Driven studentWeights Adjustment Logic (learningRate = 0.05)
