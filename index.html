@@ -1794,6 +1794,15 @@
 
         <!-- LEVEL 1: CLASS OVERVIEW & SCALABLE STUDENT ROSTER LIST -->
         <div id="analyticsOverviewSection">
+
+          <!-- Ethical Research Disclaimer Banner -->
+          <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 11.5px; color: #475569; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            <span style="font-size: 16px;">🛡️</span>
+            <div>
+              <b>หมายเหตุการทดลอง (Ethical Research Disclaimer):</b> ค่าน้ำหนักทั้งหมดเป็นค่าเริ่มต้นสำหรับการทดลอง และต้องตรวจสอบกับข้อมูลจริงก่อนนำไปใช้จริง • คะแนนนี้วัดสัญญาณการมีส่วนร่วมในระบบ <b>(Participation Support Score)</b> ไม่ใช่วัดความตั้งใจเรียนหรือสติปัญญาของนักเรียน • การไม่มี interaction หรือการเปลี่ยนหน้าเว็บถูกใช้เป็นบริบทประกอบ ไม่ใช่หลักฐานการไม่ตั้งใจเรียน
+            </div>
+          </div>
+
           <div class="console-header">
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
               <button class="back-to-chat-btn" onclick="switchViewMode('teacher')">
@@ -3225,16 +3234,31 @@
         reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
         confidence: 68
       },
-      // ✅ Per-Student Signals Tracking Store
+      // ✅ Per-Student Signals Tracking Store (Rich Telemetry Schema)
       studentSignals: {
         narin: {
           name: '🙂 นรินทร์',
           messageCount: 2,
+          questionCount: 1,
           emojiCount: 3,
+          recapClickCount: 1,
+          postSupportResponseCount: 1,
           tabSwitchCount: 1,
           tabAwaySeconds: 28,
+          recentTabAwaySeconds: 28,
           idleSeconds: 34,
           isHandRaised: true,
+          confirmedFeedbackCount: 4,
+          hypothesisConfirmCount: 3,
+          hypothesisTotalEvaluations: 4,
+          hypothesisRefineCount: 1,
+          supportOfferedCount: 2,
+          supportAcceptedCount: 2,
+          comfortRating: 5,
+          rawParticipationScore: 78,
+          smoothedParticipationScore: 78,
+          participationLevel: 'High',
+          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "อาจกำลังลังเลระหว่าง O2 กับ CO2",
             reason: "พิมพ์คำว่า 'หรือเปล่า', 'ยังไม่แน่ใจ' + เงียบพิมพ์ 34s",
@@ -3244,11 +3268,26 @@
         beam: {
           name: '🧢 บีม',
           messageCount: 5,
+          questionCount: 2,
           emojiCount: 8,
+          recapClickCount: 1,
+          postSupportResponseCount: 1,
           tabSwitchCount: 0,
           tabAwaySeconds: 0,
+          recentTabAwaySeconds: 0,
           idleSeconds: 5,
           isHandRaised: false,
+          confirmedFeedbackCount: 5,
+          hypothesisConfirmCount: 5,
+          hypothesisTotalEvaluations: 5,
+          hypothesisRefineCount: 0,
+          supportOfferedCount: 1,
+          supportAcceptedCount: 1,
+          comfortRating: 5,
+          rawParticipationScore: 94,
+          smoothedParticipationScore: 94,
+          participationLevel: 'High',
+          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "เข้าใจแนวคิดหลักได้ดี มีความมั่นใจสูง",
             reason: "ตอบทันที + ได้รับ 3 Like จากเพื่อน",
@@ -3258,11 +3297,26 @@
         mali: {
           name: '🌼 มะลิ',
           messageCount: 4,
+          questionCount: 1,
           emojiCount: 6,
+          recapClickCount: 1,
+          postSupportResponseCount: 1,
           tabSwitchCount: 0,
           tabAwaySeconds: 0,
+          recentTabAwaySeconds: 0,
           idleSeconds: 12,
           isHandRaised: false,
+          confirmedFeedbackCount: 3,
+          hypothesisConfirmCount: 3,
+          hypothesisTotalEvaluations: 3,
+          hypothesisRefineCount: 0,
+          supportOfferedCount: 1,
+          supportAcceptedCount: 1,
+          comfortRating: 4,
+          rawParticipationScore: 86,
+          smoothedParticipationScore: 86,
+          participationLevel: 'High',
+          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "เข้าใจเรื่องปัจจัยน้ำ พร้อมต่อยอดปัจจัยถัดไป",
             reason: "ระบุคำตอบสั้นแต่นำเข้าสู่เรื่องรากพืช",
@@ -3271,19 +3325,38 @@
         },
         khaohom: {
           name: '🌿 ข้าวหอม',
-          messageCount: 1,
-          emojiCount: 1,
-          tabSwitchCount: 2,
-          tabAwaySeconds: 45,
-          idleSeconds: 45,
+          messageCount: 0,
+          questionCount: 0,
+          emojiCount: 0,
+          recapClickCount: 0,
+          postSupportResponseCount: 0,
+          tabSwitchCount: 0,
+          tabAwaySeconds: 0,
+          recentTabAwaySeconds: 0,
+          idleSeconds: 0,
           isHandRaised: false,
+          confirmedFeedbackCount: 0,
+          hypothesisConfirmCount: 0,
+          hypothesisTotalEvaluations: 0,
+          hypothesisRefineCount: 0,
+          supportOfferedCount: 0,
+          supportAcceptedCount: 0,
+          comfortRating: 5,
+          rawParticipationScore: null,
+          smoothedParticipationScore: null,
+          participationLevel: 'INSUFFICIENT_DATA',
+          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
-            title: "ต้องการเวลาอ่านและประมวลผลข้อความเพื่อน",
-            reason: "เปิดอ่านแชทต่อเนื่องโดยยังไม่กดพิมพ์ (เงียบ 45s)",
-            confidence: 74
+            title: "ยังไม่มีข้อมูลเพียงพอเกี่ยวกับการทำกิจกรรม",
+            reason: "นักเรียนเพิ่งเข้าห้องเรียนและยังไม่มีโอกาสตอบ",
+            confidence: 50
           }
         }
       },
+      totalQuestions: 2,
+      visibleMessages: 8,
+      offeredRecaps: 1,
+      targetQuestions: 2,
       supportPrompt: "ลองทบทวนว่าตอนเราหายใจเข้า กับที่พืชใช้สร้างอาหาร เหมือนหรือต่างกันอย่างไร?",
       feedbackLogs: [
         { hypothesis: "สับสน O2", feedback: "✅ นักเรียนยืนยันว่าถูก" },
@@ -3302,11 +3375,26 @@
         state.studentSignals[key] = {
           name: nameMap[key] || key,
           messageCount: 0,
+          questionCount: 0,
           emojiCount: 0,
+          recapClickCount: 0,
+          postSupportResponseCount: 0,
           tabSwitchCount: 0,
           tabAwaySeconds: 0,
+          recentTabAwaySeconds: 0,
           idleSeconds: 0,
           isHandRaised: false,
+          confirmedFeedbackCount: 0,
+          hypothesisConfirmCount: 0,
+          hypothesisTotalEvaluations: 0,
+          hypothesisRefineCount: 0,
+          supportOfferedCount: 0,
+          supportAcceptedCount: 0,
+          comfortRating: 5,
+          rawParticipationScore: null,
+          smoothedParticipationScore: null,
+          participationLevel: 'INSUFFICIENT_DATA',
+          weights: { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 },
           hypothesis: {
             title: "กำลังติดตามบทเรียนในห้องเรียน",
             reason: "กำลังอ่านข้อความของเพื่อนและบทเรียน",
@@ -3315,6 +3403,112 @@
         };
       }
       return state.studentSignals[key];
+    }
+
+    // ===== 🧮 9-STEP PARTICIPATION SUPPORT SCORE ENGINE & EMA SMOOTHING =====
+    function calculateSafeSignalRate(numerator, denominator) {
+      if (!denominator || denominator <= 0) return null; // No opportunity yet
+      return Math.min(1.0, Math.max(0.0, numerator / denominator));
+    }
+
+    function calculateParticipationScore(sig) {
+      const normResponse = calculateSafeSignalRate(sig.messageCount, state.totalQuestions || 2);
+      const normEmoji = calculateSafeSignalRate(sig.emojiCount, state.visibleMessages || 8);
+      const normRecap = calculateSafeSignalRate(sig.recapClickCount, state.offeredRecaps || 1);
+      const normQuestion = calculateSafeSignalRate(sig.questionCount, state.targetQuestions || 2);
+      const normPostSupport = calculateSafeSignalRate(sig.postSupportResponseCount, sig.supportOfferedCount || 1);
+
+      const signals = [
+        { rate: normResponse, weight: sig.weights.response },
+        { rate: normEmoji, weight: sig.weights.emoji },
+        { rate: normRecap, weight: sig.weights.recap },
+        { rate: normQuestion, weight: sig.weights.question },
+        { rate: normPostSupport, weight: sig.weights.postSupport }
+      ];
+
+      const validSignals = signals.filter(s => s.rate !== null);
+
+      if (validSignals.length === 0) {
+        sig.rawParticipationScore = null;
+        sig.participationLevel = 'INSUFFICIENT_DATA';
+        return null;
+      }
+
+      const totalValidWeight = validSignals.reduce((sum, s) => sum + s.weight, 0);
+      const weightedSum = validSignals.reduce((sum, s) => sum + (s.rate * (s.weight / totalValidWeight)), 0);
+
+      const rawScore = Math.round(weightedSum * 100);
+      sig.rawParticipationScore = rawScore;
+
+      // Exponential Moving Average (EMA 0.7 / 0.3)
+      if (sig.smoothedParticipationScore === null) {
+        sig.smoothedParticipationScore = rawScore;
+      } else {
+        sig.smoothedParticipationScore = Math.round(0.7 * sig.smoothedParticipationScore + 0.3 * rawScore);
+      }
+
+      // Update Participation Level Thresholds
+      if (sig.smoothedParticipationScore >= 70) sig.participationLevel = 'High';
+      else if (sig.smoothedParticipationScore >= 40) sig.participationLevel = 'Medium';
+      else sig.participationLevel = 'Low';
+
+      return sig.smoothedParticipationScore;
+    }
+
+    function calculateHypothesisAccuracy(sig) {
+      if (!sig.hypothesisTotalEvaluations || sig.hypothesisTotalEvaluations === 0) {
+        return null; // UI displays "ยังไม่มีข้อมูล"
+      }
+      return Math.round((sig.hypothesisConfirmCount / sig.hypothesisTotalEvaluations) * 100);
+    }
+
+    function evaluateAIIntervention(sig) {
+      if (sig.participationLevel === 'INSUFFICIENT_DATA') {
+        return {
+          action: 'OBSERVE_ONLY',
+          statusText: '⚪ ยังมีข้อมูลไม่พอ ขอเริ่มจากการสังเกตและรอการตอบกลับก่อนนะ',
+          reason: 'นักเรียนยังไม่มีโอกาสทำกิจกรรม'
+        };
+      }
+
+      const score = sig.smoothedParticipationScore;
+
+      if (score >= 70) {
+        return { action: 'NONE', statusText: '🟢 การมีส่วนร่วมสูง • ปล่อยให้กลุ่มแลกเปลี่ยนธรรมชาติ', reason: 'ไม่ต้องแทรกแซง' };
+      } else if (score >= 40) {
+        return { action: 'SOCRATIC_PROMPT', statusText: '🟡 การมีส่วนร่วมปานกลาง • ชวนคิดต่อและติดตาม', reason: 'กระตุ้นให้เสนอไอเดียเพิ่ม' };
+      } else {
+        // Low Score (< 40): Check isolated recent tab away duration
+        if (sig.recentTabAwaySeconds > 20 && sig.idleSeconds < 10) {
+          return { action: 'CATCHUP_SUMMARY', statusText: '🔄 เพิ่งกลับมาจากแท็บอื่น • แสดงสรุป Catch-up ย่อ', reason: 'ไม่สรุปว่าหลุดโฟกัส ให้สรุปประเด็นกลุ่ม' };
+        } else {
+          return { action: 'GENTLE_CHECKIN', statusText: '🔴 อยู่หน้าเว็บแต่เงียบ • สอบถามความต้องการหรือให้คำใบ้เบาๆ', reason: 'ถามความเห็นหรือส่งคำใบ้' };
+        }
+      }
+    }
+
+    function updatePersonalizedWeights(sig) {
+      if (!sig.confirmedFeedbackCount || sig.confirmedFeedbackCount < 3) {
+        return; // w_student = w_group until at least 3 confirmed feedback events
+      }
+
+      const lambda = Math.min(0.8, sig.confirmedFeedbackCount / 20);
+      const groupWeights = { response: 0.30, emoji: 0.20, recap: 0.15, question: 0.15, postSupport: 0.20 };
+      let newWeights = {};
+      let total = 0;
+
+      for (let key in groupWeights) {
+        const rawTarget = (1 - lambda) * groupWeights[key] + lambda * (sig.weights[key] || groupWeights[key]);
+        const prevWeight = sig.weights[key] || groupWeights[key];
+        const clamped = Math.max(prevWeight - 0.05, Math.min(prevWeight + 0.05, rawTarget));
+        const bounded = Math.max(0.10, Math.min(0.50, clamped));
+        newWeights[key] = bounded;
+        total += bounded;
+      }
+
+      for (let key in newWeights) {
+        sig.weights[key] = parseFloat((newWeights[key] / total).toFixed(3));
+      }
     }
 
     function filterAnalyticsStudents(query) {
@@ -5422,6 +5616,11 @@
       const currentKey = (state.activeStudent && state.activeStudent !== 'teacher') ? state.activeStudent : 'narin';
       const sig = getStudentSignal(currentKey);
 
+      // Recalculate participation score & AI context evaluation
+      const score = calculateParticipationScore(sig);
+      const intervention = evaluateAIIntervention(sig);
+      updatePersonalizedWeights(sig);
+
       // Update Card 1 header title student name
       const sigNameSpan = document.getElementById('signalsStudentNameSpan');
       if (sigNameSpan) sigNameSpan.textContent = sig.name;
@@ -5442,7 +5641,7 @@
       const studentTabBadge = document.getElementById('studentTabSwitchBadge');
       if (studentTabBadge) {
         if (sig.tabSwitchCount > 0) {
-          studentTabBadge.innerHTML = `🔄 สลับหน้าออกไป ${sig.tabSwitchCount} ครั้ง (${sig.tabAwaySeconds}s)`;
+          studentTabBadge.innerHTML = `🔄 สลับหน้าออกไป ${sig.tabSwitchCount} ครั้ง (ล่าสุด ${sig.recentTabAwaySeconds}s • รวม ${sig.tabAwaySeconds}s)`;
           studentTabBadge.style.background = '#fff7ed';
           studentTabBadge.style.color = '#c2410c';
           studentTabBadge.style.borderColor = '#fed7aa';
@@ -5476,9 +5675,26 @@
       const hypoConf = document.getElementById('txt-confidence');
       if (hypoConf) hypoConf.textContent = sig.hypothesis.confidence + '%';
 
-      const accPct = Math.round((state.hypoAccuracyCount / state.hypoTotalCount) * 100);
+      // Student-Confirmed Hypothesis Accuracy Calculation (Null-safe)
+      const accuracy = calculateHypothesisAccuracy(sig);
       const accEl = document.getElementById('txt-accuracy');
-      if (accEl) accEl.innerHTML = `${accPct}% <span>(${state.hypoAccuracyCount}/${state.hypoTotalCount} ยืนยันถูกต้อง)</span>`;
+      if (accEl) {
+        if (accuracy !== null) {
+          accEl.innerHTML = `${accuracy}% <span style="font-size:11px; font-weight:normal; color:#64748b;">(${sig.hypothesisConfirmCount}/${sig.hypothesisTotalEvaluations} ยืนยันโดยนักเรียน)</span>`;
+        } else {
+          accEl.innerHTML = `<span style="color:#64748b; font-size:12.5px; font-weight:600;">ยังไม่มีข้อมูล <span style="font-size:11px; font-weight:normal;">(รอการยืนยันจากนักเรียน)</span></span>`;
+        }
+      }
+
+      // Update Executive Summary status
+      const execStatus = document.getElementById('execClassStatus');
+      if (execStatus) {
+        if (score !== null) {
+          execStatus.innerHTML = `${score}% • Participation Support Score (${sig.participationLevel})`;
+        } else {
+          execStatus.innerHTML = `ยังไม่มีข้อมูลเพียงพอ • รอการตอบกลับ`;
+        }
+      }
 
       // Update Hand-raise ratios
       const hrPct = Math.round((state.handRaisedCount / state.totalGroupMembers) * 100);
@@ -5913,6 +6129,7 @@
       const awaySecs = lastTabLeaveTimestamp ? Math.max(1, Math.round((Date.now() - lastTabLeaveTimestamp) / 1000)) : 5;
       lastTabLeaveTimestamp = null;
 
+      sig.recentTabAwaySeconds = awaySecs;
       sig.tabAwaySeconds += awaySecs;
       state.idleSeconds = 0;
       sig.idleSeconds = 0;
@@ -6375,6 +6592,16 @@
     startPollTimer();
     updateTeacherConsoleUI();
     makeSimWidgetDraggable();
+
+    // Periodic 8-Second EMA Smoothing Timer
+    setInterval(() => {
+      if (state.studentSignals) {
+        Object.keys(state.studentSignals).forEach(k => {
+          calculateParticipationScore(state.studentSignals[k]);
+        });
+        updateTeacherConsoleUI();
+      }
+    }, 8000);
   </script>
 </body>
 
