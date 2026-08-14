@@ -3546,19 +3546,33 @@
       // Step 2: Exact Rounding Remainder Safety Adjustment
       let remainder = Math.round((1.000 - roundedSum) * 1000) / 1000;
       if (remainder !== 0) {
-        // Adjust the remainder onto the first key that can absorb it without breaking bounds
-        const targetKey = keys.find(k => (roundedMap[k] + remainder >= minBound && roundedMap[k] + remainder <= maxBound)) || keys[0];
-        roundedMap[targetKey] = Math.round((roundedMap[targetKey] + remainder) * 1000) / 1000;
+        const targetKey = keys.find(k =>
+          roundedMap[k] + remainder >= minBound &&
+          roundedMap[k] + remainder <= maxBound
+        );
+
+        if (!targetKey) {
+          throw new Error('Unable to distribute rounding remainder safely');
+        }
+
+        roundedMap[targetKey] = Math.round(
+          (roundedMap[targetKey] + remainder) * 1000
+        ) / 1000;
       }
 
-      // Acceptance Assertion Verification Check
-      const finalVals = Object.values(roundedMap);
-      const isSumExact = Math.abs(finalVals.reduce((a, b) => a + b, 0) - 1.000) < 0.0001;
-      const isBounded = finalVals.every(w => w >= minBound && w <= maxBound);
+      // Step 3: Acceptance Assertions Validation
+      const values = Object.values(roundedMap);
+      const sum = values.reduce((a, b) => a + b, 0);
 
-      if (!isSumExact || !isBounded) {
-        console.warn('Weight bounds rounding re-enforced for compliance', roundedMap);
-      }
+      console.assert(
+        values.every(w => w >= minBound && w <= maxBound),
+        `Weight bound violation: Weight out of range [${minBound}, ${maxBound}]`
+      );
+
+      console.assert(
+        Math.abs(sum - 1.000) < 0.0001,
+        `Weight sum violation: Sum (${sum}) does not equal 1.000`
+      );
 
       return roundedMap;
     }
