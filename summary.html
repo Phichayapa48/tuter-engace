@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สรุปภาพรวมระบบการคำนวณ 9 ขั้นตอน • Participation Support Score Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --primary: #6366f1;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      --accent-green: #22c55e;
+      --accent-yellow: #eab308;
+      --accent-red: #ef4444;
+      --accent-cyan: #06b6d4;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 32px 20px;
+      margin-bottom: 32px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Grid Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+
+    /* 9-Step Pipeline Interactive Stepper */
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 16px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .step-item:hover, .step-item.active {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateX(4px);
+    }
+
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-gradient);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .step-content h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Interactive Live Sandbox Simulator */
+    .sim-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 99px;
+      background: #334155;
+      outline: none;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    /* Output Results Box */
+    .result-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1.5px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .score-badge-large {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .score-val {
+      font-size: 28px;
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .status-chip {
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .status-high { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .status-medium { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .status-low { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .status-nodata { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4); }
+
+    /* Waterfilling Weights Distribution Display */
+    .weights-bar-container {
+      display: flex;
+      height: 14px;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 8px;
+      background: #1e293b;
+    }
+
+    .weight-segment {
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+
+    .weight-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      font-size: 11.5px;
+      margin-top: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Comparison Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13.5px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    th {
+      color: #94a3b8;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Disclaimer Footer */
+    .disclaimer-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 24px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 99px;
+      background: var(--primary-gradient);
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <a href="index.html" class="back-btn">⬅️ กลับสู่ระบบหลัก (Main Platform)</a>
+
+    <header>
+      <div class="badge-tag">📊 Interactive Technical Architecture Summary</div>
+      <h1>Participation Support Score Engine (9-Step Framework)</h1>
+      <p class="subtitle">
+        สรุปกลไกการคำนวณคะแนนการมีส่วนร่วมทางจริยธรรม, อัลกอริทึม Water-Filling ปรับน้ำหนัก, EMA Smoothing และระบบตัดสินใจช่วยเหลือตามบริบทรายบุคคล
+      </p>
+    </header>
+
+    <!-- Main 2-Column Section -->
+    <div class="grid-2">
+
+      <!-- Column 1: 9-Step Pipeline Stepper -->
+      <div class="card">
+        <div class="card-title">
+          <span>🚀</span> 9 ขั้นตอนการทำงานของเอนจิน (Pipeline Overview)
+        </div>
+        <div class="steps-list">
+
+          <div class="step-item active">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>📡 ดักจับสัญญาณดิบ (Raw Telemetry Signals)</h3>
+              <p>นับการส่งข้อความ, คำถาม, อีโมจิ, การกดอ่าน Recap และการตอบหลังได้รับคำใบ้</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>🛡️ แปลงเป็นสัดส่วนที่ปลอดภัย (Safe Rate Normalization)</h3>
+              <p>ป้องกันการเอา 0 มาหาร คืนค่า null หากยังไม่มีโอกาสทำกิจกรรม</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>🧮 คำนวณคะแนนดิบ 0 - 100% (Weighted Raw Score)</h3>
+              <p>นำสัญญาณที่มีจริงคูณค่าน้ำหนักที่ได้รับ แล้วปรับให้ได้สเกล 100%</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h3>📉 เกลี่ยคะแนนด้วยเวลา (EMA Time-Smoothing 0.7/0.3)</h3>
+              <p>คำนวณทุก 8 วินาที: 0.7 ของคะแนนเดิม + 0.3 ของคะแนนดิบใหม่ ป้องกันคะแนนแกว่ง</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <h3>🏷️ จัดกลุ่มระดับการมีส่วนร่วม (Level Classification)</h3>
+              <p>High (🟢 ≥70), Medium (🟡 40-69), Low (🔴 &lt;40) และ INSUFFICIENT_DATA (⚪)</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <h3>⏱️ เช็คบริบทสลับแท็กล่าสุด (recentTabAwaySeconds)</h3>
+              <p>แยกแยะคนเพิ่งกลับมาจากแท็บอื่น (>20s) ออกจากคนที่อยู่หน้าเว็บแต่เงียบ</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">7</div>
+            <div class="step-content">
+              <h3>🤖 เลือกการช่วยเหลือแบบไม่ตัดสิน (AI Scaffolding)</h3>
+              <p>ส่งสรุป Catch-up ย่อ, ชวนคิดแบบ Socratic หรือเปิดกล่องกระซิบส่วนตัว 🤫</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">8</div>
+            <div class="step-content">
+              <h3>⚖️ ปรับน้ำหนัก Water-Filling Bounded Normalization</h3>
+              <p>ปรับน้ำหนักรายบุคคล ล็อกค่าน้ำหนักทุกตัวให้อยู่ช่วง [10% - 50%] ผลรวม = 100% เป๊ะ</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-num">9</div>
+            <div class="step-content">
+              <h3>🔬 แยกวัดความแม่นยำ AI (Hypothesis Accuracy)</h3>
+              <p>วัดความแม่นยำของ AI แยกเด็ดขาดจากคะแนนเด็ก โดยไม่ปนเปื้อนกัน</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Column 2: Live Interactive Simulator -->
+      <div class="card">
+        <div class="card-title">
+          <span>🧪</span> จำลองการคำนวณสด (Live Interactive Simulator)
+        </div>
+
+        <div class="sim-controls">
+          <div class="control-group">
+            <div class="control-label">
+              <span>💬 คำตอบที่ส่ง (messageCount)</span>
+              <span id="lbl-msg">2</span>
+            </div>
+            <input type="range" class="slider" id="sld-msg" min="0" max="5" value="2" oninput="runSim()">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <span>👍 อีโมจิที่กด (emojiCount)</span>
+              <span id="lbl-emoji">3</span>
+            </div>
+            <input type="range" class="slider" id="sld-emoji" min="0" max="10" value="3" oninput="runSim()">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <span>📌 อ่านสรุป Recap (recapClickCount)</span>
+              <span id="lbl-recap">1</span>
+            </div>
+            <input type="range" class="slider" id="sld-recap" min="0" max="2" value="1" oninput="runSim()">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <span>⏱️ สลับไปแท็บอื่นล่าสุด (recentTabAwaySeconds)</span>
+              <span id="lbl-tabaway">28s</span>
+            </div>
+            <input type="range" class="slider" id="sld-tabaway" min="0" max="60" value="28" oninput="runSim()">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <span>⏳ เวลาที่เงียบอยู่หน้าจอ (idleSeconds)</span>
+              <span id="lbl-idle">34s</span>
+            </div>
+            <input type="range" class="slider" id="sld-idle" min="0" max="120" value="34" oninput="runSim()">
+          </div>
+        </div>
+
+        <!-- Dynamic Output Box -->
+        <div class="result-box">
+          <div class="score-badge-large">
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Participation Support Score</div>
+              <div class="score-val" id="res-score" style="color: #6366f1;">78%</div>
+            </div>
+            <div class="status-chip status-high" id="res-chip">🟢 High</div>
+          </div>
+
+          <div>
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px;">🤖 Action ของ AI ที่เลือก:</div>
+            <div id="res-ai-action" style="font-size: 13.5px; font-weight: 600; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(56, 189, 248, 0.2);">
+              🟢 การมีส่วนร่วมสูง • ปล่อยให้กลุ่มแลกเปลี่ยนธรรมชาติ
+            </div>
+          </div>
+
+          <!-- Dynamic Waterfilling Weight Bar -->
+          <div>
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">⚖️ การกระจายค่าน้ำหนัก (Water-Filling Bounds Check 10%-50%):</div>
+            <div class="weights-bar-container" id="res-weights-bar">
+              <div class="weight-segment" style="width: 30%; background: #6366f1;"></div>
+              <div class="weight-segment" style="width: 20%; background: #a855f7;"></div>
+              <div class="weight-segment" style="width: 15%; background: #06b6d4;"></div>
+              <div class="weight-segment" style="width: 15%; background: #eab308;"></div>
+              <div class="weight-segment" style="width: 20%; background: #22c55e;"></div>
+            </div>
+
+            <div class="weight-legend">
+              <div class="legend-item"><div class="dot" style="background:#6366f1;"></div> คำตอบ (30%)</div>
+              <div class="legend-item"><div class="dot" style="background:#a855f7;"></div> อีโมจิ (20%)</div>
+              <div class="legend-item"><div class="dot" style="background:#06b6d4;"></div> Recap (15%)</div>
+              <div class="legend-item"><div class="dot" style="background:#eab308;"></div> คำถาม (15%)</div>
+              <div class="legend-item"><div class="dot" style="background:#22c55e;"></div> คำใบ้ (20%)</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Comparison Table Section -->
+    <div class="card" style="margin-bottom: 32px;">
+      <div class="card-title">
+        <span>⚔️</span> เปรียบเทียบ: Participation Support Score vs ความตั้งใจเรียนแบบเดิม
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>มิติการประเมิน</th>
+            <th>❌ แบบเดิม (Attentiveness / Focus Myth)</th>
+            <th>✅ ระบบใหม่ (Participation Support Score)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>เป้าหมายหลัก</b></td>
+            <td>ประเมินความตั้งใจเพื่อตัดคะแนนหรือลงโทษ</td>
+            <td>วัดสัญญาณปฏิสัมพันธ์เพื่อหาจังหวะ **ส่งช่วยเหลือ**</td>
+          </tr>
+          <tr>
+            <td><b>การสลับหน้าจอ / เงียบ</b></td>
+            <td>ถือว่าเป็นเด็กหลุดโฟกัส / ไม่ตั้งใจเรียน</td>
+            <td>ถือว่าเป็น **บริบทเวลา (Context Metadata)** ไม่หักคะแนน</td>
+          </tr>
+          <tr>
+            <td><b>กรณีไม่มีข้อมูล</b></td>
+            <td>ตัดเป็น 0 คะแนน</td>
+            <td>ตั้งเป็น **`INSUFFICIENT_DATA (⚪)`** เฝ้าสังเกตก่อน</td>
+          </tr>
+          <tr>
+            <td><b>นักเรียนกลุ่ม Introvert</b></td>
+            <td>มักเสียเปรียบเพราะไม่กล้าพิมพ์เปิดเผย</td>
+            <td>มีช่องทาง **กระซิบ AI ส่วนตัว 🤫** นับสัญญาณให้อย่างเท่าเทียม</td>
+          </tr>
+          <tr>
+            <td><b>ค่าน้ำหนักคะแนน</b></td>
+            <td>ใช้ค่าน้ำหนักตายตัวตลอดสัปดาห์</td>
+            <td>ปรับรายบุคคลด้วย **Water-Filling Algorithm [10%-50%]**</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-card">
+      <span style="font-size: 20px;">🛡️</span>
+      <div>
+        <b>หมายเหตุเชิงจริยธรรมและการวิจัย (Ethical Research Disclaimer):</b><br>
+        ค่าน้ำหนักทั้งหมดเป็นค่าเริ่มต้นสำหรับการทดลอง และต้องตรวจสอบกับข้อมูลจริงก่อนนำไปใช้จริง • คะแนนนี้วัดสัญญาณการมีส่วนร่วมในระบบ (Participation Support Score) ไม่ใช่วัดความตั้งใจเรียนหรือสติปัญญาของนักเรียน • การไม่มี interaction หรือการเปลี่ยนหน้าเว็บถูกใช้เป็นบริบทประกอบ ไม่ใช่หลักฐานการไม่ตั้งใจเรียน
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function runSim() {
+      const msg = parseInt(document.getElementById('sld-msg').value);
+      const emoji = parseInt(document.getElementById('sld-emoji').value);
+      const recap = parseInt(document.getElementById('sld-recap').value);
+      const tabaway = parseInt(document.getElementById('sld-tabaway').value);
+      const idle = parseInt(document.getElementById('sld-idle').value);
+
+      document.getElementById('lbl-msg').textContent = msg;
+      document.getElementById('lbl-emoji').textContent = emoji;
+      document.getElementById('lbl-recap').textContent = recap;
+      document.getElementById('lbl-tabaway').textContent = tabaway + 's';
+      document.getElementById('lbl-idle').textContent = idle + 's';
+
+      // Calculation logic
+      if (msg === 0 && emoji === 0 && recap === 0) {
+        document.getElementById('res-score').textContent = 'N/A';
+        document.getElementById('res-chip').className = 'status-chip status-nodata';
+        document.getElementById('res-chip').textContent = '⚪ INSUFFICIENT_DATA';
+        document.getElementById('res-ai-action').textContent = '⚪ ยังมีข้อมูลไม่พอ ขอเริ่มจากการสังเกตและรอการตอบกลับก่อนนะ';
+        return;
+      }
+
+      const normMsg = Math.min(1.0, msg / 2);
+      const normEmoji = Math.min(1.0, emoji / 8);
+      const normRecap = Math.min(1.0, recap / 1);
+
+      const rawScore = Math.round((normMsg * 0.45 + normEmoji * 0.35 + normRecap * 0.20) * 100);
+      document.getElementById('res-score').textContent = rawScore + '%';
+
+      const chip = document.getElementById('res-chip');
+      const action = document.getElementById('res-ai-action');
+
+      if (rawScore >= 70) {
+        chip.className = 'status-chip status-high';
+        chip.textContent = '🟢 High';
+        action.textContent = '🟢 การมีส่วนร่วมสูง • ปล่อยให้กลุ่มแลกเปลี่ยนธรรมชาติ';
+      } else if (rawScore >= 40) {
+        chip.className = 'status-chip status-medium';
+        chip.textContent = '🟡 Medium';
+        action.textContent = '🟡 การมีส่วนร่วมปานกลาง • ชวนคิดต่อและติดตาม';
+      } else {
+        chip.className = 'status-chip status-low';
+        chip.textContent = '🔴 Low';
+        if (tabaway > 20 && idle < 10) {
+          action.textContent = '🔄 เพิ่งกลับมาจากแท็บอื่น • แสดงสรุป Catch-up ย่อ';
+        } else {
+          action.textContent = '🔴 อยู่หน้าเว็บแต่เงียบ • สอบถามความต้องการหรือให้คำใบ้เบาๆ / กระซิบ 🤫';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
